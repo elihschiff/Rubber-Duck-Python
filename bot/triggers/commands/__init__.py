@@ -35,8 +35,9 @@ class Command(MessageTrigger):
         raise NotImplementedError("'execute_command' not implemented for this command")
 
 
-from .echo import Echo
 from .ai import AI
+from .code import Code
+from .echo import Echo
 
 # Please keep in alphabetical order
-all_commands = [AI(), Echo()]
+all_commands = [AI(), Code(), Echo()]
