@@ -1,6 +1,8 @@
-from discord.ext import commands
+from . import Command
 
 
-@commands.command()
-async def echo(ctx, *, message):
-    await ctx.send(message)
+class Echo(Command):
+    name = "echo"
+
+    async def execute_command(self, msg, content):
+        await msg.channel.send(content)

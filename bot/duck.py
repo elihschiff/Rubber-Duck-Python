@@ -2,17 +2,17 @@ import sys
 import discord
 import json
 
-from .triggers.commands import all_commands
+from .triggers import msg_triggers
 
 
-class DuckClient(discord.ext.commands.Bot):
+class DuckClient(discord.Client):
     def __init__(
         self,
         config_filename="config/config.json",
         messages_filename="config/messages.json",
         quacks_filename="config/quacks.txt",
     ):
-        super().__init__("!")
+        super().__init__()
 
         try:
             with open(config_filename, "r") as config_file:
@@ -24,9 +24,6 @@ class DuckClient(discord.ext.commands.Bot):
         except (OSError, IOError) as err:
             print(f"Error initializing duck: {err}", file=sys.stderr)
 
-        for command in all_commands:
-            super().add_command(command)
-
     async def on_ready(self):
         print(f"Connected as {self.user}!")
 
@@ -34,6 +31,5 @@ class DuckClient(discord.ext.commands.Bot):
         if msg.author.bot:
             return
 
-        if msg.content.startswith("!echo "):
-            echo_start_idx = msg.content.index(" ")
-            await msg.channel.send(msg.content[echo_start_idx:])
+        for trigger in msg_triggers:
+            await trigger.execute(msg)
