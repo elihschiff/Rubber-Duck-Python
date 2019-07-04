@@ -45,8 +45,9 @@ class Command(MessageTrigger):
 from .ai import AI
 from .code import Code
 from .echo import Echo
-from .minecraft import Minecraft
 from .lmdtfy import Lmdtfy, Lmgtfy
+from .minecraft import Minecraft
+from .translate import Translate
 
 # Please keep in alphabetical order
-all_commands = [AI(), Code(), Echo(), Lmdtfy(), Lmgtfy(), Minecraft()]
+all_commands = [AI(), Code(), Echo(), Lmdtfy(), Lmgtfy(), Minecraft(), Translate()]

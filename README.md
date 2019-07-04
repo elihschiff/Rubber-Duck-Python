@@ -19,6 +19,6 @@ Currently implemented features:
 * [ ] Man page support ("!man")
 * [X] QUACK
 * [ ] Remove a class ("!remove")
-* [ ] Translate text ("!translate")
+* [X] Translate text ("!translate")
 * [ ] Welcome message
 * [ ] YACS search ("!yacs")
