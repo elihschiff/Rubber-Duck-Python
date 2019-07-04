@@ -3,7 +3,7 @@ from .. import utils
 
 
 class AI(Command):
-    names = ["ai"]
+    names = ["ai", "academic integrity"]
     description = "Reminds the channel about RPI's academic integrity policy"
     needsContent = False
 
