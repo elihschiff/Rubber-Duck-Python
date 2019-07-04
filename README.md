@@ -15,7 +15,7 @@ Currently implemented features:
 * [ ] lmgtfy support ("!lmgtfy")
 * [ ] lmdtfy support ("!lmdtfy")
 * [ ] Man page support ("man")
-* [ ] Minecraft help message ("!mc")
+* [X] Minecraft help message ("!mc")
 * [ ] Man page support ("!man")
 * [X] QUACK
 * [ ] Remove a class ("!remove")
