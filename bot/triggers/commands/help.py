@@ -6,6 +6,7 @@ import discord
 class Help(Command):
     names = ["help"]
     description = "Echoes the given message"
+    needsContent = False
 
     async def execute_command(self, client, msg, content):
         response = discord.Embed()

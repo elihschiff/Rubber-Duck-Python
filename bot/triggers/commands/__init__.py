@@ -17,8 +17,13 @@ class Command(MessageTrigger):
             if command:
                 break
 
-        if not command:
+        if len(command) == 0:
             return None
+
+        if self.needsContent:
+            if len(msg.content[len(command):].strip()) == 0:
+                return None
+
         try:
             if self.is_valid_command(msg):
                 return len(command)
@@ -30,7 +35,7 @@ class Command(MessageTrigger):
         if idx is None:
             return False
 
-        await self.execute_command(client, msg, msg.content[idx + 1 :])
+        await self.execute_command(client, msg, msg.content[idx:].strip())
         return True
 
     async def execute_command(self, client, msg, content: str):
