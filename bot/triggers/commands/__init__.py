@@ -41,23 +41,28 @@ class Command(MessageTrigger):
     async def execute_command(self, client, msg, content: str):
         raise NotImplementedError("'execute_command' not implemented for this command")
 
+    def __lt__(self, other):
+        return self.names[0] < other.names[0]
 
 from .ai import AI
 from .code import Code
 from .echo import Echo
+from .latex import Latex
 from .lmdtfy import Lmdtfy, Lmgtfy
 from .man import Man
 from .minecraft import Minecraft
 from .translate import Translate
 
-# Please keep in alphabetical order
+# Commands will auto alphabetize
 all_commands = [
     AI(),
     Code(),
     Echo(),
+    Latex(),
     Lmdtfy(),
     Lmgtfy(),
     Man(),
     Minecraft(),
     Translate(),
 ]
+all_commands.sort()
