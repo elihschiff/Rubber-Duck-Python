@@ -45,6 +45,7 @@ class Command(MessageTrigger):
 from .ai import AI
 from .code import Code
 from .echo import Echo
+from .minecraft import Minecraft
 
 # Please keep in alphabetical order
-all_commands = [AI(), Code(), Echo()]
+all_commands = [AI(), Code(), Echo(), Minecraft()]
