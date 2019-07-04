@@ -23,12 +23,13 @@ class Command(MessageTrigger):
         except:
             return idx
 
-    async def execute(self, msg) -> None:
+    async def execute(self, client, msg) -> bool:
         idx = self.is_valid(msg)
         if idx is None:
-            return None
+            return False
 
-        await self.execute_command(msg, msg.content[idx + 1 :])
+        await self.execute_command(client, msg, msg.content[idx + 1 :])
+        return True
 
-    async def execute_command(self, msg, content: str) -> None:
+    async def execute_command(self, client, msg, content: str):
         raise NotImplementedError("'execute_command' not implemented for this command")

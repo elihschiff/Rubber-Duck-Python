@@ -4,6 +4,8 @@ import json
 
 from .triggers import msg_triggers
 
+from .triggers.quack import quack
+
 
 class DuckClient(discord.Client):
     def __init__(
@@ -31,5 +33,10 @@ class DuckClient(discord.Client):
         if msg.author.bot:
             return
 
+        replied = False
         for trigger in msg_triggers:
-            await trigger.execute(msg)
+            if await trigger.execute(self, msg):
+                replied = True
+
+        if not replied:
+            await quack(self, msg)
