@@ -11,7 +11,7 @@ class Command(MessageTrigger):
         command = ""
         for name in self.names:
             for prefix in self.prefixes:
-                if msg.content.startswith(f"{prefix}{name} "):
+                if msg.content.startswith(f"{prefix}{name}"):
                     command = prefix+name;
                     break
             if command:
@@ -19,7 +19,6 @@ class Command(MessageTrigger):
 
         if not command:
             return None
-
         try:
             if self.is_valid_command(msg):
                 return len(command)
@@ -36,3 +35,10 @@ class Command(MessageTrigger):
 
     async def execute_command(self, client, msg, content: str):
         raise NotImplementedError("'execute_command' not implemented for this command")
+
+
+from .echo import Echo
+from .ai import AI
+
+# Please keep in alphabetical order
+all_commands = [AI(), Echo()]
