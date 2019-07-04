@@ -1,6 +1,5 @@
 from . import Command
 from .. import utils
-import time
 
 
 class Echo(Command):
