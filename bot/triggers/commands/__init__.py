@@ -36,5 +36,7 @@ class Command(MessageTrigger):
 
 
 from .echo import Echo
+from .ai import AI
 
-all_commands = [Echo()]
+# Please keep in alphabetical order
+all_commands = [AI(), Echo()]
