@@ -46,6 +46,7 @@ from .ai import AI
 from .code import Code
 from .echo import Echo
 from .minecraft import Minecraft
+from .lmdtfy import Lmdtfy, Lmgtfy
 
 # Please keep in alphabetical order
-all_commands = [AI(), Code(), Echo(), Minecraft()]
+all_commands = [AI(), Code(), Echo(), Lmdtfy(), Lmgtfy(), Minecraft()]
