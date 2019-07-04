@@ -1,0 +1,43 @@
+from . import Command
+from .. import utils
+import requests
+
+
+class Man(Command):
+    names = ["man"]
+    description = "Sends a link to a man page, if it exists"
+    needsContent = True
+
+    async def execute_command(self, client, msg, content):
+        args = content.split(" ")
+        prgm = args[0]
+        which_page = 0
+        try:
+            which_page = int(args[0])
+
+            if len(args) < 2:
+                prgm = ""
+            else:
+                prgm = args[1]
+        except:
+            pass
+
+        if which_page > 0:
+            url = f"https://linux.die.net/man/{which_page}/{prgm}"
+            r = requests.get(url)
+            if "<h1>Not Found</h1>" in r.text:
+                await utils.delay_send(
+                    msg.channel, f"Could not find man page for `{content}`"
+                )
+            else:
+                await utils.delay_send(msg.channel, url)
+            return
+
+        for page in range(0, 9):
+            url = f"https://linux.die.net/man/{page}/{prgm}"
+            r = requests.get(url)
+            if "<h1>Not Found</h1>" not in r.text:
+                await utils.delay_send(msg.channel, url)
+                return
+
+        await utils.delay_send(msg.channel, f"Could not find man page for `{content}`")

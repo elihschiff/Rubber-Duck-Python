@@ -14,9 +14,8 @@ Currently implemented features:
 * [ ] LaTeX rendering ("!tex")
 * [X] lmgtfy support ("!lmgtfy")
 * [X] lmdtfy support ("!lmdtfy")
-* [ ] Man page support ("man")
 * [X] Minecraft help message ("!mc")
-* [ ] Man page support ("!man")
+* [X] Man page support ("!man")
 * [X] QUACK
 * [ ] Remove a class ("!remove")
 * [X] Translate text ("!translate")
