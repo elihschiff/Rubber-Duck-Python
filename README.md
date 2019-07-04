@@ -3,7 +3,7 @@ This is a port of the RPI Academic Server's Rubber Duck bot to python.  The bot 
 Currently implemented features:
 * [X] Academic integrity ("!ai")
 * [ ] Add a class ("!add")
-* [ ] Automatic reactions (There is a hacky work around for custom emotes, needs work)
+* [ ] Automatic reactions
 * [ ] Classes output ("!classes")
 * [X] Command to view code ("!code")
 * [ ] Logging
