@@ -7,8 +7,8 @@ class Command(MessageTrigger):
     def is_valid(self, msg) -> int:
         idx = len(self.name)
         for prefix in self.prefixes:
-            if msg.content.startswith(f"{prefix}{self.name} "):
-                idx += len(prefix)
+            if msg.content.startswith(f"{prefix}{self.name}"):
+                idx += len(prefix) + 1
                 break
 
         if idx == len(self.name):
