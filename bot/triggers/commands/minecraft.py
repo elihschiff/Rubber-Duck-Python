@@ -14,6 +14,5 @@ class Minecraft(Command):
         description = "**IP: ** "+client.config["minecraft"]["ip"]+"\n**Status: **" + data["status"] +"\n**Players: **" + str(data["players"]["now"]) +"/"+str(data["players"]["max"])
         embed=discord.Embed(description=description, color=0x3e5c20)
         embed.set_author(name="⁠", icon_url="https://discordemoji.com/assets/emoji/grassblock.png")
-        embed.set_footer(text="Minecraft server is courtesy of @")
-        # print(client.get_server(client.config["default_server_id"]).get_member(client.config["minecraft"]["host_id"]).display_name)
+        embed.set_footer(text="Minecraft server is courtesy of @"+msg.channel.guild.get_member(int(client.config["minecraft"]["host_id"])).display_name)
         await msg.channel.send(embed=embed)
