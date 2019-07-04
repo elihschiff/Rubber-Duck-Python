@@ -11,8 +11,12 @@ class Command(MessageTrigger):
         command = ""
         for name in self.names:
             for prefix in self.prefixes:
-                if msg.content.startswith(f"{prefix}{name}"):
-                    command = prefix+name;
+                if (
+                    self.needsContent and msg.content.startswith(f"{prefix}{name} ")
+                ) or (
+                    not self.needsContent and msg.content.startswith(f"{prefix}{name}")
+                ):
+                    command = prefix + name
                     break
             if command:
                 break
@@ -20,9 +24,8 @@ class Command(MessageTrigger):
         if len(command) == 0:
             return None
 
-        if self.needsContent:
-            if len(msg.content[len(command):].strip()) == 0:
-                return None
+        if self.needsContent and len(msg.content[len(command) :].strip()) == 0:
+            return None
 
         try:
             if self.is_valid_command(msg):
