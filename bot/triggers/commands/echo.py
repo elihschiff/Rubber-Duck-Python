@@ -3,7 +3,7 @@ from .. import utils
 
 
 class Echo(Command):
-    name = "echo"
+    names = ["echo", "repeat"]
     description = "Echoes the given message"
 
     async def execute_command(self, client, msg, content):

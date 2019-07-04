@@ -5,23 +5,26 @@ class Command(MessageTrigger):
     prefixes = ["!"]
 
     def is_valid(self, msg) -> int:
-        idx = len(self.name)
-        for prefix in self.prefixes:
-            if msg.content.startswith(f"{prefix}{self.name} "):
-                idx += len(prefix)
-                break
-
-        if idx == len(self.name):
+        if msg.author.bot:
             return None
 
-        if msg.author.bot:
+        command = ""
+        for name in self.names:
+            for prefix in self.prefixes:
+                if msg.content.startswith(f"{prefix}{name} "):
+                    command = prefix+name;
+                    break
+            if command:
+                break
+
+        if not command:
             return None
 
         try:
             if self.is_valid_command(msg):
-                return idx
+                return len(command)
         except:
-            return idx
+            return len(command)
 
     async def execute(self, client, msg) -> bool:
         idx = self.is_valid(msg)
