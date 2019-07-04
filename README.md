@@ -10,7 +10,7 @@ Currently implemented features:
 * [X] Echo messages ("!echo")
 * [ ] Emoji mode ("!emoji", etc)
 * [ ] Class generation ("\gen_class")
-* [ ] Help ("!help")
+* [X] Help ("!help")
 * [ ] LaTeX rendering ("!tex")
 * [ ] lmgtfy support ("!lmgtfy")
 * [ ] lmdtfy support ("!lmdtfy")

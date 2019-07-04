@@ -3,6 +3,9 @@ class MessageTrigger:
         raise NotImplementedError("'execute' is not implemented for this trigger")
 
 
-from .commands.echo import Echo
+from .commands.help import Help
 
-msg_triggers = [Echo()]
+from .commands import all_commands
+
+msg_triggers = [Help()]
+msg_triggers.extend(all_commands)

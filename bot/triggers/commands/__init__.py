@@ -8,7 +8,7 @@ class Command(MessageTrigger):
         idx = len(self.name)
         for prefix in self.prefixes:
             if msg.content.startswith(f"{prefix}{self.name}"):
-                idx += len(prefix) + 1
+                idx += len(prefix)
                 break
 
         if idx == len(self.name):
@@ -33,3 +33,8 @@ class Command(MessageTrigger):
 
     async def execute_command(self, client, msg, content: str):
         raise NotImplementedError("'execute_command' not implemented for this command")
+
+
+from .echo import Echo
+
+all_commands = [Echo()]
