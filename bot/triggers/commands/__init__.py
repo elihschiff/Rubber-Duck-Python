@@ -1,5 +1,5 @@
 from .. import MessageTrigger
-
+import re
 
 class Command(MessageTrigger):
     prefixes = ["!"]
@@ -11,11 +11,7 @@ class Command(MessageTrigger):
         command = ""
         for name in self.names:
             for prefix in self.prefixes:
-                if (
-                    self.needsContent and msg.content.startswith(f"{prefix}{name} ")
-                ) or (
-                    not self.needsContent and msg.content.startswith(f"{prefix}{name}")
-                ):
+                if re.match(f"^{prefix}{name}\\b", msg.content.lower()):
                     command = prefix + name
                     break
             if command:
