@@ -1,6 +1,7 @@
 from .. import MessageTrigger
 import re
 
+
 class Command(MessageTrigger):
     prefixes = ["!"]
 
