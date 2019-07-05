@@ -1,12 +1,12 @@
 #!/bin/sh
 
-sleep 10
-
 rm -r config/
 git checkout -- config/
 
 git pull
 rename 's/\.example$//' config/*
+
+cp ~/bot_token .
 
 pip3 install -r requirements.txt
 
