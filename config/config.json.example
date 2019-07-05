@@ -4,5 +4,6 @@
 	"minecraft":{
 		"ip":"",
 		"host_id":
-	}
+	},
+	"welcome_channel_id":
 }

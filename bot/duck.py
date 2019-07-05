@@ -4,6 +4,7 @@ import json
 import subprocess
 
 from .triggers import msg_triggers
+from .triggers import new_member_triggers
 
 from .triggers.quack import quack
 
@@ -45,3 +46,7 @@ class DuckClient(discord.Client):
 
         if not replied:
             await quack(self, msg)
+
+    async def on_member_join(self, member):
+        for trigger in new_member_triggers:
+            await trigger.execute(self, member)
