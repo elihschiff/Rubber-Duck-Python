@@ -1,6 +1,7 @@
 import sys
 import discord
 import json
+import subprocess
 
 from .triggers import msg_triggers
 
@@ -27,6 +28,10 @@ class DuckClient(discord.Client):
             print(f"Error initializing duck: {err}", file=sys.stderr)
 
     async def on_ready(self):
+        if len(sys.argv) > 1:
+            args = ["kill"]
+            args.extend(sys.argv[1:])
+            subprocess.call(args)
         print(f"Connected as {self.user}!")
 
     async def on_message(self, msg):
