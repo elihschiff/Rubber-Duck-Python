@@ -10,4 +10,4 @@ rename 's/\.example$//' config/*
 
 pip3 install -r requirements.txt
 
-pidof python3 | python3 main.py
+pidof python3 | python3 main.py &
