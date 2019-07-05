@@ -3,6 +3,7 @@ image: python
 stages:
         - build
         - test
+        - deploy
 
 syntax-check:
         stage: build
@@ -14,3 +15,13 @@ style-check:
         script: 
                 - pip install black
                 - black --check .
+        allow_failure: true
+
+deploy-to-server:
+        stage: deploy
+        script:
+                - mkdir -p ~/.ssh
+                - echo "$SSH_HOST_VERIFICATION" | base64 -d > ~/.ssh/known_hosts
+                - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
+                - chmod -R 700 ~/.ssh
+                - BOT_TOKEN=$(echo "$BOT_TOKEN_ENCODED" | base64 -d) ssh gitlab@$CONTAINER_IP "cd rubber-duck && git pull && sudo pip3 install -r requirements.txt && rename .example '' config/*.example pidof python3 | BOT_TOKEN=$BOT_TOKEN python3 main.py &"
