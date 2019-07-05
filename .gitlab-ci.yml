@@ -24,4 +24,4 @@ deploy-to-server:
         - echo "$SSH_HOST_VERIFICATION" | base64 -d > ~/.ssh/known_hosts
         - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
         - chmod -R 700 ~/.ssh
-        - ssh gitlab@$CONTAINER_IP "wget https://gitlab.com/rpi-academic-discord/slithering-duck/-/archive/master/slithering-duck-master.tar.gz && tar xf slithering-duck-master.tar.gz && cd slithering-duck-master && ./deploy.sh"
+        - ssh gitlab@$CONTAINER_IP "nohup sh -c 'cd rubber-duck && ./deploy.sh' &"

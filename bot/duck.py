@@ -30,7 +30,7 @@ class DuckClient(discord.Client):
 
     async def on_ready(self):
         if len(sys.argv) > 1:
-            args = ["kill"]
+            args = ["kill", "-9"]
             args.extend(sys.argv[1:])
             subprocess.call(args)
         print(f"Connected as {self.user}!")
