@@ -44,6 +44,7 @@ class Command(MessageTrigger):
     def __lt__(self, other):
         return self.names[0] < other.names[0]
 
+
 from .ai import AI
 from .code import Code
 from .echo import Echo
