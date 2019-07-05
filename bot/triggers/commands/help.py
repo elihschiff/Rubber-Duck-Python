@@ -9,6 +9,7 @@ class Help(Command):
     needsContent = False
 
     async def execute_command(self, client, msg, content):
+        await msg.channel.send("happy to help!")
         response = discord.Embed()
         commands_str = ""
         for command in all_commands:
