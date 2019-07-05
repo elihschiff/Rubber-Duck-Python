@@ -12,6 +12,6 @@ class Help(Command):
         response = discord.Embed()
         commands_str = ""
         for command in all_commands:
-            commands_str += f"{command.names[0]}: {command.description}\n"
+            commands_str += f"**{command.names[0]}:** {command.description}\n"
         response.add_field(name="General Commands", value=commands_str, inline=True)
         await msg.channel.send(embed=response)
