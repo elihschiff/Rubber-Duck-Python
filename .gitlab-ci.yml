@@ -3,6 +3,7 @@ image: python
 stages:
         - build
         - test
+        - deploy
 
 syntax-check:
         stage: build
@@ -14,3 +15,12 @@ style-check:
         script: 
                 - pip install black
                 - black --check .
+        allow_failure: true
+
+deploy-to-server:
+        stage: deploy
+        script:
+                - mkdir -p ~/.ssh
+                - chmod 700 ~/.ssh
+                - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
+                - ssh gitlab@$CONTAINER_IP "cd rubber-duck && git pull && sudo pip install -r requirements.txt && rename .example "" config/*.example pidof python | python main.py"
