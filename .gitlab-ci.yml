@@ -17,11 +17,11 @@ style-check:
                 - black --check .
         allow_failure: true
 
-deploy-to-server:
-        stage: deploy
-        script:
-                - mkdir -p ~/.ssh
-                - echo "$SSH_HOST_VERIFICATION" | base64 -d > ~/.ssh/known_hosts
-                - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
-                - chmod -R 700 ~/.ssh
-                - ssh gitlab@$CONTAINER_IP "source ~/.bashrc && cd rubber-duck && rm -r config/ && git checkout -- config/ && git pull && pip3 install -r requirements.txt && rename 's/\.example$//' config/* && pidof python3 | xargs | python3 main.py &"
+        #deploy-to-server:
+        #stage: deploy
+        #script:
+        #- mkdir -p ~/.ssh
+        #- echo "$SSH_HOST_VERIFICATION" | base64 -d > ~/.ssh/known_hosts
+        #- echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
+        #- chmod -R 700 ~/.ssh
+        #- ssh gitlab@$CONTAINER_IP "source ~/.bashrc && cd rubber-duck && rm -r config/ && git checkout -- config/ && git pull && pip3 install -r requirements.txt && rename 's/\.example$//' config/* && pidof python3 | xargs | python3 main.py &"
