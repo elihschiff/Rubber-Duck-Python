@@ -23,6 +23,5 @@ deploy-to-server:
                 - mkdir -p ~/.ssh
                 - echo "$SSH_HOST_VERIFICATION" | base64 -d > ~/.ssh/known_hosts
                 - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
-                - echo "SendEnv BOT_TOKEN" > ~/.ssh/config
                 - chmod -R 700 ~/.ssh
-                - BOT_TOKEN=$(echo "BOT_TOKEN_B64" | base64 -d) ssh gitlab@$CONTAINER_IP "source ~/.bashrc && cd rubber-duck && rm -r config/ && git checkout -- config/ && git pull && pip3 install -r requirements.txt && rename 's/\.example$//' config/* && echo \"$BOT_TOKEN\" > test" #pidof python3 | xargs | BOT_TOKEN=$BOT_TOKEN python3 main.py &"
+                - ssh gitlab@$CONTAINER_IP "source ~/.bashrc && cd rubber-duck && rm -r config/ && git checkout -- config/ && git pull && pip3 install -r requirements.txt && rename 's/\.example$//' config/* && pidof python3 | xargs | python3 main.py &"
