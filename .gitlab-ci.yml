@@ -3,7 +3,7 @@ image: python
 stages:
         - build
         - test
-        - deploy
+        # - deploy
 
 syntax-check:
         stage: build
@@ -12,16 +12,16 @@ syntax-check:
 
 style-check:
         stage: test
-        script: 
+        script:
                 - pip install black
                 - black --check .
         allow_failure: true
 
-deploy-to-server:
-        stage: deploy
-        script:
-        - mkdir -p ~/.ssh
-        - echo "$SSH_HOST_VERIFICATION" | base64 -d > ~/.ssh/known_hosts
-        - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
-        - chmod -R 700 ~/.ssh
-        - ssh gitlab@$CONTAINER_IP "nohup sh -c 'cd rubber-duck && ./deploy.sh'"
+# deploy-to-server:
+#         stage: deploy
+#         script:
+#         - mkdir -p ~/.ssh
+#         - echo "$SSH_HOST_VERIFICATION" | base64 -d > ~/.ssh/known_hosts
+#         - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
+#         - chmod -R 700 ~/.ssh
+#         - ssh gitlab@$CONTAINER_IP "nohup sh -c 'cd rubber-duck && ./deploy.sh'"
