@@ -8,4 +8,4 @@ class Test(Command):
     needsContent = True
 
     async def execute_command(self, client, msg, content):
-        await utils.delay_send(msg.channel, "pls9")
+        await utils.delay_send(msg.channel, "pls10")
