@@ -13,4 +13,5 @@ style-check:
 test-suite:
         stage: test
         script:
+                - pip install -r requirements.txt
                 - python -m unittest bot.tests
