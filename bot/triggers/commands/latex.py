@@ -23,10 +23,10 @@ class Latex(Command):
         name = re.search(r"latex_(.*)\.png", data.text).group()
         if name:
             url = f"http://latex2png.com/output//{name}"
-            tmpLocatin = f"/tmp/{name}"
-            urllib.request.urlretrieve(url, tmpLocatin)
+            tmpLocation = f"/tmp/{name}"
+            urllib.request.urlretrieve(url, tmpLocation)
 
-            img = Image.open(tmpLocatin)
+            img = Image.open(tmpLocation)
             borderSizeX, borderSizeY = img.size
             borderSizeX = math.ceil(borderSizeX / 20)
             borderSizeY = 0
@@ -35,7 +35,7 @@ class Latex(Command):
                 border=(borderSizeX, borderSizeY, borderSizeX, borderSizeY),
                 fill="#00000000",
             )
-            img_with_border.save(tmpLocatin)
+            img_with_border.save(tmpLocation)
 
-            await msg.channel.send(file=discord.File(tmpLocatin))
-            os.remove(tmpLocatin)
+            await msg.channel.send(file=discord.File(tmpLocation))
+            os.remove(tmpLocation)
