@@ -13,6 +13,7 @@ test-suite:
 test-coverage:
         stage: test
         script:
+                - rename "s/\.example$//" config/*
                 - pip install coverage
                 - pip install -r requirements.txt
                 - coverage run --omit=bot/duck.py,bot/tests/triggers/__init__.py -m unittest bot.tests
