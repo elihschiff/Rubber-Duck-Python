@@ -4,7 +4,7 @@ Currently implemented features:
 * [X] Academic integrity ("!ai")
 * [ ] Add a class ("!add")
 * [ ] Automatic reactions
-* [ ] Classes output ("!classes")
+* [X] Classes output ("!classes")
 * [X] Command to view code ("!code")
 * [ ] Logging
 * [X] Echo messages ("!echo")
@@ -20,4 +20,4 @@ Currently implemented features:
 * [ ] Remove a class ("!remove")
 * [X] Translate text ("!translate")
 * [ ] Welcome message
-* [ ] YACS search ("!yacs")
+* [ ] YACS search ("!yacs") (TBH this is useless how it works at the moment we dont really need this)
