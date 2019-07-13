@@ -16,9 +16,12 @@ class Man(Command):
             which_page = int(args[0])
 
             if len(args) < 2:
-                prgm = ""
-            else:
-                prgm = args[1]
+                await utils.delay_send(
+                    msg.channel, f"Could not find man page for `{content}`"
+                )
+                return
+
+            prgm = args[1]
         except:
             pass
 
