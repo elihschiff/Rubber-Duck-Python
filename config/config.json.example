@@ -3,7 +3,7 @@
 	"default_server_id":"",
 	"minecraft":{
 		"ip":"",
-		"host_id": ""
+		"host_id": "0"
 	},
 	"welcome_channel_id": ""
 }

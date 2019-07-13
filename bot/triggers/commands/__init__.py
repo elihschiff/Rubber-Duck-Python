@@ -6,9 +6,6 @@ class Command(MessageTrigger):
     prefixes = ["!"]
 
     def is_valid(self, msg) -> int:
-        if msg.author.bot:
-            return None
-
         command = ""
         for name in self.names:
             for prefix in self.prefixes:
@@ -24,11 +21,7 @@ class Command(MessageTrigger):
         if self.needsContent and len(msg.content[len(command) :].strip()) == 0:
             return None
 
-        try:
-            if self.is_valid_command(msg):
-                return len(command)
-        except:
-            return len(command)
+        return len(command)
 
     async def execute(self, client, msg) -> bool:
         idx = self.is_valid(msg)
@@ -55,8 +48,6 @@ from .minecraft import Minecraft
 from .translate import Translate
 from .classes import Classes
 
-from .test import Test
-
 # Commands will auto alphabetize
 all_commands = [
     AI(),
@@ -69,6 +60,5 @@ all_commands = [
     Man(),
     Minecraft(),
     Translate(),
-    Test(),
 ]
 all_commands.sort()

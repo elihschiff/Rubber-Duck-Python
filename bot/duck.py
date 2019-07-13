@@ -18,15 +18,12 @@ class DuckClient(discord.Client):
     ):
         super().__init__()
 
-        try:
-            with open(config_filename, "r") as config_file:
-                self.config = json.load(config_file)
-            with open(messages_filename, "r") as messages_file:
-                self.messages = json.load(messages_file)
-            with open(quacks_filename, "r") as quacks_file:
-                self.quacks = quacks_file.read().split("\n%\n")
-        except (OSError, IOError) as err:
-            print(f"Error initializing duck: {err}", file=sys.stderr)
+        with open(config_filename, "r") as config_file:
+            self.config = json.load(config_file)
+        with open(messages_filename, "r") as messages_file:
+            self.messages = json.load(messages_file)
+        with open(quacks_filename, "r") as quacks_file:
+            self.quacks = quacks_file.read().split("\n%\n")
 
     async def on_ready(self):
         if len(sys.argv) > 1:
