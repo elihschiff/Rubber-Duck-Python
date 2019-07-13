@@ -3,15 +3,24 @@ image: python
 stages:
         - test
 
+test-suite:
+        stage: test
+        script:
+                - rename "s/\.example$//" config/*
+                - pip install -r requirements.txt
+                - python -m unittest bot.tests -v
+
+test-coverage:
+        stage: test
+        script:
+                - pip install coverage discord
+                - coverage run --omit=bot/duck.py,bot/tests/triggers/__init__.py -m unittest bot.tests
+                - coverage report -m --fail-under 100
+        allow_failure: true
+
 style-check:
         stage: test
         script:
                 - pip install black
                 - black --check .
         allow_failure: true
-
-test-suite:
-        stage: test
-        script:
-                - pip install -r requirements.txt
-                - python -m unittest bot.tests

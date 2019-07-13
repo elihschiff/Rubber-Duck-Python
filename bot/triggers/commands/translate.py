@@ -22,7 +22,5 @@ class Translate(Command):
                     this_message = True
 
         translation = self.translator.translate(content)
-        response = (
-            f'"{content}" translates from {translation.src} to: `{translation.text}`'
-        )
+        response = f'"{content}" translates from {translation.src.upper()} to: `{translation.text}`'
         await utils.delay_send(msg.channel, response, 1)

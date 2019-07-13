@@ -1,8 +1,8 @@
 from . import utils
-from . import NewMemberTriggers
+from . import NewMemberTrigger
 
 
-class Welcome(NewMemberTriggers):
+class Welcome(NewMemberTrigger):
     async def execute(self, client, member):
         welcomeChannel = member.guild.get_channel(client.config["welcome_channel_id"])
         if welcomeChannel:

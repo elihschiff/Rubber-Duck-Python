@@ -18,9 +18,9 @@ class Minecraft(Command):
         description = (
             "**IP: ** "
             + client.config["minecraft"]["ip"]
-            + "\n**Status: **"
+            + "\n**Status: ** "
             + data["status"]
-            + "\n**Players: **"
+            + "\n**Players: ** "
             + str(data["players"]["now"])
             + "/"
             + str(data["players"]["max"])

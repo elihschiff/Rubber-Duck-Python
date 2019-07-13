@@ -10,7 +10,7 @@ msg_triggers = [Help()]
 msg_triggers.extend(all_commands)
 
 
-class NewMemberTriggers:
+class NewMemberTrigger:
     async def execute(self, client, member) -> bool:
         raise NotImplementedError("'execute' is not implemented for this trigger")
 
