@@ -53,12 +53,14 @@ from .lmdtfy import Lmdtfy, Lmgtfy
 from .man import Man
 from .minecraft import Minecraft
 from .translate import Translate
+from .classes import Classes
 
 from .test import Test
 
 # Commands will auto alphabetize
 all_commands = [
     AI(),
+    Classes(),
     Code(),
     Echo(),
     Latex(),
