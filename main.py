@@ -1,7 +1,10 @@
 from bot.duck import *
 import os
+import os.path
+from os import path
 import sqlite3
 import json
+
 
 connection = sqlite3.connect("classes.db")
 c = connection.cursor()
@@ -26,43 +29,45 @@ c.execute(
     );"""
 )
 
-with open("config/new_courses.json", "r+") as coursesFile:
-    courses = json.load(coursesFile)
-    if "is_json_inserted" not in courses:
-        courses["is_json_inserted"] = False
+if path.exists("config/new_courses.json"):
+    print("Updating courses in database")
+    with open("config/new_courses.json", "r+") as coursesFile:
+        courses = json.load(coursesFile)
+        if "is_json_inserted" not in courses:
+            courses["is_json_inserted"] = False
 
-    if courses["is_json_inserted"] != True:
-        courses.pop("is_json_inserted")
-        # print(courses)
-        for course in courses:
-            # Discord limits the length of a channel to 100 characters, therefore we keep the course name as the first 100 chars in the database so we dont have to worry about that later
-            courseNameDiscord = course[:100]
+        if courses["is_json_inserted"] != True:
+            courses.pop("is_json_inserted")
+            # print(courses)
+            for course in courses:
+                # Discord limits the length of a channel to 100 characters, therefore we keep the course name as the first 100 chars in the database so we dont have to worry about that later
+                courseNameDiscord = course[:100]
 
-            # print(course)
+                # print(course)
 
-            c.execute(  # for a specific class gets rid of the old data so we can insert the new data from the json
-                """DELETE FROM classes WHERE name = :name
-                """,
-                {"name": courseNameDiscord},
-            )
-            c.execute(  # inserts the new data for a class
-                """REPLACE INTO classes (name, currently_active, channel_id, course_codes, departments, identifiers) VALUES
-                (:name, :currently_active, :channel_id, :course_codes, :departments, :identifiers );""",
-                {
-                    "name": courseNameDiscord,
-                    "currently_active": courses[course]["currently_active"],
-                    "channel_id": courses[course]["channel_id"],
-                    "course_codes": str(courses[course]["course_codes"]),
-                    "departments": str(courses[course]["departments"]),
-                    "identifiers": str(courses[course]["identifiers"]),
-                },
-            )
+                c.execute(  # for a specific class gets rid of the old data so we can insert the new data from the json
+                    """DELETE FROM classes WHERE name = :name
+                    """,
+                    {"name": courseNameDiscord},
+                )
+                c.execute(  # inserts the new data for a class
+                    """REPLACE INTO classes (name, currently_active, channel_id, course_codes, departments, identifiers) VALUES
+                    (:name, :currently_active, :channel_id, :course_codes, :departments, :identifiers );""",
+                    {
+                        "name": courseNameDiscord,
+                        "currently_active": courses[course]["currently_active"],
+                        "channel_id": courses[course]["channel_id"],
+                        "course_codes": str(courses[course]["course_codes"]),
+                        "departments": str(courses[course]["departments"]),
+                        "identifiers": str(courses[course]["identifiers"]),
+                    },
+                )
 
-        courses["is_json_inserted"] = True
-        coursesFile.seek(0)
-        coursesFile.write(json.dumps(courses))
-        coursesFile.truncate()
-        connection.commit()
+            courses["is_json_inserted"] = True
+            coursesFile.seek(0)
+            coursesFile.write(json.dumps(courses))
+            coursesFile.truncate()
+            connection.commit()
 
 
 c.execute("SELECT * FROM classes")

@@ -38,6 +38,7 @@ class Command(MessageTrigger):
         return self.names[0] < other.names[0]
 
 
+from .add import Add
 from .ai import AI
 from .code import Code
 from .echo import Echo
@@ -50,6 +51,7 @@ from .classes import Classes
 
 # Commands will auto alphabetize
 all_commands = [
+    Add(),
     AI(),
     Classes(),
     Code(),

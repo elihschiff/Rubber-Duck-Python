@@ -31,6 +31,8 @@ class Classes(Command):
         )
         records = self.c.fetchall()
         for i in records:
+            if i[2] != 1:
+                continue
             codes = i[4][2 : len(i[4]) - 2]
             codes = codes.replace("', '", " ")
             class_list += "**" + i[1] + "** "
