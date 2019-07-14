@@ -5,24 +5,31 @@ stages:
 
 test-suite:
         stage: test
-        script:
+        before_script:
+                - apt update
+                - apt install rename
                 - rename "s/\.example$//" config/*
                 - pip install -r requirements.txt
+        script:
                 - python -m unittest bot.tests -v
 
 test-coverage:
         stage: test
-        script:
+        before_script:
+                - apt update
+                - apt install rename
                 - rename "s/\.example$//" config/*
-                - pip install coverage
                 - pip install -r requirements.txt
+                - pip install coverage
+        script:
                 - coverage run -m unittest bot.tests
                 - coverage report -m --fail-under 100
         allow_failure: true
 
 style-check:
         stage: test
-        script:
+        before_script:
                 - pip install black
+        script:
                 - black --check .
         allow_failure: true
