@@ -8,4 +8,6 @@ class AI(Command):
     needsContent = False
 
     async def execute_command(self, client, msg, content):
-        await utils.delay_send(msg.channel, client.messages["academic_integrity"], 0)
+        await utils.delay_send(
+            msg.channel, client.messages["academic_integrity"], 0
+        )
