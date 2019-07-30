@@ -15,11 +15,19 @@ class Latex(Command):
     needsContent = True
 
     async def execute_command(self, client, msg, content):
+        print("latex machine broke")
+        """
         data = requests.post(
             url="http://latex2png.com/",
-            data={"latex": content, "res": 600, "color": "FFFFFF", "x": 62, "y": 28},
+            data={
+                "latex": content,
+                "res": 600,
+                "color": "FFFFFF",
+                "x": 62,
+                "y": 28,
+            },
         )
-        # print(data.text)
+        print(data.text)
         name = re.search(r"latex_(.*)\.png", data.text).group()
         if name:
             url = f"http://latex2png.com/output//{name}"
@@ -39,3 +47,4 @@ class Latex(Command):
 
             await msg.channel.send(file=discord.File(tmpLocation))
             os.remove(tmpLocation)
+        """

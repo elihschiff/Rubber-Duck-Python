@@ -51,7 +51,8 @@ from .ai import AI
 from .code import Code
 from .echo import Echo
 from .emoji_mode import EmojiMode
-from .latex import Latex
+
+# from .latex import Latex # latex machine broke
 from .lmdtfy import Lmdtfy, Lmgtfy
 from .man import Man
 from .minecraft import Minecraft
@@ -66,7 +67,7 @@ all_commands = [
     Code(),
     Echo(),
     EmojiMode(),
-    Latex(),
+    # Latex(), # latex machine broke
     Lmdtfy(),
     Lmgtfy(),
     Man(),
