@@ -58,6 +58,7 @@ from .man import Man
 from .minecraft import Minecraft
 from .translate import Translate
 from .classes import Classes
+from .wikipedia import Wikipedia
 
 # Commands will auto alphabetize
 all_commands = [
@@ -73,5 +74,6 @@ all_commands = [
     Man(),
     Minecraft(),
     Translate(),
+    Wikipedia(),
 ]
 all_commands.sort()
