@@ -23,6 +23,11 @@ class MockTyping:
         return
 
 
+class MockUserPermissions:
+    def __init__(self):
+        self.administrator = False
+
+
 class MockUser:
     def __init__(self):
         self.bot = False
@@ -30,9 +35,12 @@ class MockUser:
         self.display_name = ""
         self.was_mentioned = False
         self.guild = None
+        self.guild_permissions = MockUserPermissions()
 
     def mentioned_in(self, msg):
-        return self.was_mentioned  # can be changed if a more robust solution is needed
+        return (
+            self.was_mentioned
+        )  # can be changed if a more robust solution is needed
 
     @property
     def mention(self):

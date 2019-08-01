@@ -1,5 +1,6 @@
 discord.py>=1.2.3
-requests>=2.22.0
+emoji
+fuzzywuzzy
 googletrans>=2.4.0
 Pillow>=6.1.0
-fuzzywuzzy
+requests>=2.22.0
