@@ -44,4 +44,7 @@ async def generate_react_menu(
 
 
 def user_is_admin(user) -> bool:
-    return user.guild_permissions.administrator
+    try:
+        return user.guild_permissions.administrator
+    except:
+        return False

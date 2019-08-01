@@ -52,6 +52,12 @@ def valid_emoji(content) -> bool:
 # deletes message if the message is invalid
 # returns true if the message was deleted
 async def invalid_emoji_message(client, msg) -> bool:
+    if (
+        msg.channel.type is ChannelType.private
+        or msg.channel.type is ChannelType.group
+    ):
+        return False
+
     if utils.user_is_admin(msg.author):
         return False
 
