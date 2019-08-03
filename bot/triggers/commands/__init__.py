@@ -55,6 +55,7 @@ from .emoji_mode import EmojiMode
 # from .latex import Latex # latex machine broke
 from .lmdtfy import Lmdtfy, Lmgtfy
 from .man import Man
+from .math import Math
 from .minecraft import Minecraft
 from .translate import Translate
 from .classes import Classes
@@ -72,6 +73,7 @@ all_commands = [
     Lmdtfy(),
     Lmgtfy(),
     Man(),
+    Math(),
     Minecraft(),
     Translate(),
     Wikipedia(),
