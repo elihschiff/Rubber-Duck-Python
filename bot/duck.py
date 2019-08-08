@@ -5,6 +5,7 @@ import subprocess
 
 from .triggers import msg_triggers
 from .triggers import new_member_triggers
+from .triggers import reaction_triggers
 
 from .triggers.quack import quack
 
@@ -47,3 +48,10 @@ class DuckClient(discord.Client):
     async def on_member_join(self, member):
         for trigger in new_member_triggers:
             await trigger.execute(self, member)
+
+    # async def on_raw_reaction_add(self, payload):
+    #     discord.TextChannel(id=payload.channel_id).get_message(payload.message_id)
+
+    async def on_reaction_add(self, reaction, usr):
+        for trigger in reaction_triggers:
+            await trigger.execute(self, reaction, usr)

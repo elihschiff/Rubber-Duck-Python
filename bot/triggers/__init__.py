@@ -18,3 +18,13 @@ class NewMemberTrigger:
 from .welcome import Welcome
 
 new_member_triggers = [Welcome()]
+
+
+class ReactionTrigger:
+    async def execute(self, client, reaction) -> bool:
+        raise NotImplementedError("'execute' is not implemented for this trigger")
+
+
+from .commands.addMenuReact import AddMenuReact
+
+reaction_triggers = [AddMenuReact()]
