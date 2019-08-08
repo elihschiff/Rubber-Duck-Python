@@ -8,6 +8,7 @@ from .triggers import new_member_triggers
 from .triggers import reaction_triggers
 
 from .triggers.quack import quack
+from .triggers.emoji_mode import invalid_emoji_message
 
 
 class DuckClient(discord.Client):
@@ -18,6 +19,10 @@ class DuckClient(discord.Client):
         quacks_filename="config/quacks.txt",
     ):
         super().__init__()
+
+        self.config_filename = (
+            config_filename
+        )  # TODO: remove this once emoji mode uses the database
 
         with open(config_filename, "r") as config_file:
             self.config = json.load(config_file)
@@ -35,6 +40,9 @@ class DuckClient(discord.Client):
 
     async def on_message(self, msg):
         if msg.author.bot:
+            return
+
+        if await invalid_emoji_message(self, msg):
             return
 
         replied = False

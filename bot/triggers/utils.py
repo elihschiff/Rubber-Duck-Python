@@ -4,7 +4,7 @@ import discord
 
 
 async def delay_send(channel, msg, delay_factor=1.0, embed=None):
-    delay = 0.5 + 0.003 * len(msg) * delay_factor
+    delay = (0.5 + 0.003 * len(msg)) * delay_factor
     # print(delay)
     delay = max(2, delay)
 
@@ -41,3 +41,10 @@ async def generate_react_menu(
     for i in range(min(max_length, len(option_list))):
         await sentMsg.add_reaction(emojiNumbers[i])
     await sentMsg.add_reaction(noMatchingResultsEmote)
+
+
+def user_is_admin(user) -> bool:
+    try:
+        return user.guild_permissions.administrator
+    except:
+        return False

@@ -5,7 +5,7 @@ import re
 class Command(MessageTrigger):
     prefixes = ["!"]
 
-    def is_valid(self, msg) -> int:
+    async def is_valid(self, msg) -> int:
         command = ""
         for name in self.names:
             for prefix in self.prefixes:
@@ -21,10 +21,16 @@ class Command(MessageTrigger):
         if self.needsContent and len(msg.content[len(command) :].strip()) == 0:
             return None
 
+        try:
+            if not await self.valid_command(msg):
+                return None
+        except:
+            pass
+
         return len(command)
 
     async def execute(self, client, msg) -> bool:
-        idx = self.is_valid(msg)
+        idx = await self.is_valid(msg)
         if idx is None:
             return False
 
@@ -32,7 +38,9 @@ class Command(MessageTrigger):
         return True
 
     async def execute_command(self, client, msg, content: str):
-        raise NotImplementedError("'execute_command' not implemented for this command")
+        raise NotImplementedError(
+            "'execute_command' not implemented for this command"
+        )
 
     def __lt__(self, other):
         return self.names[0] < other.names[0]
@@ -42,7 +50,9 @@ from .add import Add
 from .ai import AI
 from .code import Code
 from .echo import Echo
-from .latex import Latex
+from .emoji_mode import EmojiMode
+
+# from .latex import Latex # latex machine broke
 from .lmdtfy import Lmdtfy, Lmgtfy
 from .man import Man
 from .minecraft import Minecraft
@@ -56,7 +66,8 @@ all_commands = [
     Classes(),
     Code(),
     Echo(),
-    Latex(),
+    EmojiMode(),
+    # Latex(), # latex machine broke
     Lmdtfy(),
     Lmgtfy(),
     Man(),

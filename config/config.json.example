@@ -5,5 +5,7 @@
 		"ip":"",
 		"host_id": "0"
 	},
-	"welcome_channel_id": ""
+	"welcome_channel_id": "",
+	"EMOJI_CHANNELS": [],
+	"EMOJI_USERS": []
 }
