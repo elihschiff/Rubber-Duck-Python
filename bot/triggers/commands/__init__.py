@@ -55,9 +55,11 @@ from .emoji_mode import EmojiMode
 # from .latex import Latex # latex machine broke
 from .lmdtfy import Lmdtfy, Lmgtfy
 from .man import Man
+from .math import Math
 from .minecraft import Minecraft
 from .translate import Translate
 from .classes import Classes
+from .wikipedia import Wikipedia
 
 # Commands will auto alphabetize
 all_commands = [
@@ -71,7 +73,9 @@ all_commands = [
     Lmdtfy(),
     Lmgtfy(),
     Man(),
+    Math(),
     Minecraft(),
     Translate(),
+    Wikipedia(),
 ]
 all_commands.sort()
