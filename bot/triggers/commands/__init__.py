@@ -1,4 +1,4 @@
-from .. import MessageTrigger
+from ..message_trigger import MessageTrigger
 import re
 
 
@@ -29,7 +29,7 @@ class Command(MessageTrigger):
 
         return len(command)
 
-    async def execute(self, client, msg) -> bool:
+    async def execute_message(self, client, msg) -> bool:
         idx = await self.is_valid(msg)
         if idx is None:
             return False
@@ -46,7 +46,6 @@ class Command(MessageTrigger):
         return self.names[0] < other.names[0]
 
 
-from .add import Add
 from .ai import AI
 from .class_management import AddClass
 from .code import Code

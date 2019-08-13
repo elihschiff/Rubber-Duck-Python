@@ -3,8 +3,7 @@ import discord
 import json
 import subprocess
 
-from .triggers import msg_triggers
-from .triggers import new_member_triggers
+from .triggers import msg_triggers, new_member_triggers, reaction_triggers
 
 from .triggers.quack import quack
 from .triggers.emoji_mode import invalid_emoji_message
@@ -57,7 +56,7 @@ class DuckClient(discord.Client):
 
         replied = False
         for trigger in msg_triggers:
-            if await trigger.execute(self, msg):
+            if await trigger.execute_message(self, msg):
                 replied = True
 
         if not replied:
@@ -65,4 +64,8 @@ class DuckClient(discord.Client):
 
     async def on_member_join(self, member):
         for trigger in new_member_triggers:
-            await trigger.execute(self, member)
+            await trigger.execute_welcome(self, member)
+
+    async def on_reaction_add(self, reaction, user):
+        for trigger in reaction_triggers:
+            await trigger.execute_reaction(self, reaction, user)
