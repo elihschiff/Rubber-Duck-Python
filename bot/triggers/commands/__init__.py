@@ -48,33 +48,34 @@ class Command(MessageTrigger):
 
 from .add import Add
 from .ai import AI
+from .class_management import AddClass
 from .code import Code
 from .echo import Echo
 from .emoji_mode import EmojiMode
 
 # from .latex import Latex # latex machine broke
+from .list_classes import ListClasses
 from .lmdtfy import Lmdtfy, Lmgtfy
 from .man import Man
 from .math import Math
 from .minecraft import Minecraft
 from .translate import Translate
-from .classes import Classes
 from .wikipedia import Wikipedia
 
 # Commands will auto alphabetize
 all_commands = [
-    Add(),
+    AddClass(),
     AI(),
-    Classes(),
     Code(),
     Echo(),
     EmojiMode(),
     # Latex(), # latex machine broke
+    ListClasses(),
     Lmdtfy(),
     Lmgtfy(),
     Man(),
     Math(),
-    Minecraft(),
+    # Minecraft(),
     Translate(),
     Wikipedia(),
 ]

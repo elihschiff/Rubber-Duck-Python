@@ -8,7 +8,7 @@ import json
 import ast
 
 
-class Classes(Command):
+class ListClasses(Command):
     names = ["classes", "list", "class"]
     description = "Lists all the classes"
     needsContent = True
