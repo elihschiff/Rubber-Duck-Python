@@ -47,7 +47,7 @@ class Command(MessageTrigger):
 
 
 from .ai import AI
-from .class_management import AddClass
+from .class_management import AddClass, RemoveClass
 from .code import Code
 from .echo import Echo
 from .emoji_mode import EmojiMode
@@ -75,6 +75,7 @@ all_commands = [
     Man(),
     Math(),
     # Minecraft(),
+    RemoveClass(),
     Translate(),
     Wikipedia(),
 ]

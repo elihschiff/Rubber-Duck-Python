@@ -53,7 +53,7 @@ def fuzzy_search(c, query, max_results):
 
 
 class AddClass(Command, ReactionTrigger):
-    names = ["add", "search"]
+    names = ["add", "join"]
     description = "Adds you to class specific channels"
     needsContent = True
 
@@ -102,6 +102,7 @@ class AddClass(Command, ReactionTrigger):
         course_name = msg.content[start_idx:end_idx].strip()
         self.c.execute(f"SELECT * FROM classes WHERE name = '{course_name}'")
         course = self.c.fetchone()
+        print(course)
         channel_id = int(course[3])
 
         channel = None
@@ -160,4 +161,69 @@ class AddClass(Command, ReactionTrigger):
         await utils.delay_send(
             msg.channel,
             client.messages["class_add_confirmation"].format(course_name),
+        )
+
+
+class RemoveClass(Command, ReactionTrigger):
+    names = ["remove", "leave"]
+    description = "Removes you from class specific channels"
+    needsContent = True
+
+    def __init__(self):
+        connection = sqlite3.connect("classes.db")
+        self.c = connection.cursor()
+
+    async def execute_command(self, client, msg, content):
+        options = fuzzy_search(self.c, content, 5)
+
+        await utils.generate_react_menu(
+            msg,
+            msg.author.id,
+            client.messages["remove_class_prompt"].format(content),
+            5,
+            options,
+            "No results match",
+        )
+
+    async def execute_reaction(self, client, reaction, user):
+        if user.bot:
+            return
+
+        msg = reaction.message
+        if msg.author != client.user:
+            return
+
+        if user not in msg.mentions:
+            return
+
+        if (
+            reaction.emoji not in utils.emoji_numbers
+            and reaction.emoji != utils.no_matching_results_emote
+        ):
+            return
+
+        if " remove " not in msg.content:
+            return
+
+        line_start_idx = msg.content.index(reaction.emoji)
+        start_idx = msg.content.index(":", line_start_idx) + 1
+        end_idx = msg.content.index("\n", line_start_idx)
+
+        await msg.clear_reactions()
+
+        course_name = msg.content[start_idx:end_idx].strip()
+        self.c.execute(f"SELECT * FROM classes WHERE name = '{course_name}'")
+        print(self.c.fetchone())
+        return
+        channel_id = int(self.c.fetchone()[3])
+
+        print(channel_id)
+
+        if channel_id != 0:
+            channel = client.get_channel(channel_id)
+
+            await channel.set_permissions(user, overwrite=None)
+
+        await msg.channel.send(
+            client.messages["class_remove_confirmation"].format(course_name)
         )

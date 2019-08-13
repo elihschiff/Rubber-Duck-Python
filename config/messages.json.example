@@ -14,5 +14,11 @@
 	"invalid_class_list_format": "This command must be of the form `!classes XXXX`, where `XXXX` is the department you're searching for.",
 	"dept_not_found": "I am sorry I could not find a class from the department `{}`.  For a list of the 4 letter department codes, check out <https://rpi.yacs.io/>.",
 	"class_list_prelude": "Classes for {}:",
-	"add_class_prompt": ", your search for **{}** retrieved these results.\nClick the corresponding reaction to add that class:"
+
+	"add_class_prompt": ", your search for **{}** retrieved these results.\nClick the corresponding reaction to add that class:",
+	"class_add_confirmation": "You have been added to {}",
+	"err_too_many_channels": "This server is currently at channel capacity.  Please message a server admin and we'll figure something out.",
+
+	"remove_class_prompt": ", your search for **{}** retrieved these results.\nClick the corresponding reaction to remove that class:",
+	"class_remove_confirmation": "You have been removed from {}"
 }
