@@ -43,6 +43,7 @@ class DuckClient(discord.Client):
             args = ["kill", "-9"]
             args.extend(sys.argv[1:])
             subprocess.call(args)
+        self.SERVER = self.get_guild(self.config["SERVER_ID"])
         print(f"Connected as {self.user}!")
 
     async def on_message(self, msg):
