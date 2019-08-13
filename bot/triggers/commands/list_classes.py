@@ -11,20 +11,24 @@ import ast
 class ListClasses(Command):
     names = ["classes", "list", "class"]
     description = "Lists all the classes"
-    needsContent = True
+    needsContent = False
 
     connection = sqlite3.connect("classes.db")
     c = connection.cursor()
 
     async def execute_command(self, client, msg, content):
+        if len(content) != 4:
+            await msg.channel.send(client.messages["invalid_class_list_format"])
+            return
+
         for letter in content[:4]:
             if letter not in string.ascii_letters:
-                await utils.delay_send(
-                    msg.channel,
-                    "This command needs to be of the form !classes followed by 4 letters example: `!classes csci`",
+                await msg.channel.send(
+                    client.messages["invalid_class_list_format"]
                 )
                 return
-        class_list = ""
+
+        class_list = []
         self.c.execute(
             "SELECT * FROM classes WHERE departments LIKE ?",
             ("%" + str(content[:4]).upper() + "%",),
@@ -33,16 +37,44 @@ class ListClasses(Command):
         for i in records:
             if i[2] != 1:
                 continue
-            codes = i[4][2 : len(i[4]) - 2]
-            codes = codes.replace("', '", " ")
-            class_list += "**" + i[1] + "** "
-            # class_list += codes
-            class_list += "\n"
+            class_list.append(
+                ", ".join(
+                    [
+                        "**" + course_code + "**"
+                        for course_code in json.loads(i[4].replace("'", '"'))
+                        if str(content[:4]).upper() in course_code
+                    ]
+                )
+                + ": "
+                + i[1]
+            )
         if len(class_list) == 0:
             await utils.delay_send(
                 msg.channel,
-                f"I am sorry I could not find a class from the department `{str(content[:4]).upper()}` if you want an easy list of the 4 letter department codes check out <http://yacs.cs.rpi.edu/>",
+                client.messages["dept_not_found"].format(
+                    str(content[:4]).upper()
+                ),
             )
         else:
-            embed = discord.Embed(description=class_list, color=0xDCC308)
-            await utils.delay_send(msg.channel, "", embed=embed)
+            class_str = ""
+            for class_name in sorted(class_list):
+                class_str += class_name + "\n"
+            if msg.channel.type is discord.DMChannel:
+                embed = discord.Embed(description=class_str, color=0xDCC308)
+                await utils.delay_send(
+                    msg.channel,
+                    client.messages["class_list_prelude"].format(
+                        str(content[:4]).upper()
+                    ),
+                    embed=embed,
+                )
+            else:
+                await utils.delay_send(msg.channel, "DMed!")
+
+                embed = discord.Embed(description=class_str, color=0xDCC308)
+                await msg.author.send(
+                    client.messages["class_list_prelude"].format(
+                        str(content[:4]).upper()
+                    ),
+                    embed=embed,
+                )
