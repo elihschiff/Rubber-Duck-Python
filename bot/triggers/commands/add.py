@@ -30,7 +30,7 @@ class Add(Command):
             if i[2] != 1:
                 continue
 
-            real_name = i[1] + "     " + ", ".join(json.loads(i[4].replace("'", '"')))
+            real_name = i[1] + "\t" + ", ".join(json.loads(i[4].replace("'", '"')))
 
             class_list.append(i[1])
             real_name_list.append(real_name)
@@ -46,7 +46,7 @@ class Add(Command):
                 real_name_list.append(real_name)
 
         matches = process.extract(content, class_list, limit=20)
-        print(matches)
+        # print(matches)
         options = []
         for match in matches:
             class_name = real_name_list[class_list.index(match[0])]
