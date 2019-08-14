@@ -117,9 +117,7 @@ class AddClass(Command, ReactionTrigger):
         if channel_id != 0:
             channel = client.get_channel(channel_id)
         else:
-            new_channel_name = (
-                course_name[:100].strip().replace(" ", "-").lower()
-            )
+            new_channel_name = course_name.strip().replace(" ", "-").lower()
 
             class_category_channel = client.get_channel(
                 client.config["CLASS_CATEGORY_ID"]
