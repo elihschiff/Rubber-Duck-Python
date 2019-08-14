@@ -18,9 +18,7 @@ class Math(Command):
                 or pod.title.startswith("Power of 10 representation")
                 or pod.title.startswith("Decimal approximation")
             ):
-                await msg.channel.send(
-                    f"The answer for `{content}` is: `{pod.text}`"
-                )
+                await msg.channel.send(f"The answer for `{content}` is: `{pod.text}`")
                 return
 
             if pod.title.startswith("Plot"):

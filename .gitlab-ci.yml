@@ -13,19 +13,6 @@ test-suite:
         script:
                 - python -m unittest bot.tests -v
 
-test-coverage:
-        stage: test
-        before_script:
-                - apt-get update
-                - apt-get install rename
-                - rename "s/\.example$//" config/*
-                - pip install -r requirements.txt
-                - pip install coverage
-        script:
-                - coverage run -m unittest bot.tests
-                - coverage report -m --fail-under 100
-        allow_failure: true
-
 style-check:
         stage: test
         before_script:

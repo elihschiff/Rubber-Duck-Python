@@ -1,4 +1,4 @@
-from .. import MessageTrigger
+from ..message_trigger import MessageTrigger
 import re
 
 
@@ -29,7 +29,7 @@ class Command(MessageTrigger):
 
         return len(command)
 
-    async def execute(self, client, msg) -> bool:
+    async def execute_message(self, client, msg) -> bool:
         idx = await self.is_valid(msg)
         if idx is None:
             return False
@@ -38,43 +38,42 @@ class Command(MessageTrigger):
         return True
 
     async def execute_command(self, client, msg, content: str):
-        raise NotImplementedError(
-            "'execute_command' not implemented for this command"
-        )
+        raise NotImplementedError("'execute_command' not implemented for this command")
 
     def __lt__(self, other):
         return self.names[0] < other.names[0]
 
 
-from .add import Add
 from .ai import AI
+from .class_management import AddClass, RemoveClass
 from .code import Code
 from .echo import Echo
 from .emoji_mode import EmojiMode
 
 # from .latex import Latex # latex machine broke
+from .list_classes import ListClasses
 from .lmdtfy import Lmdtfy, Lmgtfy
 from .man import Man
 from .math import Math
 from .minecraft import Minecraft
 from .translate import Translate
-from .classes import Classes
 from .wikipedia import Wikipedia
 
 # Commands will auto alphabetize
 all_commands = [
-    Add(),
+    AddClass(),
     AI(),
-    Classes(),
     Code(),
     Echo(),
     EmojiMode(),
     # Latex(), # latex machine broke
+    ListClasses(),
     Lmdtfy(),
     Lmgtfy(),
     Man(),
     Math(),
-    Minecraft(),
+    # Minecraft(),
+    RemoveClass(),
     Translate(),
     Wikipedia(),
 ]

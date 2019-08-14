@@ -36,9 +36,7 @@ async def log(client, msg):
                 destination_category = await LOG_SERVER.create_category_channel(
                     source_category.name
                 )
-                client.logging[
-                    f"{source_category.id}"
-                ] = destination_category.id
+                client.logging[f"{source_category.id}"] = destination_category.id
             else:
                 destination_category = LOG_SERVER.get_channel(
                     client.logging(f"{source_category.id}")
@@ -55,9 +53,7 @@ async def log(client, msg):
                 client.logging[f"{msg.channel.id}"]
             )
 
-        log_content = (
-            f"{msg.author.name} ({msg.author.id}): {msg.clean_content}"
-        )
+        log_content = f"{msg.author.name} ({msg.author.id}): {msg.clean_content}"
 
     await destination_channel.send(log_content, files=attached_files)
 

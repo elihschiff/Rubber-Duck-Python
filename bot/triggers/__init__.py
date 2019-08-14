@@ -1,30 +1,11 @@
-class MessageTrigger:
-    async def execute(self, client, msg) -> bool:
-        raise NotImplementedError("'execute' is not implemented for this trigger")
-
-
 from .commands.help import Help
 from .commands import all_commands
+from .welcome import Welcome
+from .commands.class_management import AddClass, RemoveClass
 
 msg_triggers = [Help()]
 msg_triggers.extend(all_commands)
 
-
-class NewMemberTrigger:
-    async def execute(self, client, member) -> bool:
-        raise NotImplementedError("'execute' is not implemented for this trigger")
-
-
-from .welcome import Welcome
-
 new_member_triggers = [Welcome()]
 
-
-class ReactionTrigger:
-    async def execute(self, client, reaction) -> bool:
-        raise NotImplementedError("'execute' is not implemented for this trigger")
-
-
-from .commands.addMenuReact import AddMenuReact
-
-reaction_triggers = [AddMenuReact()]
+reaction_triggers = [AddClass(), RemoveClass()]

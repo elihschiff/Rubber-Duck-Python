@@ -2,10 +2,9 @@ import sys
 import discord
 import json
 import subprocess
+import threading
 
-from .triggers import msg_triggers
-from .triggers import new_member_triggers
-from .triggers import reaction_triggers
+from .triggers import msg_triggers, new_member_triggers, reaction_triggers
 
 from .triggers.quack import quack
 from .triggers.emoji_mode import invalid_emoji_message
@@ -40,11 +39,14 @@ class DuckClient(discord.Client):
         with open(quacks_filename, "r") as quacks_file:
             self.quacks = quacks_file.read().split("\n%\n")
 
+        self.lock = threading.Lock()
+
     async def on_ready(self):
         if len(sys.argv) > 1:
             args = ["kill", "-9"]
             args.extend(sys.argv[1:])
             subprocess.call(args)
+        self.SERVER = self.get_guild(self.config["SERVER_ID"])
         print(f"Connected as {self.user}!")
 
     async def on_message(self, msg):
@@ -58,7 +60,7 @@ class DuckClient(discord.Client):
 
         replied = False
         for trigger in msg_triggers:
-            if await trigger.execute(self, msg):
+            if await trigger.execute_message(self, msg):
                 replied = True
 
         if not replied:
@@ -66,11 +68,8 @@ class DuckClient(discord.Client):
 
     async def on_member_join(self, member):
         for trigger in new_member_triggers:
-            await trigger.execute(self, member)
+            await trigger.execute_welcome(self, member)
 
-    # async def on_raw_reaction_add(self, payload):
-    #     discord.TextChannel(id=payload.channel_id).get_message(payload.message_id)
-
-    async def on_reaction_add(self, reaction, usr):
+    async def on_reaction_add(self, reaction, user):
         for trigger in reaction_triggers:
-            await trigger.execute(self, reaction, usr)
+            await trigger.execute_reaction(self, reaction, user)

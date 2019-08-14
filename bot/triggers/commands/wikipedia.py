@@ -15,8 +15,8 @@ class Wikipedia(Command):
     async def execute_command(self, client, msg, content):
         page = self.wiki.page(content.replace(" ", "_"))
         if not page.exists():
-            await msg.channel.send(
-                f"Could not find wikipedia page for `{content}`"
+            await utils.delay_send(
+                msg.channel, f"Could not find wikipedia page for `{content}`"
             )
             return
 
@@ -27,4 +27,4 @@ class Wikipedia(Command):
         response = discord.Embed(
             title=content, url=page.fullurl, description=description
         )
-        await utils.delaysend(msg.channel, "", embed=response)
+        await utils.delay_send(msg.channel, "", embed=response)

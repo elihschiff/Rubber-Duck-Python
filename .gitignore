@@ -4,3 +4,4 @@ config/*
 bot_token
 .coverage
 *.db
+*.db-journal

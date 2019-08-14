@@ -38,9 +38,7 @@ class MockUser:
         self.guild_permissions = MockUserPermissions()
 
     def mentioned_in(self, msg):
-        return (
-            self.was_mentioned
-        )  # can be changed if a more robust solution is needed
+        return self.was_mentioned  # can be changed if a more robust solution is needed
 
     @property
     def mention(self):

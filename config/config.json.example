@@ -1,11 +1,86 @@
 {
-	"quack_channels": [594376404431536148],
-	"default_server_id":"",
-	"minecraft":{
-		"ip":"",
+	"quack_channels": [],
+	"SERVER_ID": 0,
+	"minecraft": {
+		"ip": "",
 		"host_id": "0"
 	},
-	"welcome_channel_id": "",
+	"welcome_channel_id": 0,
 	"EMOJI_CHANNELS": [],
-	"EMOJI_USERS": []
+	"EMOJI_USERS": [],
+	"WOLFRAM_ID": "",
+
+	"ALL_SEER_ID": 0,
+	"TIME_OUT_ID": 0,
+
+	"CLASS_CATEGORY_ID": 0,
+
+	"roles": {
+		"All-Seer": 0,
+		"-------": 0,
+		"Incoming Freshman": 0,
+		"Freshman": 0,
+		"Sophomore": 0,
+		"Senior": 0,
+		"Graduate Student": 0,
+		"Alumnus": 0,
+		"Non-RPI": 0
+	},
+
+	"depts": {
+		"Humanities, Arts and Social Sciences": [
+			"ARTS",
+			"COGS",
+			"COMM",
+			"ECON",
+			"GSAS",
+			"IHSS",
+			"LANG",
+			"LITR",
+			"PHIL",
+			"PSYC",
+			"STSH",
+			"STSS",
+			"WRIT"
+		],
+		"Engineering": [
+			"BMED",
+			"CHME",
+			"CIVL",
+			"ECSE",
+			"ENGR",
+			"ENVE",
+			"EPOW",
+			"ISYE",
+			"MANE",
+			"MTLE"
+		],
+		"Science": [
+			"ASTR",
+			"BCBP",
+			"BIOL",
+			"CHEM",
+			"CSCI",
+			"ERTH",
+			"IENV",
+			"ISCI",
+			"ITWS",
+			"MATH",
+			"MATP",
+			"PHYS"
+		],
+		"Architecture": [
+			"ARCH",
+			"LGHT"
+		],
+		"Business Management": [
+			"MGMT"
+		],
+		"Other": [
+			"ADMN",
+			"USAF",
+			"USAR",
+			"USNA"
+		]
+	}
 }
