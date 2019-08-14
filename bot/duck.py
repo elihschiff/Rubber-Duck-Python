@@ -3,6 +3,7 @@ import discord
 import json
 import subprocess
 import threading
+import sqlite3
 
 from .triggers import msg_triggers, new_member_triggers, reaction_triggers
 
@@ -40,6 +41,8 @@ class DuckClient(discord.Client):
             self.quacks = quacks_file.read().split("\n%\n")
 
         self.lock = threading.Lock()
+        self.connection = sqlite3.connect("database.db")
+        self.c = self.connection.cursor()
 
     async def on_ready(self):
         if len(sys.argv) > 1:

@@ -2,7 +2,6 @@ from . import Command
 from .. import utils
 from ..reaction_trigger import ReactionTrigger
 
-import sqlite3
 import discord
 import string
 import json
@@ -54,17 +53,13 @@ class AddClass(Command, ReactionTrigger):
     description = "Adds you to class specific channels"
     needsContent = True
 
-    def __init__(self):
-        self.connection = sqlite3.connect("database.db")
-        self.c = self.connection.cursor()
-
     async def execute_command(self, client, msg, content):
         if content in client.config["roles"].keys():
             await self.add_role(client, msg, content)
             return
 
         client.lock.acquire()
-        options = fuzzy_search(self.c, content, 5)
+        options = fuzzy_search(client.c, content, 5)
         client.lock.release()
 
         if msg.channel.type is not discord.ChannelType.private:
@@ -110,8 +105,8 @@ class AddClass(Command, ReactionTrigger):
 
         course_name = msg.content[start_idx:end_idx].strip()
         client.lock.acquire()
-        self.c.execute(f"SELECT * FROM classes WHERE name = '{course_name}'")
-        course = self.c.fetchone()
+        client.c.execute(f"SELECT * FROM classes WHERE name = '{course_name}'")
+        course = client.c.fetchone()
         channel_id = int(course[2])
         client.lock.release()
 
@@ -157,10 +152,10 @@ class AddClass(Command, ReactionTrigger):
                 return
 
             client.lock.acquire()
-            self.c.execute(
+            client.c.execute(
                 f"UPDATE classes SET channel_id = {channel.id} WHERE name = '{course_name}'"
             )
-            self.connection.commit()
+            client.connection.commit()
             client.lock.release()
 
         try:
@@ -195,17 +190,13 @@ class RemoveClass(Command, ReactionTrigger):
     description = "Removes you from class specific channels"
     needsContent = True
 
-    def __init__(self):
-        connection = sqlite3.connect("database.db")
-        self.c = connection.cursor()
-
     async def execute_command(self, client, msg, content):
         if content in client.config["roles"].keys():
             await self.remove_role(client, msg, content)
             return
 
         client.lock.acquire()
-        options = fuzzy_search(self.c, content, 5)
+        options = fuzzy_search(client.c, content, 5)
         client.lock.release()
 
         if msg.channel.type is not discord.ChannelType.private:
@@ -251,8 +242,8 @@ class RemoveClass(Command, ReactionTrigger):
 
         course_name = msg.content[start_idx:end_idx].strip()
         client.lock.acquire()
-        self.c.execute(f"SELECT channel_id FROM classes WHERE name = '{course_name}'")
-        channel_id = int(self.c.fetchone()[0])
+        client.c.execute(f"SELECT channel_id FROM classes WHERE name = '{course_name}'")
+        channel_id = int(client.c.fetchone()[0])
         client.lock.release()
 
         try:
