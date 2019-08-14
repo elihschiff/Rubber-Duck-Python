@@ -1,27 +1,27 @@
 image: python
 
 stages:
-        - test
+        # - test
         - deploy
 
-test-suite:
-        stage: test
-        before_script:
-                - apt-get update
-                - apt-get install rename
-                - rename "s/\.example$//" config/*
-                - pip install -r requirements.txt
-        script:
-                - python -m unittest bot.tests -v
-
-style-check:
-        stage: test
-        before_script:
-                - pip install black
-        script:
-                - black --check .
-        allow_failure: true
-
+          # test-suite:
+          # stage: test
+          # before_script:
+          # - apt-get update
+          # - apt-get install rename
+          # - rename "s/\.example$//" config/*
+          # - pip install -r requirements.txt
+          # script:
+          # - python -m unittest bot.tests -v
+          # 
+          # style-check:
+          # stage: test
+          # before_script:
+          # - pip install black
+          # script:
+          # - black --check .
+          # allow_failure: true
+          # 
 deploy-to-server:
         stage: deploy
         script:
