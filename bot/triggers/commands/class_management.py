@@ -70,7 +70,7 @@ class AddClass(Command, ReactionTrigger):
         options = fuzzy_search(self.c, content, 5)
         client.lock.release()
 
-        if msg.channel.type is not discord.DMChannel:
+        if msg.channel.type is not discord.ChannelType.private:
             await utils.delay_send(msg.channel, "DMed!")
 
         await utils.generate_react_menu(
@@ -106,8 +106,6 @@ class AddClass(Command, ReactionTrigger):
         start_idx = msg.content.index(":", line_start_idx) + 1
         end_idx = msg.content.index("\n", line_start_idx)
 
-        await msg.clear_reactions()
-
         course_name = msg.content[start_idx:end_idx].strip()
         client.lock.acquire()
         self.c.execute(f"SELECT * FROM classes WHERE name = '{course_name}'")
@@ -119,7 +117,9 @@ class AddClass(Command, ReactionTrigger):
         if channel_id != 0:
             channel = client.get_channel(channel_id)
         else:
-            new_channel_name = course_name[:100].strip().replace(" ", "-").lower()
+            new_channel_name = (
+                course_name[:100].strip().replace(" ", "-").lower()
+            )
 
             class_category_channel = client.get_channel(
                 client.config["CLASS_CATEGORY_ID"]
@@ -146,7 +146,9 @@ class AddClass(Command, ReactionTrigger):
                         client.SERVER.default_role: discord.PermissionOverwrite(
                             read_messages=False
                         ),
-                        all_seer: discord.PermissionOverwrite(read_messages=True),
+                        all_seer: discord.PermissionOverwrite(
+                            read_messages=True
+                        ),
                         time_out: discord.PermissionOverwrite(
                             send_messages=False, add_reactions=False
                         ),
@@ -168,7 +170,8 @@ class AddClass(Command, ReactionTrigger):
         await channel.set_permissions(user, overwrite=overwrite)
 
         await utils.delay_send(
-            msg.channel, client.messages["class_add_confirmation"].format(course_name)
+            msg.channel,
+            client.messages["class_add_confirmation"].format(course_name),
         )
 
     async def add_role(self, client, msg, role_name):
@@ -178,7 +181,8 @@ class AddClass(Command, ReactionTrigger):
 
         if role_name != "-------":
             await utils.delay_send(
-                msg.channel, client.messages["add_role_confirmation"].format(role_name)
+                msg.channel,
+                client.messages["add_role_confirmation"].format(role_name),
             )
         else:
             await msg.author.send(client.messages["add_hidden_role"])
@@ -204,7 +208,7 @@ class RemoveClass(Command, ReactionTrigger):
         options = fuzzy_search(self.c, content, 5)
         client.lock.release()
 
-        if msg.channel.type is not discord.DMChannel:
+        if msg.channel.type is not discord.ChannelType.private:
             await utils.delay_send(msg.channel, "DMed!")
 
         await utils.generate_react_menu(
@@ -240,11 +244,11 @@ class RemoveClass(Command, ReactionTrigger):
         start_idx = msg.content.index(":", line_start_idx) + 1
         end_idx = msg.content.index("\n", line_start_idx)
 
-        await msg.clear_reactions()
-
         course_name = msg.content[start_idx:end_idx].strip()
         client.lock.acquire()
-        self.c.execute(f"SELECT channel_id FROM classes WHERE name = '{course_name}'")
+        self.c.execute(
+            f"SELECT channel_id FROM classes WHERE name = '{course_name}'"
+        )
         channel_id = int(self.c.fetchone()[0])
         client.lock.release()
 
