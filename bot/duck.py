@@ -23,14 +23,6 @@ class DuckClient(discord.Client):
     ):
         super().__init__()
 
-        self.config_filename = (
-            config_filename
-        )  # TODO: remove this once emoji mode uses the database
-
-        self.logging_filename = (
-            logging_filename
-        )  # TODO: remove this once logging uses the database
-
         with open(config_filename, "r") as config_file:
             self.config = json.load(config_file)
         with open(logging_filename, "r") as logging_file:

@@ -53,10 +53,23 @@ async def invalid_emoji_message(client, msg) -> bool:
     if utils.user_is_admin(msg.author):
         return False
 
-    if (
-        msg.channel.id in client.config["EMOJI_CHANNELS"]
-        or msg.author.id in client.config["EMOJI_USERS"]
-    ):  # TODO: use database
+    hits = 0
+
+    client.lock.acquire()
+    client.c.execute(
+        f"SELECT count(*) FROM emoji_channels WHERE channel_id = {msg.channel.id}"
+    )
+    hits += client.c.fetchone()[0]
+    client.lock.release()
+
+    client.lock.acquire()
+    client.c.execute(
+        f"SELECT count(*) FROM emoji_users WHERE user_id = {msg.author.id}"
+    )
+    hits += client.c.fetchone()[0]
+    client.lock.release()
+
+    if hits > 0:
         if not valid_emoji(msg.content):
             await msg.delete()
             await send_message_to_violator(client, msg.author)
