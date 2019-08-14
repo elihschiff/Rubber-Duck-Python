@@ -79,11 +79,16 @@ class AddClass(Command, ReactionTrigger):
             "No results match",
         )
 
-    async def execute_reaction(self, client, reaction, user):
+    async def execute_reaction(self, client, reaction):
+        user = await client.fetch_user(reaction.user_id)
         if user.bot:
             return
 
-        msg = reaction.message
+        channel = await client.fetch_channel(reaction.channel_id)
+        if channel.type is not discord.ChannelType.private:
+            return
+
+        msg = await channel.fetch_message(reaction.message_id)
         if msg.author != client.user:
             return
 
@@ -91,15 +96,15 @@ class AddClass(Command, ReactionTrigger):
             return
 
         if (
-            reaction.emoji not in utils.emoji_numbers
-            and reaction.emoji != utils.no_matching_results_emote
+            reaction.emoji.name not in utils.emoji_numbers
+            and reaction.emoji.name != utils.no_matching_results_emote
         ):
             return
 
         if " add " not in msg.content:
             return
 
-        line_start_idx = msg.content.index(reaction.emoji)
+        line_start_idx = msg.content.index(reaction.emoji.name)
         start_idx = msg.content.index(":", line_start_idx) + 1
         end_idx = msg.content.index("\n", line_start_idx)
 
@@ -141,7 +146,9 @@ class AddClass(Command, ReactionTrigger):
                         client.SERVER.default_role: discord.PermissionOverwrite(
                             read_messages=False
                         ),
-                        all_seer: discord.PermissionOverwrite(read_messages=True),
+                        all_seer: discord.PermissionOverwrite(
+                            read_messages=True
+                        ),
                         time_out: discord.PermissionOverwrite(
                             send_messages=False, add_reactions=False
                         ),
@@ -158,13 +165,17 @@ class AddClass(Command, ReactionTrigger):
             self.connection.commit()
             client.lock.release()
 
-        overwrite = discord.PermissionOverwrite()
-        overwrite.read_messages = True
-        await channel.set_permissions(user, overwrite=overwrite)
+        try:
+            overwrite = discord.PermissionOverwrite()
+            overwrite.read_messages = True
+            await channel.set_permissions(user, overwrite=overwrite)
 
-        await utils.delay_send(
-            msg.channel, client.messages["class_add_confirmation"].format(course_name)
-        )
+            await utils.delay_send(
+                msg.channel,
+                client.messages["class_add_confirmation"].format(course_name),
+            )
+        except:
+            await msg.channel.send("ERROR: Unable to add class")
 
     async def add_role(self, client, msg, role_name):
         role = client.SERVER.get_role(client.config["roles"][role_name])
@@ -173,7 +184,8 @@ class AddClass(Command, ReactionTrigger):
 
         if role_name != "-------":
             await utils.delay_send(
-                msg.channel, client.messages["add_role_confirmation"].format(role_name)
+                msg.channel,
+                client.messages["add_role_confirmation"].format(role_name),
             )
         else:
             await msg.author.send(client.messages["add_hidden_role"])
@@ -211,11 +223,16 @@ class RemoveClass(Command, ReactionTrigger):
             "No results match",
         )
 
-    async def execute_reaction(self, client, reaction, user):
+    async def execute_reaction(self, client, reaction):
+        user = await client.fetch_user(reaction.user_id)
         if user.bot:
             return
 
-        msg = reaction.message
+        channel = await client.fetch_channel(reaction.channel_id)
+        if channel.type is not discord.ChannelType.private:
+            return
+
+        msg = await channel.fetch_message(reaction.message_id)
         if msg.author != client.user:
             return
 
@@ -223,32 +240,37 @@ class RemoveClass(Command, ReactionTrigger):
             return
 
         if (
-            reaction.emoji not in utils.emoji_numbers
-            and reaction.emoji != utils.no_matching_results_emote
+            reaction.emoji.name not in utils.emoji_numbers
+            and reaction.emoji.name != utils.no_matching_results_emote
         ):
             return
 
         if " remove " not in msg.content:
             return
 
-        line_start_idx = msg.content.index(reaction.emoji)
+        line_start_idx = msg.content.index(reaction.emoji.name)
         start_idx = msg.content.index(":", line_start_idx) + 1
         end_idx = msg.content.index("\n", line_start_idx)
 
         course_name = msg.content[start_idx:end_idx].strip()
         client.lock.acquire()
-        self.c.execute(f"SELECT channel_id FROM classes WHERE name = '{course_name}'")
+        self.c.execute(
+            f"SELECT channel_id FROM classes WHERE name = '{course_name}'"
+        )
         channel_id = int(self.c.fetchone()[0])
         client.lock.release()
 
-        if channel_id != 0:
-            channel = client.get_channel(channel_id)
+        try:
+            if channel_id != 0:
+                channel = client.get_channel(channel_id)
 
-            await channel.set_permissions(user, overwrite=None)
+                await channel.set_permissions(user, overwrite=None)
 
-        await msg.channel.send(
-            client.messages["class_remove_confirmation"].format(course_name)
-        )
+            await msg.channel.send(
+                client.messages["class_remove_confirmation"].format(course_name)
+            )
+        except:
+            await msg.channel.send("ERROR: Unable to remove class")
 
     async def remove_role(self, client, msg, role_name):
         role = client.SERVER.get_role(client.config["roles"][role_name])
