@@ -3,15 +3,17 @@
 	"SERVER_ID": 0,
 	"minecraft": {
 		"ip": "",
-		"host_id": "0"
+		"host_id": 0
 	},
 	"welcome_channel_id": 0,
-	"EMOJI_CHANNELS": [],
-	"EMOJI_USERS": [],
+
 	"WOLFRAM_ID": "",
 
 	"ALL_SEER_ID": 0,
 	"TIME_OUT_ID": 0,
+
+	"LOG_SERVER_ID": 0,
+	"DM_LOG_CHANNEL_ID": 0,
 
 	"CLASS_CATEGORY_ID": 0,
 
@@ -21,6 +23,7 @@
 		"Incoming Freshman": 0,
 		"Freshman": 0,
 		"Sophomore": 0,
+		"Junior": 0,
 		"Senior": 0,
 		"Graduate Student": 0,
 		"Alumnus": 0,
