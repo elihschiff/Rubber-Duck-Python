@@ -2,6 +2,7 @@ image: python
 
 stages:
         - test
+        - deploy
 
 test-suite:
         stage: test
@@ -20,3 +21,14 @@ style-check:
         script:
                 - black --check .
         allow_failure: true
+
+deploy-to-server:
+        stage: deploy
+        script:
+                - mkdir -p ~/.ssh
+                - echo "$SSH_HOST_VERIFICATION" | base64 -d > ~/.ssh/known_hosts
+                - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
+                - chmod -R 700 ~/.ssh
+                - ssh gitlab@$CONTAINER_IP "sh -c 'cd rubber-duck && ./deploy.sh"
+        only:
+                - branches@rpi-academic-discord/master
