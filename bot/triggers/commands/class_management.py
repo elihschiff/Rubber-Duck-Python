@@ -203,7 +203,7 @@ class RemoveClass(Command, ReactionTrigger):
             await utils.delay_send(msg.channel, "DMed!")
 
         await utils.generate_react_menu(
-            msg,
+            msg.author,
             msg.author.id,
             client.messages["remove_class_prompt"].format(content),
             5,
