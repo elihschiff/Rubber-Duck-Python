@@ -3,12 +3,8 @@ import os
 import sqlite3
 import json
 
-if (
-    len(sys.argv) < 3
-    or not sys.argv[1].endswith(".db")
-    or not sys.argv[2].endswith(".json")
-):
-    print(f"Usage: {sys.argv[0]} DB_FILE JSON_FILE")
+if len(sys.argv) < 2 or not sys.argv[1].endswith(".db"):
+    print(f"Usage: {sys.argv[0]} DB_FILE (JSON_FILE)")
     sys.exit(1)
 
 
@@ -30,10 +26,36 @@ c.execute(
     course_codes TEXT NOT NULL,
     departments TEXT NOT NULL,
     identifiers TEXT NULL DEFAULT '[]'
-    );"""
+    );
+    """
 )
 
-if os.path.exists(sys.argv[2]):
+c.execute(
+    """
+    CREATE TABLE IF NOT EXISTS logging (
+    source_channel_id INTEGER DEFAULT 0,
+    dest_channel_id INTEGER DEFAULT 0
+    );
+    """
+)
+
+c.execute(
+    """
+    CREATE TABLE IF NOT EXISTS emoji_users (
+    user_id INTEGER DEFAULT 0
+    );
+    """
+)
+
+c.execute(
+    """
+    CREATE TABLE IF NOT EXISTS emoji_channels (
+    channel_id INTEGER DEFAULT 0
+    );
+    """
+)
+
+if len(sys.argv) > 2 and os.path.exists(sys.argv[2]):
     print("Updating courses in database")
     with open(sys.argv[2], "r") as courses_file:
         courses = json.load(courses_file)
@@ -58,7 +80,4 @@ if os.path.exists(sys.argv[2]):
                 },
             )
 
-    connection.commit()
-else:
-    print(f"Error: Unable to find {sys.argv[2]}")
-    sys.exit(1)
+connection.commit()

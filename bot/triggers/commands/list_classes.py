@@ -1,7 +1,6 @@
 from . import Command
 from .. import utils
 
-import sqlite3
 import discord
 import string
 import json
@@ -12,10 +11,6 @@ class ListClasses(Command):
     names = ["classes", "list", "class"]
     description = "Lists all the classes"
     needsContent = False
-
-    def __init__(self):
-        connection = sqlite3.connect("classes.db")
-        self.c = connection.cursor()
 
     async def execute_command(self, client, msg, content):
         if len(content) == 0:
@@ -34,11 +29,11 @@ class ListClasses(Command):
         class_list = []
 
         client.lock.acquire()
-        self.c.execute(
+        client.c.execute(
             "SELECT * FROM classes WHERE departments LIKE ?",
             ("%" + str(content[:4]).upper() + "%",),
         )
-        records = self.c.fetchall()
+        records = client.c.fetchall()
         client.lock.release()
 
         for i in records:

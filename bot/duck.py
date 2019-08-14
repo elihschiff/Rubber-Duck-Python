@@ -3,6 +3,7 @@ import discord
 import json
 import subprocess
 import threading
+import sqlite3
 
 from .triggers import msg_triggers, new_member_triggers, reaction_triggers
 
@@ -22,14 +23,6 @@ class DuckClient(discord.Client):
     ):
         super().__init__()
 
-        self.config_filename = (
-            config_filename
-        )  # TODO: remove this once emoji mode uses the database
-
-        self.logging_filename = (
-            logging_filename
-        )  # TODO: remove this once logging uses the database
-
         with open(config_filename, "r") as config_file:
             self.config = json.load(config_file)
         with open(logging_filename, "r") as logging_file:
@@ -40,6 +33,8 @@ class DuckClient(discord.Client):
             self.quacks = quacks_file.read().split("\n%\n")
 
         self.lock = threading.Lock()
+        self.connection = sqlite3.connect("database.db")
+        self.c = self.connection.cursor()
 
     async def on_ready(self):
         if len(sys.argv) > 1:
@@ -70,6 +65,6 @@ class DuckClient(discord.Client):
         for trigger in new_member_triggers:
             await trigger.execute_new_member(self, member)
 
-    async def on_reaction_add(self, reaction, user):
+    async def on_raw_reaction_add(self, reaction):
         for trigger in reaction_triggers:
-            await trigger.execute_reaction(self, reaction, user)
+            await trigger.execute_reaction(self, reaction)
