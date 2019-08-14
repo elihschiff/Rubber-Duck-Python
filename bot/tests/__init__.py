@@ -1,6 +1,5 @@
 import unittest
 from .test_triggers import all_triggers
-from .test_exceptions import TestExceptions
 
 
 def load_tests(loader, tests, pattern):
@@ -8,6 +7,4 @@ def load_tests(loader, tests, pattern):
     for test_class in all_triggers:
         tests = loader.loadTestsFromTestCase(test_class)
         suite.addTests(tests)
-    tests = loader.loadTestsFromTestCase(TestExceptions)
-    suite.addTests(tests)
     return suite
