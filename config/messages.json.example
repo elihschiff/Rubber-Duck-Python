@@ -12,8 +12,14 @@
 	"emoji_mode_dm": "You sent a message that contained non emoji characters in an emoji only chat. Your message has been removed!",
 
 	"invalid_class_list_format": "This command must be of the form `!classes XXXX`, where `XXXX` is the department you're searching for.",
-	"dept_not_found": "I am sorry I could not find a class from the department `{}`.  For a list of the 4 letter department codes, check out <https://rpi.yacs.io/>.",
+	"dept_not_found": "I am sorry I could not find a class from the department `{}`.  For a list of the 4 letter department codes, reuse the `!classes` command without arguments.",
 	"class_list_prelude": "Classes for {}:",
+	"general_class_list_prelude": "Below are the general roles you can add, as well as the department codes",
+
+	"add_role_confirmation": "You have been given the role `{}`",
+	"add_hidden_role": "You have been added to the hidden role.  Please do not discuss this role publicly.",
+	"remove_role_confirmation": "You have been removed from the role `{}`",
+	"remove_hidden_role": "You have been removed from the hidden role.  Please do not discuss this role publicly.",
 
 	"add_class_prompt": ", your search for **{}** retrieved these results.\nClick the corresponding reaction to add that class:",
 	"class_add_confirmation": "You have been added to {}",

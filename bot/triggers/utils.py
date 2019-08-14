@@ -3,15 +3,15 @@ import asyncio
 import discord
 
 
-async def delay_send(channel, msg, delay_factor=1.0, embed=None):
+async def delay_send(sendable, msg, delay_factor=1.0, embed=None):
     delay = (0.5 + 0.003 * len(msg)) * delay_factor
     # print(delay)
     delay = max(2, delay)
 
-    async with channel.typing():
+    async with sendable.typing():
         await asyncio.sleep(delay)
 
-    return await channel.send(msg, embed=embed)
+    return await sendable.send(msg, embed=embed)
 
 
 emoji_numbers = [
@@ -31,7 +31,7 @@ no_matching_results_emote = "🚫"
 
 
 async def generate_react_menu(
-    msg, user_id, opening_message, max_length, option_list, cancel_message
+    sendable, user_id, opening_message, max_length, option_list, cancel_message
 ):
     max_length = min(max_length, len(emoji_numbers))
 
@@ -40,7 +40,7 @@ async def generate_react_menu(
     for i in range(min(max_length, len(option_list))):
         msg_to_send += f"\n\n{emoji_numbers[i]} {option_list[i]}"
     msg_to_send += f"\n\n{no_matching_results_emote} {cancel_message}"
-    sent_msg = await msg.channel.send(msg_to_send)
+    sent_msg = await sendable.send(msg_to_send)
     for i in range(min(max_length, len(option_list))):
         await sent_msg.add_reaction(emoji_numbers[i])
     await sent_msg.add_reaction(no_matching_results_emote)

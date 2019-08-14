@@ -2,6 +2,7 @@ import sys
 import discord
 import json
 import subprocess
+import threading
 
 from .triggers import msg_triggers, new_member_triggers, reaction_triggers
 
@@ -37,6 +38,8 @@ class DuckClient(discord.Client):
             self.messages = json.load(messages_file)
         with open(quacks_filename, "r") as quacks_file:
             self.quacks = quacks_file.read().split("\n%\n")
+
+        self.lock = threading.Lock()
 
     async def on_ready(self):
         if len(sys.argv) > 1:

@@ -58,14 +58,23 @@ class AddClass(Command, ReactionTrigger):
     needsContent = True
 
     def __init__(self):
-        connection = sqlite3.connect("classes.db")
-        self.c = connection.cursor()
+        self.connection = sqlite3.connect("classes.db")
+        self.c = self.connection.cursor()
 
     async def execute_command(self, client, msg, content):
+        if content in client.config["roles"].keys():
+            await self.add_role(client, msg, content)
+            return
+
+        client.lock.acquire()
         options = fuzzy_search(self.c, content, 5)
+        client.lock.release()
+
+        if msg.channel.type is not discord.DMChannel:
+            await utils.delay_send(msg.channel, "DMed!")
 
         await utils.generate_react_menu(
-            msg,
+            msg.author,
             msg.author.id,
             client.messages["add_class_prompt"].format(content),
             5,
@@ -100,10 +109,11 @@ class AddClass(Command, ReactionTrigger):
         await msg.clear_reactions()
 
         course_name = msg.content[start_idx:end_idx].strip()
+        client.lock.acquire()
         self.c.execute(f"SELECT * FROM classes WHERE name = '{course_name}'")
         course = self.c.fetchone()
-        print(course)
         channel_id = int(course[3])
+        client.lock.release()
 
         channel = None
         if channel_id != 0:
@@ -146,13 +156,16 @@ class AddClass(Command, ReactionTrigger):
                         ),
                     },
                 )
-            except HttpException:
+            except discord.HTTPException:
                 msg.channel.send(client.messages["err_too_many_channels"])
                 return
 
+            client.lock.acquire()
             self.c.execute(
                 f"UPDATE classes SET channel_id = {channel.id} WHERE name = '{course_name}'"
             )
+            self.connection.commit()
+            client.lock.release()
 
         overwrite = discord.PermissionOverwrite()
         overwrite.read_messages = True
@@ -162,6 +175,21 @@ class AddClass(Command, ReactionTrigger):
             msg.channel,
             client.messages["class_add_confirmation"].format(course_name),
         )
+
+    async def add_role(self, client, msg, role_name):
+        role = client.SERVER.get_role(client.config["roles"][role_name])
+        server_member = client.SERVER.get_member(msg.author.id)
+        await server_member.add_roles(role)
+
+        if role_name != "-------":
+            await utils.delay_send(
+                msg.channel,
+                client.messages["add_role_confirmation"].format(role_name),
+            )
+        else:
+            await msg.author.send(client.messages["add_hidden_role"])
+            if msg.channel.type is not discord.ChannelType.private:
+                await utils.delay_send(msg.channel, "DMed!")
 
 
 class RemoveClass(Command, ReactionTrigger):
@@ -174,7 +202,16 @@ class RemoveClass(Command, ReactionTrigger):
         self.c = connection.cursor()
 
     async def execute_command(self, client, msg, content):
+        if content in client.config["roles"].keys():
+            await self.remove_role(client, msg, content)
+            return
+
+        client.lock.acquire()
         options = fuzzy_search(self.c, content, 5)
+        client.lock.release()
+
+        if msg.channel.type is not discord.DMChannel:
+            await utils.delay_send(msg.channel, "DMed!")
 
         await utils.generate_react_menu(
             msg,
@@ -212,12 +249,12 @@ class RemoveClass(Command, ReactionTrigger):
         await msg.clear_reactions()
 
         course_name = msg.content[start_idx:end_idx].strip()
-        self.c.execute(f"SELECT * FROM classes WHERE name = '{course_name}'")
-        print(self.c.fetchone())
-        return
-        channel_id = int(self.c.fetchone()[3])
-
-        print(channel_id)
+        client.lock.acquire()
+        self.c.execute(
+            f"SELECT channel_id FROM classes WHERE name = '{course_name}'"
+        )
+        channel_id = int(self.c.fetchone()[0])
+        client.lock.release()
 
         if channel_id != 0:
             channel = client.get_channel(channel_id)
@@ -227,3 +264,18 @@ class RemoveClass(Command, ReactionTrigger):
         await msg.channel.send(
             client.messages["class_remove_confirmation"].format(course_name)
         )
+
+    async def remove_role(self, client, msg, role_name):
+        role = client.SERVER.get_role(client.config["roles"][role_name])
+        server_member = client.SERVER.get_member(msg.author.id)
+        await server_member.remove_roles(role)
+
+        if role_name != "-------":
+            await utils.delay_send(
+                msg.channel,
+                client.messages["remove_role_confirmation"].format(role_name),
+            )
+        else:
+            await msg.author.send(client.messages["remove_hidden_role"])
+            if msg.channel.type is not discord.ChannelType.private:
+                await utils.delay_send(msg.channel, "DMed!")

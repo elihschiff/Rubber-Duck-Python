@@ -13,10 +13,15 @@ class ListClasses(Command):
     description = "Lists all the classes"
     needsContent = False
 
-    connection = sqlite3.connect("classes.db")
-    c = connection.cursor()
+    def __init__(self):
+        connection = sqlite3.connect("classes.db")
+        self.c = connection.cursor()
 
     async def execute_command(self, client, msg, content):
+        if len(content) == 0:
+            await self.general_listing(client, msg)
+            return
+
         if len(content) != 4:
             await msg.channel.send(client.messages["invalid_class_list_format"])
             return
@@ -29,11 +34,15 @@ class ListClasses(Command):
                 return
 
         class_list = []
+
+        client.lock.acquire()
         self.c.execute(
             "SELECT * FROM classes WHERE departments LIKE ?",
             ("%" + str(content[:4]).upper() + "%",),
         )
         records = self.c.fetchall()
+        client.lock.release()
+
         for i in records:
             if i[2] != 1:
                 continue
@@ -59,8 +68,10 @@ class ListClasses(Command):
             class_str = ""
             for class_name in sorted(class_list):
                 class_str += class_name + "\n"
+
+            embed = discord.Embed(description=class_str, color=0xDCC308)
+
             if msg.channel.type is discord.DMChannel:
-                embed = discord.Embed(description=class_str, color=0xDCC308)
                 await utils.delay_send(
                     msg.channel,
                     client.messages["class_list_prelude"].format(
@@ -71,10 +82,35 @@ class ListClasses(Command):
             else:
                 await utils.delay_send(msg.channel, "DMed!")
 
-                embed = discord.Embed(description=class_str, color=0xDCC308)
                 await msg.author.send(
                     client.messages["class_list_prelude"].format(
                         str(content[:4]).upper()
                     ),
                     embed=embed,
                 )
+
+    async def general_listing(self, client, msg):
+        embed = discord.Embed(color=0xDCC308)
+        roles_list = ""
+        for role_name in client.config["roles"].keys():
+            roles_list += role_name + "\n"
+        embed.add_field(name="General Roles", value=roles_list)
+
+        for school in client.config["depts"].keys():
+            school_msg = ""
+            for dept in client.config["depts"][school]:
+                school_msg += dept + "\n"
+            embed.add_field(name=school, value=school_msg)
+
+        if msg.channel.type is discord.DMChannel:
+            await utils.delay_send(
+                msg.channel,
+                client.messages["general_class_list_prelude"],
+                embed=embed,
+            )
+        else:
+            await utils.delay_send(msg.channel, "DMed!")
+
+            await msg.author.send(
+                client.messages["general_class_list_prelude"], embed=embed
+            )
