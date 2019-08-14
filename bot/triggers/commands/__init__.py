@@ -38,9 +38,7 @@ class Command(MessageTrigger):
         return True
 
     async def execute_command(self, client, msg, content: str):
-        raise NotImplementedError(
-            "'execute_command' not implemented for this command"
-        )
+        raise NotImplementedError("'execute_command' not implemented for this command")
 
     def __lt__(self, other):
         return self.names[0] < other.names[0]

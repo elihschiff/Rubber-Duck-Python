@@ -28,9 +28,7 @@ class ListClasses(Command):
 
         for letter in content[:4]:
             if letter not in string.ascii_letters:
-                await msg.channel.send(
-                    client.messages["invalid_class_list_format"]
-                )
+                await msg.channel.send(client.messages["invalid_class_list_format"])
                 return
 
         class_list = []
@@ -60,9 +58,7 @@ class ListClasses(Command):
         if len(class_list) == 0:
             await utils.delay_send(
                 msg.channel,
-                client.messages["dept_not_found"].format(
-                    str(content[:4]).upper()
-                ),
+                client.messages["dept_not_found"].format(str(content[:4]).upper()),
             )
         else:
             class_str = ""
@@ -104,9 +100,7 @@ class ListClasses(Command):
 
         if msg.channel.type is discord.DMChannel:
             await utils.delay_send(
-                msg.channel,
-                client.messages["general_class_list_prelude"],
-                embed=embed,
+                msg.channel, client.messages["general_class_list_prelude"], embed=embed
             )
         else:
             await utils.delay_send(msg.channel, "DMed!")

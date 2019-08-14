@@ -27,12 +27,7 @@ async def send_message_to_violator(client, user):
 # will be unmodified.
 def validate_discord_emote(emote) -> str:
     emote_id = discord_emote_id_re.search(emote).group(1)
-    if (
-        requests.get(
-            f"https://cdn.discordapp.com/emojis/{emote_id}"
-        ).status_code
-        == 200
-    ):
+    if requests.get(f"https://cdn.discordapp.com/emojis/{emote_id}").status_code == 200:
         # valid emote
         return ""
     else:
@@ -52,10 +47,7 @@ def valid_emoji(content) -> bool:
 # deletes message if the message is invalid
 # returns true if the message was deleted
 async def invalid_emoji_message(client, msg) -> bool:
-    if (
-        msg.channel.type is ChannelType.private
-        or msg.channel.type is ChannelType.group
-    ):
+    if msg.channel.type is ChannelType.private or msg.channel.type is ChannelType.group:
         return False
 
     if utils.user_is_admin(msg.author):

@@ -24,9 +24,7 @@ class EmojiMode(Command):
         with open(client.config_filename, "w") as config_file:
             json.dump(client.config, config_file, indent=4)
         await utils.delay_send(
-            channel,
-            client.messages["emoji_mode_channel_activate"],
-            delay_factor=0.01,
+            channel, client.messages["emoji_mode_channel_activate"], delay_factor=0.01
         )
 
     async def channel_emoji_mode_off(self, client, channel):
@@ -37,9 +35,7 @@ class EmojiMode(Command):
         with open(client.config_filename, "w") as config_file:
             json.dump(client.config, config_file, indent=4)
         await utils.delay_send(
-            channel,
-            client.messages["emoji_mode_channel_deactivate"],
-            delay_factor=0.01,
+            channel, client.messages["emoji_mode_channel_deactivate"], delay_factor=0.01
         )
 
     async def user_emoji_mode_toggle(self, client, user):
