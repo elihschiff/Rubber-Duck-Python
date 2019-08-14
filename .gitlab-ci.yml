@@ -31,4 +31,4 @@ deploy-to-server:
                 - chmod -R 700 ~/.ssh
                 - ssh gitlab@$CONTAINER_IP "sh -c 'cd rubber-duck && ./deploy.sh"
         only:
-                - branches@rpi-academic-discord/master
+                - master@rpi-academic-discord/slithering-duck
