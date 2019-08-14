@@ -68,7 +68,7 @@ class DuckClient(discord.Client):
 
     async def on_member_join(self, member):
         for trigger in new_member_triggers:
-            await trigger.execute_welcome(self, member)
+            await trigger.execute_new_member(self, member)
 
     async def on_reaction_add(self, reaction, user):
         for trigger in reaction_triggers:

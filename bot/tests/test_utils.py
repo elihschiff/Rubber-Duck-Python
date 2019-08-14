@@ -36,6 +36,10 @@ class MockUser:
         self.was_mentioned = False
         self.guild = None
         self.guild_permissions = MockUserPermissions()
+        self.channel = MockChannel()
+
+    async def send(self, message="", file=None, embed=None):
+        self.channel.send(message, file=file, embed=embed)
 
     def mentioned_in(self, msg):
         return self.was_mentioned  # can be changed if a more robust solution is needed
