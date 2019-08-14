@@ -1,9 +1,9 @@
 from discord import ChannelType, File
-import json
+import sqlite3
 
 
 async def log(client, msg):
-    LOG_SERVER = client.get_guild(client.logging["LOG_SERVER_ID"])
+    LOG_SERVER = client.get_guild(client.config["LOG_SERVER_ID"])
     if LOG_SERVER is None:
         # check does not need to be here (log_server is only necessary in the case
         # that no corresponding logging channel exists) since the client can receive
@@ -13,8 +13,6 @@ async def log(client, msg):
 
     if msg.channel.type is not ChannelType.private and msg.guild != client.SERVER:
         return
-
-    json_dirty = False
 
     destination_channel = None
     log_content = None
@@ -26,7 +24,7 @@ async def log(client, msg):
         attached_files.append(saved_attachment)
 
     if msg.channel.type is ChannelType.private:
-        destination_channel = LOG_SERVER.get_channel(client.logging["DM_LOGS"])
+        destination_channel = LOG_SERVER.get_channel(client.config["DM_LOG_CHANNEL_ID"])
         rcvd_channel_tag = ""
         if msg.author == client.user:
             rcvd_channel_tag = (
@@ -35,29 +33,28 @@ async def log(client, msg):
 
         log_content = f"{msg.author.name} ({msg.author.id}){rcvd_channel_tag}: {msg.clean_content}"
     else:
-        if msg.channel.id not in client.logging:
-            source_category = msg.channel.category
-            destination_category = None
-            if source_category.id not in client.logging:
-                destination_category = await LOG_SERVER.create_category_channel(
-                    source_category.name
-                )
-                client.logging[f"{source_category.id}"] = destination_category.id
-            else:
-                destination_category = LOG_SERVER.get_channel(
-                    client.logging(f"{source_category.id}")
-                )
+        connection = sqlite3.connect("database.db")
+        c = connection.cursor()
 
-            destination_channel = await LOG_SERVER.create_text_channel(
-                msg.channel.name, category=destination_category
-            )
+        client.lock.acquire()
+        c.execute(
+            f"SELECT dest_channel_id FROM logging WHERE source_channel_id = {msg.channel.id}"
+        )
+        dest_channel_id = c.fetchone()
+        client.lock.release()
+
+        if dest_channel_id is None:
+            destination_channel = await LOG_SERVER.create_text_channel(msg.channel.name)
             client.logging[f"{msg.channel.id}"] = destination_channel.id
-
-            json_dirty = True
-        else:
-            destination_channel = LOG_SERVER.get_channel(
-                client.logging[f"{msg.channel.id}"]
+            client.lock.acquire()
+            c.execute(
+                f"INSERT INTO logging (source_channel_id, dest_channel_id) VALUES ({msg.channel.id}, {destination_channel.id})"
             )
+            connection.commit()
+            client.lock.release()
+
+        else:
+            destination_channel = LOG_SERVER.get_channel(dest_channel_id[0])
 
         log_content = f"{msg.author.name} ({msg.author.id}): {msg.clean_content}"
 
@@ -65,7 +62,3 @@ async def log(client, msg):
 
     for attached_file in attached_files:
         os.remove(attached_file.filename)
-
-    if json_dirty:
-        with open(client.logging_filename, "w") as logging_file:
-            json.dump(client.logging, logging_file)
