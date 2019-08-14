@@ -55,7 +55,7 @@ class AddClass(Command, ReactionTrigger):
     needsContent = True
 
     def __init__(self):
-        self.connection = sqlite3.connect("classes.db")
+        self.connection = sqlite3.connect("database.db")
         self.c = self.connection.cursor()
 
     async def execute_command(self, client, msg, content):
@@ -196,7 +196,7 @@ class RemoveClass(Command, ReactionTrigger):
     needsContent = True
 
     def __init__(self):
-        connection = sqlite3.connect("classes.db")
+        connection = sqlite3.connect("database.db")
         self.c = connection.cursor()
 
     async def execute_command(self, client, msg, content):
