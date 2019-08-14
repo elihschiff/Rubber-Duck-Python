@@ -8,5 +8,4 @@ class Echo(Command):
     needsContent = True
 
     async def execute_command(self, client, msg, content):
-        await utils.delay_send(msg.channel, "Succcess!")
         await utils.delay_send(msg.channel, content)
