@@ -1,4 +1,5 @@
-from discord import DMChannel, File
+from discord import ChannelType, File
+import json
 
 
 async def log(client, msg):
@@ -8,6 +9,9 @@ async def log(client, msg):
         # that no corresponding logging channel exists) since the client can receive
         # a channel by its id alone, but putting the check here helps ensuring a sane
         # config file
+        return
+
+    if msg.channel.type is not ChannelType.private and msg.guild != client.SERVER:
         return
 
     json_dirty = False
@@ -21,11 +25,13 @@ async def log(client, msg):
         await attachment.save(saved_attachment.fp, use_cached=True)
         attached_files.append(saved_attachment)
 
-    if msg.channel is DMChannel:
+    if msg.channel.type is ChannelType.private:
         destination_channel = LOG_SERVER.get_channel(client.logging["DM_LOGS"])
         rcvd_channel_tag = ""
         if msg.author == client.user:
-            rcvd_channel_tag = f" from {msg.author.name} ({msg.author.id})"
+            rcvd_channel_tag = (
+                f" to {msg.channel.recipient.name} ({msg.channel.recipient.id})"
+            )
 
         log_content = f"{msg.author.name} ({msg.author.id}){rcvd_channel_tag}: {msg.clean_content}"
     else:
