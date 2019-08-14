@@ -22,20 +22,17 @@ def fuzzy_search(c, query, max_results):
     c.execute("SELECT * FROM classes")
     records = c.fetchall()
     for i in records:
-        if i[2] != 1:
-            continue
-
-        real_name = ", ".join(json.loads(i[4].replace("'", '"'))) + ": " + i[1]
+        real_name = ", ".join(json.loads(i[3].replace("'", '"'))) + ": " + i[1]
 
         class_list.append(i[1])
         real_name_list.append(real_name)
 
-        codes = json.loads(i[4].replace("'", '"'))
+        codes = json.loads(i[3].replace("'", '"'))
         for code in codes:
             class_list.append(code)
             real_name_list.append(real_name)
 
-        identifiers = json.loads(i[6].replace("'", '"'))
+        identifiers = json.loads(i[5].replace("'", '"'))
         for ident in identifiers:
             class_list.append(ident)
             real_name_list.append(real_name)
@@ -110,7 +107,7 @@ class AddClass(Command, ReactionTrigger):
         client.lock.acquire()
         self.c.execute(f"SELECT * FROM classes WHERE name = '{course_name}'")
         course = self.c.fetchone()
-        channel_id = int(course[3])
+        channel_id = int(course[2])
         client.lock.release()
 
         channel = None
@@ -137,7 +134,7 @@ class AddClass(Command, ReactionTrigger):
                 channel = await class_category_channel.create_text_channel(
                     new_channel_name,
                     position=insert_idx,
-                    topic=", ".join(json.loads(course[4].replace("'", '"')))
+                    topic=", ".join(json.loads(course[3].replace("'", '"')))
                     + ": "
                     + course[1],
                     overwrites={
