@@ -15,7 +15,7 @@ class Translate(Command):
         if len(content) == 0:
             this_message = False
             async for message in msg.channel.history(limit=10):
-                if this_message:
+                if this_message and not message.author.bot:
                     content = message.content
                     break
                 if message.id == msg.id:
