@@ -133,49 +133,47 @@ class AddClass(Command, ReactionTrigger):
         else:
             new_channel_name = course_name.strip().replace(" ", "-").lower()
 
-            class_category_channel = client.get_channel(
-                client.config["CLASS_CATEGORY_ID"]
-            )
+            added = False
+            for category_id in client.config["CLASS_CATEGORY_ID"]:
+                class_category_channel = client.get_channel(category_id)
 
-            all_seer = client.SERVER.get_role(client.config["ALL_SEER_ID"])
-            time_out = client.SERVER.get_role(client.config["TIME_OUT_ID"])
+                all_seer = client.SERVER.get_role(client.config["ALL_SEER_ID"])
+                time_out = client.SERVER.get_role(client.config["TIME_OUT_ID"])
 
-            # ensure alphabetical ordering
-            insert_idx = len(class_category_channel.text_channels) + 1
-            for channel in class_category_channel.text_channels:
-                insert_idx = channel.position - 1
-                if channel.name > new_channel_name:
-                    break
+                try:
+                    channel = await class_category_channel.create_text_channel(
+                        new_channel_name,
+                        topic=", ".join(json.loads(course[3].replace("'", '"')))
+                        + ": "
+                        + course[1],
+                        overwrites={
+                            client.SERVER.default_role: discord.PermissionOverwrite(
+                                read_messages=False
+                            ),
+                            all_seer: discord.PermissionOverwrite(read_messages=True),
+                            time_out: discord.PermissionOverwrite(
+                                send_messages=False, add_reactions=False
+                            ),
+                        },
+                    )
+                    added = True
+                except discord.HTTPException as e:
+                    continue
 
-            try:
-                channel = await class_category_channel.create_text_channel(
-                    new_channel_name,
-                    position=insert_idx,
-                    topic=", ".join(json.loads(course[3].replace("'", '"')))
-                    + ": "
-                    + course[1],
-                    overwrites={
-                        client.SERVER.default_role: discord.PermissionOverwrite(
-                            read_messages=False
-                        ),
-                        all_seer: discord.PermissionOverwrite(read_messages=True),
-                        time_out: discord.PermissionOverwrite(
-                            send_messages=False, add_reactions=False
-                        ),
-                    },
+                client.lock.acquire()
+                client.c.execute(
+                    f"UPDATE classes SET channel_id = {channel.id} WHERE name = '{course_name}'"
                 )
-            except discord.HTTPException as e:
-                await msg.channel.send(
-                    client.messages["err_too_many_channels"].format(e.text)
+                client.connection.commit()
+                client.lock.release()
+
+                break
+
+            if not added:
+                msg.channel.send(
+                    "Error: Unable to add course.  Please message an admin about this."
                 )
                 return
-
-            client.lock.acquire()
-            client.c.execute(
-                f"UPDATE classes SET channel_id = {channel.id} WHERE name = '{course_name}'"
-            )
-            client.connection.commit()
-            client.lock.release()
 
         try:
             overwrite = discord.PermissionOverwrite()
