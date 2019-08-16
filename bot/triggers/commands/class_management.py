@@ -210,21 +210,21 @@ class RemoveClass(Command, ReactionTrigger):
     async def execute_command(self, client, msg, content):
         for role in client.config["general_roles"].keys():
             if content.lower() == role.lower():
-                await self.add_role(
+                await self.remove_role(
                     client, msg, client.config["general_roles"][role], role
                 )
                 return
 
         for major in client.config["major_roles"].keys():
             if content.lower() == major.lower():
-                await self.add_role(
+                await self.remove_role(
                     client, msg, client.config["major_roles"][major], major
                 )
                 return
 
         for major in client.config["major_abbreviations"].keys():
             if content.lower() in client.config["major_abbreviations"][major]:
-                await self.add_role(
+                await self.remove_role(
                     client, msg, client.config["major_roles"][major], major
                 )
                 return
