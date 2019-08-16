@@ -60,23 +60,13 @@ class ListClasses(Command):
 
             embed = discord.Embed(description=class_str, color=0xDCC308)
 
-            if msg.channel.type is discord.DMChannel:
-                await utils.delay_send(
-                    msg.channel,
-                    client.messages["class_list_prelude"].format(
-                        str(content[:4]).upper()
-                    ),
-                    embed=embed,
-                )
-            else:
-                await utils.delay_send(msg.channel, "DMed!")
+            if msg.channel.type is not discord.ChannelType.private:
+                await msg.channel.send("DMed!")
 
-                await msg.author.send(
-                    client.messages["class_list_prelude"].format(
-                        str(content[:4]).upper()
-                    ),
-                    embed=embed,
-                )
+            await msg.author.send(
+                client.messages["class_list_prelude"].format(str(content[:4]).upper()),
+                embed=embed,
+            )
 
     async def general_listing(self, client, msg):
         embed = discord.Embed(color=0xDCC308)
@@ -96,13 +86,11 @@ class ListClasses(Command):
                 school_msg += dept + "\n"
             embed.add_field(name=school, value=school_msg)
 
-        if msg.channel.type is discord.ChannelType.private:
-            await utils.delay_send(
-                msg.channel, client.messages["general_class_list_prelude"], embed=embed
-            )
-        else:
-            await utils.delay_send(msg.channel, "DMed!")
+        if msg.channel.type is not discord.ChannelType.private:
+            await msg.channel.send("DMed!")
 
-            await msg.author.send(
-                client.messages["general_class_list_prelude"], embed=embed
-            )
+        await msg.author.send(
+            client.messages["general_class_list_prelude"], embed=embed
+        )
+
+        await msg.author.send(client.messages["post_general_class_list"])

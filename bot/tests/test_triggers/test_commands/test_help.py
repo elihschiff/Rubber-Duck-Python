@@ -17,7 +17,9 @@ class TestHelp(unittest.TestCase):
         expected_help = discord.Embed()
         commands_str = ""
         for command in all_commands:
-            commands_str += f"**{command.names[0]}:** {command.description}\n"
+            commands_str += (
+                f"**{command.prefixes[0]}{command.names[0]}:** {command.description}\n"
+            )
         expected_help.add_field(
             name="General Commands", value=commands_str, inline=True
         )
