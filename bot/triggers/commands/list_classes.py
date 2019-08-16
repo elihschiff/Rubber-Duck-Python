@@ -37,13 +37,11 @@ class ListClasses(Command):
         client.lock.release()
 
         for i in records:
-            if i[2] != 1:
-                continue
             class_list.append(
                 ", ".join(
                     [
                         "**" + course_code + "**"
-                        for course_code in json.loads(i[4].replace("'", '"'))
+                        for course_code in json.loads(i[3].replace("'", '"'))
                         if str(content[:4]).upper() in course_code
                     ]
                 )
@@ -98,7 +96,7 @@ class ListClasses(Command):
                 school_msg += dept + "\n"
             embed.add_field(name=school, value=school_msg)
 
-        if msg.channel.type is discord.DMChannel:
+        if msg.channel.type is discord.ChannelType.private:
             await utils.delay_send(
                 msg.channel, client.messages["general_class_list_prelude"], embed=embed
             )

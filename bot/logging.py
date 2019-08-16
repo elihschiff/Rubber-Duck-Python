@@ -41,7 +41,6 @@ async def log(client, msg):
 
         if dest_channel_id is None:
             destination_channel = await LOG_SERVER.create_text_channel(msg.channel.name)
-            client.logging[f"{msg.channel.id}"] = destination_channel.id
 
             client.lock.acquire()
             client.c.execute(
