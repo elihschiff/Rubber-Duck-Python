@@ -71,6 +71,31 @@
 		"Sustainability Studies": 0
 	},
 
+	"major_abbreviations": {
+		"Aeronautical Engineering": ["aero"],
+		"Architecture": ["arch"],
+		"Biology": ["bio", "biol"],
+		"Biomedical Engineering": ["biomed"],
+		"Chemistry": ["chem"],
+		"Cognitive Science": ["cogsci", "cogs"],
+		"Communication": ["comm"],
+		"Computer and Systems Engineering": ["cse"],
+		"Computer Science": ["cs", "comp sci"],
+		"Design, Innovation, and Society": ["dis"],
+		"Economics": ["econ"],
+		"Electrical Engineering": ["ee"],
+		"Electronic Arts": ["ea", "eart", "earts"],
+		"Games and Simulation Arts and Sciences": ["gsas"],
+		"Geology": ["geo", "geol"],
+		"Materials Engineering": ["mat eng"],
+		"Mathematics": ["math"],
+		"Mechanical Engineering": ["meche"],
+		"Nuclear Engineering": ["nuce", "nuke"],
+		"Philosphy": ["phil"],
+		"Physics": ["phys"],
+		"Science, Technology, and Society": ["sts"]
+	},
+
 	"depts": {
 		"Humanities, Arts and Social Sciences": [
 			"ARTS",

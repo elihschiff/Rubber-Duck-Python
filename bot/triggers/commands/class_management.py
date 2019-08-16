@@ -54,13 +54,20 @@ class AddClass(Command, ReactionTrigger):
     needsContent = True
 
     async def execute_command(self, client, msg, content):
-        if content in client.config["general_roles"].keys():
-            await self.add_role(client, msg, content)
-            return
+        for role in client.config["general_roles"].keys():
+            if content.lower() == role.lower():
+                await self.add_role(client, msg, content)
+                return
 
-        if content in client.config["major_roles"].keys():
-            await self.add_role(client, msg, content)
-            return
+        for major in client.config["major_roles"].keys():
+            if content.lower() == major.lower():
+                await self.add_role(client, msg, content)
+                return
+
+        for major in client.config["major_abbreviations"].keys():
+            if content.lower() in client.config["major_abbreviations"][major]:
+                await self.add_role(client, msg, major)
+                return
 
         client.lock.acquire()
         options = fuzzy_search(client.c, content, 5)
@@ -195,13 +202,20 @@ class RemoveClass(Command, ReactionTrigger):
     needsContent = True
 
     async def execute_command(self, client, msg, content):
-        if content in client.config["general_roles"].keys():
-            await self.remove_role(client, msg, content)
-            return
+        for role in client.config["general_roles"].keys():
+            if content.lower() == role.lower():
+                await self.remove_role(client, msg, content)
+                return
 
-        if content in client.config["major_roles"].keys():
-            await self.remove_role(client, msg, content)
-            return
+        for major in client.config["major_roles"].keys():
+            if content.lower() == major.lower():
+                await self.remove_role(client, msg, content)
+                return
+
+        for major in client.config["major_abbreviations"].keys():
+            if content.lower() in client.config["major_abbreviations"][major]:
+                await self.remove_role(client, msg, major)
+                return
 
         client.lock.acquire()
         options = fuzzy_search(client.c, content, 5)
