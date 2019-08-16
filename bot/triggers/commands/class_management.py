@@ -54,7 +54,11 @@ class AddClass(Command, ReactionTrigger):
     needsContent = True
 
     async def execute_command(self, client, msg, content):
-        if content in client.config["roles"].keys():
+        if content in client.config["general_roles"].keys():
+            await self.add_role(client, msg, content)
+            return
+
+        if content in client.config["major_roles"].keys():
             await self.add_role(client, msg, content)
             return
 
@@ -191,7 +195,11 @@ class RemoveClass(Command, ReactionTrigger):
     needsContent = True
 
     async def execute_command(self, client, msg, content):
-        if content in client.config["roles"].keys():
+        if content in client.config["general_roles"].keys():
+            await self.remove_role(client, msg, content)
+            return
+
+        if content in client.config["major_roles"].keys():
             await self.remove_role(client, msg, content)
             return
 

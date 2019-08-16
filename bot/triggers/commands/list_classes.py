@@ -83,9 +83,14 @@ class ListClasses(Command):
     async def general_listing(self, client, msg):
         embed = discord.Embed(color=0xDCC308)
         roles_list = ""
-        for role_name in client.config["roles"].keys():
+        for role_name in client.config["general_roles"].keys():
             roles_list += role_name + "\n"
         embed.add_field(name="General Roles", value=roles_list)
+
+        roles_list = ""
+        for role_name in client.config["major_roles"].keys():
+            roles_list += role_name + "\n"
+        embed.add_field(name="Major Roles", value=roles_list)
 
         for school in client.config["depts"].keys():
             school_msg = ""
