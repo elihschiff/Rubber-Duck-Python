@@ -30,6 +30,7 @@ class DuckClient(discord.Client):
             self.quacks = quacks_file.read().split("\n%\n")
 
         self.lock = threading.Lock()
+        self.logging_lock = threading.Lock()
         self.connection = sqlite3.connect("database.db")
         self.c = self.connection.cursor()
 
