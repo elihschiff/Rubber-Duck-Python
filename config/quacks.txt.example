@@ -67,7 +67,7 @@ Quack Quack, Quackity Quack
 Quackity Quackity Quack
 %
 Want to add more quacks‽ Why not submit a pull request?
-<https://github.com/rpi-cs-discord/Rubber-Duck/blob/master/quacks.txt>
+<https://gitlab.com/rpi-academic-discord/slithering-duck/blob/master/config/quacks.txt.example>
 %
 1 quack, 2 quack, I quack, you quack
 %
@@ -113,4 +113,3 @@ import os
 while(os.fork()):
   print('quack')
 ```
-<Paste>
