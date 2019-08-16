@@ -56,17 +56,23 @@ class AddClass(Command, ReactionTrigger):
     async def execute_command(self, client, msg, content):
         for role in client.config["general_roles"].keys():
             if content.lower() == role.lower():
-                await self.add_role(client, msg, content)
+                await self.add_role(
+                    client, msg, client.config["general_roles"][role], role
+                )
                 return
 
         for major in client.config["major_roles"].keys():
             if content.lower() == major.lower():
-                await self.add_role(client, msg, content)
+                await self.add_role(
+                    client, msg, client.config["major_roles"][major], major
+                )
                 return
 
         for major in client.config["major_abbreviations"].keys():
             if content.lower() in client.config["major_abbreviations"][major]:
-                await self.add_role(client, msg, major)
+                await self.add_role(
+                    client, msg, client.config["major_roles"][major], major
+                )
                 return
 
         client.lock.acquire()
@@ -181,8 +187,8 @@ class AddClass(Command, ReactionTrigger):
         except:
             await msg.channel.send("ERROR: Unable to add class")
 
-    async def add_role(self, client, msg, role_name):
-        role = client.SERVER.get_role(client.config["roles"][role_name])
+    async def add_role(self, client, msg, role_id, role_name):
+        role = client.SERVER.get_role(role_id)
         server_member = client.SERVER.get_member(msg.author.id)
         await server_member.add_roles(role)
 
@@ -204,17 +210,23 @@ class RemoveClass(Command, ReactionTrigger):
     async def execute_command(self, client, msg, content):
         for role in client.config["general_roles"].keys():
             if content.lower() == role.lower():
-                await self.remove_role(client, msg, content)
+                await self.add_role(
+                    client, msg, client.config["general_roles"][role], role
+                )
                 return
 
         for major in client.config["major_roles"].keys():
             if content.lower() == major.lower():
-                await self.remove_role(client, msg, content)
+                await self.add_role(
+                    client, msg, client.config["major_roles"][major], major
+                )
                 return
 
         for major in client.config["major_abbreviations"].keys():
             if content.lower() in client.config["major_abbreviations"][major]:
-                await self.remove_role(client, msg, major)
+                await self.add_role(
+                    client, msg, client.config["major_roles"][major], major
+                )
                 return
 
         client.lock.acquire()
@@ -280,8 +292,8 @@ class RemoveClass(Command, ReactionTrigger):
         except:
             await msg.channel.send("ERROR: Unable to remove class")
 
-    async def remove_role(self, client, msg, role_name):
-        role = client.SERVER.get_role(client.config["roles"][role_name])
+    async def remove_role(self, client, msg, role_id, role_name):
+        role = client.SERVER.get_role(role_id)
         server_member = client.SERVER.get_member(msg.author.id)
         await server_member.remove_roles(role)
 
