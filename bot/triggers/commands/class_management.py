@@ -203,7 +203,7 @@ class AddClass(Command, ReactionTrigger):
 
 
 class RemoveClass(Command, ReactionTrigger):
-    names = ["remove", "leave"]
+    names = ["remove", "leave", "sub"]
     description = "Removes you from class specific channels"
     needsContent = True
 
