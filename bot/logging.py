@@ -32,22 +32,22 @@ async def log(client, msg):
 
         log_content = f"{msg.author.name} ({msg.author.id}){rcvd_channel_tag}: {msg.clean_content}"
     else:
-        client.logging_lock.acquire()
-        client.c.execute(
+        client.log_lock.acquire()
+        client.log_c.execute(
             f"SELECT dest_channel_id FROM logging WHERE source_channel_id = {msg.channel.id}"
         )
-        dest_channel_id = client.c.fetchone()
-        client.logging_lock.release()
+        dest_channel_id = client.log_c.fetchone()
+        client.log_lock.release()
 
         if dest_channel_id is None:
             destination_channel = await LOG_SERVER.create_text_channel(msg.channel.name)
 
-            client.logging_lock.acquire()
-            client.c.execute(
+            client.log_lock.acquire()
+            client.log_c.execute(
                 f"INSERT INTO logging (source_channel_id, dest_channel_id) VALUES ({msg.channel.id}, {destination_channel.id})"
             )
-            client.connection.commit()
-            client.logging_lock.release()
+            client.log_connection.commit()
+            client.log_lock.release()
 
         else:
             destination_channel = LOG_SERVER.get_channel(dest_channel_id[0])

@@ -30,9 +30,12 @@ class DuckClient(discord.Client):
             self.quacks = quacks_file.read().split("\n%\n")
 
         self.lock = threading.Lock()
-        self.logging_lock = threading.Lock()
         self.connection = sqlite3.connect("database.db")
         self.c = self.connection.cursor()
+
+        self.log_lock = threading.Lock()
+        self.log_connection = sqlite3.connect("logging.db")
+        self.log_c = self.connection.cursor()
 
     async def on_ready(self):
         if len(sys.argv) > 1:
@@ -43,7 +46,7 @@ class DuckClient(discord.Client):
         print(f"Connected as {self.user}!")
 
     async def on_message(self, msg):
-        # await logging.log(self, msg)
+        await logging.log(self, msg)
 
         if msg.author.bot:
             return
