@@ -3,7 +3,7 @@ from .test_code import TestCode
 from .test_echo import TestEcho
 from .test_help import TestHelp
 
-# from .test_latex import TestLatex # latex machine broke
+from .test_latex import TestLatex
 from .test_lmdtfy import TestLmdtfy
 from .test_man import TestMan
 
@@ -15,7 +15,7 @@ all_commands = [
     TestCode,
     TestEcho,
     TestHelp,
-    # TestLatex, # latex machine broke
+    TestLatex,
     TestLmdtfy,
     TestMan,
     # TestMinecraft,
