@@ -35,7 +35,7 @@ class DuckClient(discord.Client):
 
         self.log_lock = threading.Lock()
         self.log_connection = sqlite3.connect("logging.db")
-        self.log_c = self.connection.cursor()
+        self.log_c = self.log_connection.cursor()
 
     async def on_ready(self):
         if len(sys.argv) > 1:
