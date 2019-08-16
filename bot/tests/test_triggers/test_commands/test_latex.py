@@ -20,21 +20,30 @@ class TestLatex(unittest.TestCase):
 
     @test_utils.async_test
     async def test_latex(self):
-        print("latex machine broke")
-        """"
         test_strings = ["$quack$", "\\Sigma"]
         for string in test_strings:
             msg = test_utils.init_message(f"!tex {string}")
             await self.client.on_message(msg)
 
-            data = requests.post(
-                url="http://latex2png.com/",
-                data={"latex": string, "res": 600, "color": "FFFFFF", "x": 62, "y": 28},
+            data = json.dumps(
+                {
+                    "auth": {"user": "guest", "password": "guest"},
+                    "latex": string,
+                    "resolution": 600,
+                    "color": "FFFFFF",
+                }
             )
-            name = re.search(r"latex_(.*)\.png", data.text).group()
-            if name:
-                url = f"http://latex2png.com/output//{name}"
-                tmpLocation = f"/tmp/{name}"
+
+            response = requests.post(
+                "http://latex2png.com/api/convert", data=data, verify=False
+            )
+            json_response = json.loads(response.text)
+
+            if "url" in json_response:
+                sub_url = json_response["url"]
+                url = f"http://latex2png.com{sub_url}"
+                image_id = sub_url.split("/")[2]
+                tmpLocation = f"/tmp/{image_id}"
                 urllib.request.urlretrieve(url, tmpLocation)
 
                 expected_img = Image.open(tmpLocation)
@@ -63,24 +72,18 @@ class TestLatex(unittest.TestCase):
                 self.assertTrue(rms < 150)
 
                 os.remove(msg.channel.filename)
-            """
 
     @test_utils.async_test
     async def test_latex_empty(self):
-        print("latex machine broke")
-        """
         for num_spaces in range(0, 1):
             msg = test_utils.init_message("!tex" + " " * num_spaces)
             await self.client.on_message(msg)
             self.assertIsNone(msg.channel.test_result)
             self.assertIsNone(msg.channel.embed_dict)
             self.assertIsNone(msg.channel.filename)
-        """
 
     @test_utils.async_test
     async def test_latex_from_bot(self):
-        print("latex machine broke")
-        """
         test_strings = ["$quack$", "\\Sigma"]
         for string in test_strings:
             msg = test_utils.init_message(f"!tex {string}")
@@ -89,4 +92,3 @@ class TestLatex(unittest.TestCase):
             self.assertIsNone(msg.channel.test_result)
             self.assertIsNone(msg.channel.embed_dict)
             self.assertIsNone(msg.channel.filename)
-        """

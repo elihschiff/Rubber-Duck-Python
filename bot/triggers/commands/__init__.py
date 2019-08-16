@@ -50,7 +50,7 @@ from .code import Code
 from .echo import Echo
 from .emoji_mode import EmojiMode
 
-# from .latex import Latex # latex machine broke
+from .latex import Latex  # latex machine broke
 from .list_classes import ListClasses
 from .lmdtfy import Lmdtfy, Lmgtfy
 from .man import Man
@@ -66,7 +66,7 @@ all_commands = [
     Code(),
     Echo(),
     EmojiMode(),
-    # Latex(), # latex machine broke
+    Latex(),  # latex machine broke
     ListClasses(),
     Lmdtfy(),
     Lmgtfy(),

@@ -7,6 +7,7 @@ import discord
 from PIL import Image, ImageOps
 import os
 import math
+import json
 
 
 class Latex(Command):
@@ -15,23 +16,25 @@ class Latex(Command):
     needsContent = True
 
     async def execute_command(self, client, msg, content):
-        print("latex machine broke")
-        """
-        data = requests.post(
-            url="http://latex2png.com/",
-            data={
+        data = json.dumps(
+            {
+                "auth": {"user": "guest", "password": "guest"},
                 "latex": content,
-                "res": 600,
+                "resolution": 600,
                 "color": "FFFFFF",
-                "x": 62,
-                "y": 28,
-            },
+            }
         )
-        print(data.text)
-        name = re.search(r"latex_(.*)\.png", data.text).group()
-        if name:
-            url = f"http://latex2png.com/output//{name}"
-            tmpLocation = f"/tmp/{name}"
+
+        response = requests.post(
+            "http://latex2png.com/api/convert", data=data, verify=False
+        )
+        json_response = json.loads(response.text)
+
+        if "url" in json_response:
+            sub_url = json_response["url"]
+            url = f"http://latex2png.com{sub_url}"
+            image_id = sub_url.split("/")[2]
+            tmpLocation = f"/tmp/{image_id}"
             urllib.request.urlretrieve(url, tmpLocation)
 
             img = Image.open(tmpLocation)
@@ -47,4 +50,5 @@ class Latex(Command):
 
             await msg.channel.send(file=discord.File(tmpLocation))
             os.remove(tmpLocation)
-        """
+        else:
+            await utils.delay_send(msg.channel, "ERROR IN LATEX")
