@@ -165,7 +165,7 @@ class AddClass(Command, ReactionTrigger):
                     },
                 )
             except discord.HTTPException:
-                msg.channel.send(client.messages["err_too_many_channels"])
+                await msg.channel.send(client.messages["err_too_many_channels"])
                 return
 
             client.lock.acquire()
