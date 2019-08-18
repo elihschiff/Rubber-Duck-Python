@@ -1,4 +1,6 @@
 from bot.duck import *
+from dotenv import load_dotenv
+import os
 import sqlite3
 
 connection = sqlite3.connect("database.db")
@@ -13,11 +15,9 @@ if len(records) >= 1:
 else:
     print("No classes in table")
 
+# loads variables from local .env file as environment variables (use os.getenv)
+load_dotenv()
 
 duck = DuckClient()
 
-bot_token = ""
-with open("bot_token", "r") as token_file:
-    bot_token = token_file.readline().strip()
-
-duck.run(bot_token)
+duck.run(os.getenv("BOT_TOKEN"))
