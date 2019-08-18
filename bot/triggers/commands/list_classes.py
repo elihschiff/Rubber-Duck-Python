@@ -73,18 +73,18 @@ class ListClasses(Command):
         roles_list = ""
         for role_name in client.config["general_roles"].keys():
             roles_list += role_name + "\n"
-        embed.add_field(name="General Roles (!add ROLE)", value=roles_list)
+        embed.add_field(name="General Roles: `!add ROLE`", value=roles_list)
 
         roles_list = ""
         for role_name in client.config["major_roles"].keys():
             roles_list += role_name + "\n"
-        embed.add_field(name="Major Roles (!add MAJOR)", value=roles_list)
+        embed.add_field(name="Major Roles: `!add MAJOR`", value=roles_list)
 
         for school in client.config["depts"].keys():
             school_msg = ""
             for dept in client.config["depts"][school]:
                 school_msg += dept + "\n"
-            school_text = school + " (!list DEPT)"
+            school_text = school + ": `!list XXXX`"
             embed.add_field(name=school_text, value=school_msg)
 
         if msg.channel.type is not discord.ChannelType.private:
