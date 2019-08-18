@@ -8,8 +8,6 @@ async def delay_send(sendable, msg, delay_factor=1.0, embed=None):
     # print(delay)
     delay = max(2, delay)
 
-    delay = 0
-
     async with sendable.typing():
         await asyncio.sleep(delay)
 
