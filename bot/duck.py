@@ -48,7 +48,7 @@ class DuckClient(discord.Client):
         print(f"Connected as {self.user}!")
 
     async def on_message(self, msg):
-        # await logging.log(self, msg)
+        await logging.log(self, msg)
 
         if msg.author.bot:
             return
