@@ -54,19 +54,31 @@ class ListClasses(Command):
                 client.messages["dept_not_found"].format(str(content[:4]).upper()),
             )
         else:
-            class_str = ""
-            for class_name in sorted(class_list):
-                class_str += class_name + "\n"
-
-            embed = discord.Embed(description=class_str, color=0xDCC308)
-
             if msg.channel.type is not discord.ChannelType.private:
                 await msg.channel.send("DMed!")
 
-            await msg.author.send(
-                client.messages["class_list_prelude"].format(str(content[:4]).upper()),
-                embed=embed,
+            class_str = ""
+            prelude = client.messages["class_list_prelude"].format(
+                str(content[:4]).upper()
             )
+            for class_name in sorted(class_list):
+                class_str += class_name + "\n"
+                if len(class_str) + len(prelude) >= 2000:
+                    embed = discord.Embed(description=class_str, color=0xDCC308)
+
+                    await msg.author.send(prelude, embed=embed)
+                    class_str = ""
+
+            if len(class_str) != 0:
+                embed = discord.Embed(description=class_str, color=0xDCC308)
+
+                await msg.author.send(
+                    client.messages["class_list_prelude"].format(
+                        str(content[:4]).upper()
+                    ),
+                    embed=embed,
+                )
+                class_str = ""
 
     async def general_listing(self, client, msg):
         embed = discord.Embed(color=0xDCC308)
