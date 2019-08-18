@@ -84,7 +84,7 @@ class ListClasses(Command):
             school_msg = ""
             for dept in client.config["depts"][school]:
                 school_msg += dept + "\n"
-            school_text = school + " (!list CODE)"
+            school_text = school + " (!list DEPT)"
             embed.add_field(name=school_text, value=school_msg)
 
         if msg.channel.type is not discord.ChannelType.private:
