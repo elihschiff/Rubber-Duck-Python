@@ -15,7 +15,7 @@
 	"dept_not_found": "I am sorry I could not find a class from the department `{}`.  For a list of the 4 letter department codes, reuse the `!classes` command without arguments.",
 	"class_list_prelude": "Classes for {}:",
 	"general_class_list_prelude": "Below are the general roles you can add, as well as the department codes",
-	"post_general_class_list": "To view classes for a specific department, use `!list XXXX` or `!classes XXXX` where XXXX is the *4 letter department code**",
+	"post_general_class_list": "To view classes for a specific department, use `!list XXXX` or `!classes XXXX` where XXXX is the **4 letter department code**",
 
 	"add_role_confirmation": "You have been given the role `{}`",
 	"add_hidden_role": "You have been added to the hidden role.  Please do not discuss this role publicly.",
