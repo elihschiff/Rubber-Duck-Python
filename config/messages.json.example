@@ -3,7 +3,7 @@
 	"code": "My code can be found here: https://gitlab.com/rpi-academic-discord/slithering-duck\nPlease add any issues to the issue tracker or submit pull requests.\nRubber Duck is courtesy of \"Eli#8092\" and \"Phi11ipus#4667\". If you find any bugs or have a feature suggestion, feel free to send one of them a DM.",
 
 	"welcome_public": "Welcome {} Make sure to check your PM for how to view private class-specific chats.",
-	"welcome_dm": "Hi there! Welcome to the RPI Academic Discord Server. As you might’ve noticed, things look a little empty over there! Let’s fix that by giving you some class specific roles.\nTo add a class, please message me `!add CLASS NAME`.  (You can view the list of classes with the command `!classes`)",
+	"welcome_dm": "Hi there! Welcome to the RPI Academic Discord Server. As you might’ve noticed, things look a little empty over there! Let’s fix that by giving you some class specific roles.\nTo add a class, please message me `!add CLASS NAME`.  (You can view the list of roles and departments with the command `!list`)",
 
 	"emoji_mode_channel_activate": "This channel is now in emoji only mode. Your messages must only contain emoji.",
 	"emoji_mode_channel_deactivate": "This channel is no longer in emoji only mode. You are free to send normal text.",
@@ -11,11 +11,11 @@
 	"emoji_mode_user_deactivate": "You are no longer in emoji only mode. You are free to send normal text.",
 	"emoji_mode_dm": "You sent a message that contained non emoji characters in an emoji only chat. Your message has been removed!",
 
-	"invalid_class_list_format": "This command must be of the form `!classes XXXX`, where `XXXX` is the department you're searching for.",
+	"invalid_class_list_format": "This command must be of the form `!list XXXX`, where `XXXX` is the **4 letter department code** you're searching for. Type `!list` to view the list of valid codes. Please note that a major and a department code are different. If you are looking to add a major instead, please type `!add MAJOR`",
 	"dept_not_found": "I am sorry I could not find a class from the department `{}`.  For a list of the 4 letter department codes, reuse the `!classes` command without arguments.",
 	"class_list_prelude": "Classes for {}:",
 	"general_class_list_prelude": "Below are the general roles you can add, as well as the department codes",
-	"post_general_class_list": "To view classes for a specific department, use `!list DEPT` or `!classes DEPT`",
+	"post_general_class_list": "To view classes for a specific department, use `!list XXXX` or `!classes XXXX` where XXXX is the *4 letter department code**",
 
 	"add_role_confirmation": "You have been given the role `{}`",
 	"add_hidden_role": "You have been added to the hidden role.  Please do not discuss this role publicly.",
@@ -31,4 +31,3 @@
 
 	"invalid_command": "Sorry, I didn't understand the command `{}`.  To get a list of valid commands, send `!help`"
 }
-
