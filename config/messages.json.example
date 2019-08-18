@@ -27,6 +27,8 @@
 	"err_too_many_channels": "There was an error adding you to this class.  Please message a server admin and we'll figure something out.  Tell them this: {}",
 
 	"remove_class_prompt": ", your search for **{}** retrieved these results.\nClick the corresponding reaction to remove that class:",
-	"class_remove_confirmation": "You have been removed from {}"
+	"class_remove_confirmation": "You have been removed from {}",
+
+	"invalid_command": "Sorry, I didn't understand the command `{}`.  To get a list of valid commands, send `!help`"
 }
 

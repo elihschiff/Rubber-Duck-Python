@@ -5,7 +5,7 @@ import re
 class Command(MessageTrigger):
     prefixes = ["!"]
 
-    async def is_valid(self, msg) -> int:
+    async def is_valid(self, msg) -> (int, bool):
         command = ""
         for name in self.names:
             for prefix in self.prefixes:
@@ -16,26 +16,24 @@ class Command(MessageTrigger):
                 break
 
         if len(command) == 0:
-            return None
+            return (None, False)
 
         if self.needsContent and len(msg.content[len(command) :].strip()) == 0:
-            return None
+            return (None, True)
 
         try:
             if not await self.valid_command(msg):
-                return None
+                return (None, True)
         except:
             pass
 
-        return len(command)
+        return (len(command), True)
 
     async def execute_message(self, client, msg) -> bool:
-        idx = await self.is_valid(msg)
-        if idx is None:
-            return False
-
-        await self.execute_command(client, msg, msg.content[idx:].strip())
-        return True
+        (idx, recognized) = await self.is_valid(msg)
+        if idx is not None:
+            await self.execute_command(client, msg, msg.content[idx:].strip())
+        return recognized
 
     async def execute_command(self, client, msg, content: str):
         raise NotImplementedError("'execute_command' not implemented for this command")
@@ -78,3 +76,11 @@ all_commands = [
     Wikipedia(),
 ]
 all_commands.sort()
+
+
+async def invalid_command(client, msg):
+    if msg.author.bot or len(msg.content) < 2 or msg.content[0] != "!":
+        return False
+
+    await msg.channel.send(client.messages["invalid_command"].format(msg.content))
+    return True
