@@ -8,26 +8,28 @@
 	"emoji_mode_channel_activate": "This channel is now in emoji only mode. Your messages must only contain emoji.",
 	"emoji_mode_channel_deactivate": "This channel is no longer in emoji only mode. You are free to send normal text.",
 	"emoji_mode_user_activate": "You are now in emoji only mode. Your messages must only contain emoji.",
+	"emoji_mode_user_activate_public": "{} has been placed into emoji mode.",
 	"emoji_mode_user_deactivate": "You are no longer in emoji only mode. You are free to send normal text.",
+	"emoji_mode_user_deactivate_public": "{} has been removed from emoji mode.",
 	"emoji_mode_dm": "You sent a message that contained non emoji characters in an emoji only chat. Your message has been removed!",
 
-	"invalid_class_list_format": "This command must be of the form `!list XXXX`, where `XXXX` is the **4 letter department code** you're searching for. Type `!list` to view the list of valid codes. Please note that a major and a department code are different. If you are looking to add a major instead, please type `!add MAJOR`",
+	"invalid_class_list_format": "This command must be of the form `!list XXXX`, where `XXXX` is the **4 letter department code** you're searching for. Type `!list` to view the list of valid codes. Please note that a major and a department code are different. If you are looking to add a major instead, please type `!add MAJOR`.",
 	"dept_not_found": "I am sorry I could not find a class from the department `{}`.  For a list of the 4 letter department codes, reuse the `!classes` command without arguments.",
 	"class_list_prelude": "Classes for {}:",
 	"general_class_list_prelude": "Below are the general roles you can add, as well as the department codes",
 	"post_general_class_list": "To view classes for a specific department, use `!list XXXX` or `!classes XXXX` where XXXX is the **4 letter department code**",
 
-	"add_role_confirmation": "You have been given the role `{}`",
+	"add_role_confirmation": "You have been given the role `{}`.",
 	"add_hidden_role": "You have been added to the hidden role.  Please do not discuss this role publicly.",
-	"remove_role_confirmation": "You have been removed from the role `{}`",
+	"remove_role_confirmation": "You have been removed from the role `{}`.",
 	"remove_hidden_role": "You have been removed from the hidden role.  Please do not discuss this role publicly.",
 
 	"add_class_prompt": ", your search for **{}** retrieved these results.\nClick the corresponding reaction to add that class:",
-	"class_add_confirmation": "You have been added to {}",
+	"class_add_confirmation": "You have been added to {}.",
 	"err_too_many_channels": "There was an error adding you to this class.  Please message a server admin and we'll figure something out.  Tell them this: {}",
 
 	"remove_class_prompt": ", your search for **{}** retrieved these results.\nClick the corresponding reaction to remove that class:",
-	"class_remove_confirmation": "You have been removed from {}",
+	"class_remove_confirmation": "You have been removed from {}.",
 
-	"invalid_command": "Sorry, I didn't understand the command `{}`.  To get a list of valid commands, send `!help`"
+	"invalid_command": "Sorry, I didn't understand the command `{}`.  To get a list of valid commands, send `!help`."
 }
