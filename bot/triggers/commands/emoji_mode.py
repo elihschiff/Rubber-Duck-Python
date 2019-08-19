@@ -59,13 +59,13 @@ class EmojiMode(Command):
             channel, client.messages["emoji_mode_channel_deactivate"], delay_factor=0.01
         )
 
-    async def user_emoji_mode_toggle(self, client, user):
+    async def user_emoji_mode_toggle(self, client, user, sending_channel):
         if user_in_emoji_state(client, user):
-            await self.user_emoji_mode_off(client, user)
+            await self.user_emoji_mode_off(client, user, sending_channel)
         else:
-            await self.user_emoji_mode_on(client, user)
+            await self.user_emoji_mode_on(client, user, sending_channel)
 
-    async def user_emoji_mode_on(self, client, user):
+    async def user_emoji_mode_on(self, client, user, sending_channel):
         if user_in_emoji_state(client, user):
             return
 
@@ -75,8 +75,11 @@ class EmojiMode(Command):
         client.lock.release()
 
         await user.send(client.messages["emoji_mode_user_activate"])
+        await sending_channel.send(
+            client.messages["emoji_mode_user_activate_public"].format(user.mention)
+        )
 
-    async def user_emoji_mode_off(self, client, user):
+    async def user_emoji_mode_off(self, client, user, sending_channel):
         if not user_in_emoji_state(client, user):
             return
 
@@ -86,6 +89,9 @@ class EmojiMode(Command):
         client.lock.release()
 
         await user.send(client.messages["emoji_mode_user_deactivate"])
+        await sending_channel.send(
+            client.messages["emoji_mode_user_deactivate_public"].format(user.mention)
+        )
 
     async def valid_command(self, msg) -> bool:
         return utils.user_is_admin(msg.author)
@@ -101,7 +107,7 @@ class EmojiMode(Command):
 
         if content[0] == "on":
             for user in users:
-                await self.user_emoji_mode_on(client, user)
+                await self.user_emoji_mode_on(client, user, msg.channel)
             for channel in channels:
                 await self.channel_emoji_mode_on(client, channel)
 
@@ -110,7 +116,7 @@ class EmojiMode(Command):
 
         elif content[0] == "off":
             for user in users:
-                await self.user_emoji_mode_off(client, user)
+                await self.user_emoji_mode_off(client, user, msg.channel)
             for channel in channels:
                 await self.channel_emoji_mode_off(client, channel)
 
@@ -119,9 +125,10 @@ class EmojiMode(Command):
 
         else:
             for user in users:
-                await self.user_emoji_mode_toggle(client, user)
+                await self.user_emoji_mode_toggle(client, user, msg.channel)
             for channel in channels:
                 await self.channel_emoji_mode_toggle(client, channel)
 
             if len(users) == 0 and len(channels) == 0:
                 await self.channel_emoji_mode_toggle(client, msg.channel)
+
