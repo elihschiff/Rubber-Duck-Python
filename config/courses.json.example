@@ -1,0 +1,22 @@
+{
+    "Student Managed Invest Fund": {
+        "course_codes": [
+            "MGMT 4420"
+        ],
+        "departments": [
+            "MGMT"
+        ],
+        "identifiers": "[]",
+        "channel_id": 0
+    },
+    "Student Success Labs": {
+        "course_codes": [
+            "ADMN 1824"
+        ],
+        "departments": [
+            "ADMN"
+        ],
+        "identifiers": "[]",
+        "channel_id": 0
+    }
+}
