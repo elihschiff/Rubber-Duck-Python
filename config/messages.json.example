@@ -32,5 +32,7 @@
 	"remove_class_prompt": ", your search for **{}** retrieved these results.\nClick the corresponding reaction to remove that class:",
 	"class_remove_confirmation": "You have been removed from {}.",
 
-	"invalid_command": "Sorry, I didn't understand the command `{}`.  To get a list of valid commands, send `!help`."
+	"invalid_command": "Sorry, I didn't understand the command `{}`.  To get a list of valid commands, send `!help`.",
+
+	"no_xkcd_found":"Sorry, I could not find any XKCD for `{}`. Don't forget you can also get a random XKCD with just the command `!xkcd`"
 }
