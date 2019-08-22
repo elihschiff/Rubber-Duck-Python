@@ -131,4 +131,3 @@ class EmojiMode(Command):
 
             if len(users) == 0 and len(channels) == 0:
                 await self.channel_emoji_mode_toggle(client, msg.channel)
-
