@@ -17,6 +17,8 @@
 
 	"CLASS_CATEGORY_ID": 0,
 
+	"add_skip_words":["major", "class"],
+
 	"general_roles": {
 		"All-Seer": 0,
 		"-------": 0,

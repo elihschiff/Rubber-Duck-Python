@@ -14,6 +14,7 @@
 	"emoji_mode_dm": "You sent a message that contained non emoji characters in an emoji only chat. Your message has been removed!",
 
 	"invalid_class_list_format": "This command must be of the form `!list XXXX`, where `XXXX` is the **4 letter department code** you're searching for. Type `!list` to view the list of valid codes. Please note that a major and a department code are different. If you are looking to add a major instead, please type `!add MAJOR`.",
+	"invalid_class_add_format": "This command must be of the form `!add` followed by the course or role you are trying to add.  To list the courses for a subject, use `!list XXXX`, where `XXXX` is the **4 letter department code** you're searching for. Type `!list` to view the list of valid codes. Please note that a major and a department code are different.",
 	"dept_not_found": "I am sorry I could not find a class from the department `{}`.  For a list of the 4 letter department codes, reuse the `!classes` command without arguments.",
 	"class_list_prelude": "Classes for {}:",
 	"general_class_list_prelude": "Below are the general roles you can add, as well as the department codes",
