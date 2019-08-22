@@ -31,7 +31,10 @@ class Xkcd(Command):
                 ).text
             )
 
-            if not response["success"]:
+            if not response["success"] or len(response["results"]) == 0:
+                await utils.delay_send(
+                    msg.channel, client.messages["no_xkcd_found"].format(content)
+                )
                 return
 
             image_url = response["results"][0]["image"]
