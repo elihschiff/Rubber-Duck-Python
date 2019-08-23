@@ -51,3 +51,35 @@ def user_is_admin(user) -> bool:
         return user.guild_permissions.administrator
     except:
         return False
+
+
+def has_flag(flag, content):
+    """Determines if a command's content contains a flag.
+
+    Arguments:
+    flag -- the flag for which to search
+    content -- the content of the command
+    """
+    return "-" + flag in content.split()
+
+
+def get_flag(flag, content, default=None):
+    """Finds the value associated with a flag in a command's content.
+
+    Arguments:
+    flag -- the flag for which to return a value
+    content -- the content of the command
+
+    Keyword arguments:
+    default -- the value to return in case the flag is not present in the content, or the flag has no associated value (last argument)
+    """
+    if not has_flag(flag, content):
+        return default
+
+    args = content.split()
+    i = args.index("-" + flag)
+
+    # get argument following flag
+    if i + 1 == len(args):
+        return default
+    return args[i + 1]

@@ -5,6 +5,12 @@
 		"ip": "",
 		"host_id": 0
 	},
+  "connectfour": {
+    "max_cols": 15,
+    "max_games": 10,
+    "max_players": 4,
+    "max_rows": 10
+  },
 	"welcome_channel_id": 0,
 
 	"WOLFRAM_ID": "",
