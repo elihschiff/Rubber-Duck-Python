@@ -9,4 +9,8 @@ msg_triggers.extend(all_commands)
 
 new_member_triggers = [Welcome()]
 
-reaction_triggers = [AddClass(), ConnectFour(), RemoveClass()]
+reaction_triggers = [
+    AddClass(),
+    # ConnectFour(),
+    RemoveClass(),
+]
