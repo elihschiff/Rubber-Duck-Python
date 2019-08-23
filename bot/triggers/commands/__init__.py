@@ -47,7 +47,8 @@ from .class_management import AddClass, RemoveClass
 from .code import Code
 from .echo import Echo
 from .emoji_mode import EmojiMode
-from .games import ConnectFour
+
+# from .games import ConnectFour
 
 from .latex import Latex  # latex machine broke
 from .list_classes import ListClasses
@@ -64,7 +65,7 @@ all_commands = [
     AddClass(),
     AI(),
     Code(),
-    ConnectFour(),
+    # ConnectFour(),
     Echo(),
     EmojiMode(),
     Latex(),  # latex machine broke
