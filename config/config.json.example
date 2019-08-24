@@ -1,4 +1,9 @@
 {
+	"disabled_triggers":{
+		"msg":[],
+		"new_member":[],
+		"reaction":[]
+	},
 	"quack_channels": [],
 	"SERVER_ID": 0,
 	"minecraft": {

@@ -58,6 +58,8 @@ class DuckClient(discord.Client):
 
         replied = False
         for trigger in msg_triggers:
+            if type(trigger).__name__ in self.config["disabled_triggers"]["msg"]:
+                continue
             if await trigger.execute_message(self, msg):
                 replied = True
 
@@ -67,8 +69,12 @@ class DuckClient(discord.Client):
 
     async def on_member_join(self, member):
         for trigger in new_member_triggers:
+            if type(trigger).__name__ in self.config["disabled_triggers"]["new_member"]:
+                continue
             await trigger.execute_new_member(self, member)
 
     async def on_raw_reaction_add(self, reaction):
         for trigger in reaction_triggers:
+            if type(trigger).__name__ in self.config["disabled_triggers"]["reaction"]:
+                continue
             await trigger.execute_reaction(self, reaction)
