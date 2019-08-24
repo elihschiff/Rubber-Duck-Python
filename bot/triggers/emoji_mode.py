@@ -13,6 +13,7 @@ from discord import ChannelType
 
 # emotes are of the form <:emote_name:1234> where `1234` is the emote's id
 discord_emote_re = re.compile("<:[^:]+:(\d+)>")
+discord_emote_animated_re = re.compile("<a:[^:]+:(\d+)>")
 discord_emote_id_re = re.compile(":(\d+)>")
 
 
@@ -26,7 +27,7 @@ async def send_message_to_violator(client, user):
 # emote from the message content.  If the emote is invalid, the content string
 # will be unmodified.
 def validate_discord_emote(emote) -> str:
-    emote_id = discord_emote_id_re.search(emote).group(1)
+    emote_id = discord_emote_id_re.search(str(emote)).group(1)
     if requests.get(f"https://cdn.discordapp.com/emojis/{emote_id}").status_code == 200:
         # valid emote
         return ""
@@ -37,8 +38,12 @@ def validate_discord_emote(emote) -> str:
 
 # returns true if the message only contains emoji and whitespace.  It will
 # validate discord emotes as well.
-def valid_emoji(content) -> bool:
+def valid_emoji(content, msg) -> bool:
+    if len(msg.embeds) or len(msg.attachments):
+        return False
+
     content = discord_emote_re.sub(validate_discord_emote, content)
+    content = discord_emote_animated_re.sub(validate_discord_emote, content)
     content = emoji.get_emoji_regexp().sub("", content)
 
     return len(content.split()) == 0  # calling split() discounts whitepace
@@ -70,7 +75,7 @@ async def invalid_emoji_message(client, msg) -> bool:
     client.lock.release()
 
     if hits > 0:
-        if not valid_emoji(msg.content):
+        if not valid_emoji(msg.content, msg):
             await msg.delete()
             await send_message_to_violator(client, msg.author)
             return True
