@@ -1,6 +1,7 @@
 import time
 import asyncio
 import discord
+import re
 
 
 async def delay_send(sendable, msg, delay_factor=1.0, embed=None):
@@ -83,3 +84,11 @@ def get_flag(flag, content, default=None):
     if i + 1 == len(args):
         return default
     return args[i + 1]
+
+
+def user_from_mention(client, mention):
+    match = re.match("<@(\d+)>", mention)
+    if match is None:
+        return None
+    else:
+        return client.get_user(int(match.group(1)))
