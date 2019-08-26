@@ -4,125 +4,28 @@ from ..reaction_trigger import ReactionTrigger
 
 import discord
 import random
+import re
 
 COLUMNS = [
-    *[str(i) + "\u20E3" for i in range(10)],
-    "\U0001F51F",
-    *[chr(0x1F1E6 + i) for i in range(9)],
+    {"emoji": "0\u20E3", "name": ":zero:"},
+    {"emoji": "1\u20E3", "name": ":one:"},
+    {"emoji": "2\u20E3", "name": ":two:"},
+    {"emoji": "3\u20E3", "name": ":three:"},
+    {"emoji": "4\u20E3", "name": ":four:"},
+    {"emoji": "5\u20E3", "name": ":five:"},
+    {"emoji": "6\u20E3", "name": ":six:"},
+    {"emoji": "7\u20E3", "name": ":seven:"},
+    {"emoji": "8\u20E3", "name": ":eight:"},
+    {"emoji": "9\u20E3", "name": ":nine:"},
+    {"emoji": "\U0001F51F", "name": ":ten:"},
+    *[
+        {
+            "emoji": chr(0x1F1E6 + i),
+            "name": ":regional_indicator_" + chr(ord("a") + i) + ":",
+        }
+        for i in range(9)
+    ],
 ]
-
-
-class ConnectFourGame:
-    def __init__(self, pieces, players, rows, cols):
-        self.pieces = pieces
-
-        self.players = players
-        self.turn = 0
-
-        self.cols = COLUMNS[:cols]
-        self.board = [[-1] * cols for i in range(rows)]
-
-        self.message = None
-        self.winner = None
-
-    def columns(self):
-        return "".join(
-            [
-                col
-                + ("\u200B" if col >= chr(0x1F1E6) and col <= chr(0x1F1E6 + 9) else "")
-                for col in self.cols
-            ]
-        )
-
-    def content(self):
-        if self.get_winner() is not None:
-            return f"{self.players[self.get_winner()].mention} has won!"
-        else:
-            return f"It's {self.players[self.turn].mention}'s turn."
-
-    def embed(self):
-        title = " vs. ".join(
-            [
-                self.pieces[i] + " " + player.name
-                for i, player in enumerate(self.players)
-            ]
-        )
-        desc = (
-            self.columns()
-            + "\n"
-            + "\n".join(
-                [
-                    "".join(
-                        [
-                            self.pieces[piece] if piece != -1 else "\u26AB"
-                            for piece in row
-                        ]
-                    )
-                    for row in self.board
-                ]
-            )
-            + "\n"
-            + self.columns()
-        )
-
-        embed = discord.Embed(title=title, description=desc)
-        embed.set_author(name="Connect Four")
-        embed.set_footer(text="Duck Games by @Elly")
-
-        return embed
-
-    def can_send(self):
-        embed = self.embed()
-        # TODO: actual desc length seems to be longer than embed.description length
-        #       since unicode characters are expanded into emoji sequences
-        return len(embed) <= 6000 and len(embed.description) < 2048
-
-    async def start(self, channel):
-        self.message = await utils.delay_send(
-            channel, self.content(), embed=self.embed()
-        )
-        for col in self.cols:
-            await self.message.add_reaction(col)
-
-    async def update(self):
-        if self.message is None:
-            return
-        await self.message.edit(content=self.content(), embed=self.embed())
-
-    def get_line(self, row, col, row_step, col_step, length):
-        player = self.board[row][col]
-        if player == -1:
-            return None
-
-        # iterate down the line
-        for piece in range(length - 1):
-            row += row_step
-            col += col_step
-            # return None if the position is off the board or the line is incomplete
-            if row < 0 or col < 0 or row >= len(self.board) or col >= len(self.cols):
-                return None
-            if self.board[row][col] != player:
-                return None
-        return player
-
-    def get_winner(self):
-        # use cached winner to prevent repetitive board lookup
-        if self.winner is not None:
-            return self.winner
-
-        # iterate through every position on the board
-        for row in range(len(self.board)):
-            for col in range(len(self.board[row])):
-                # lookup lines in positive directions (down and/or right)
-                for row_step in range(2):
-                    for col_step in range(2):
-                        if row_step == 0 and col_step == 0:
-                            continue
-                        winner = self.get_line(row, col, row_step, col_step, 4)
-                        if winner is not None:
-                            self.winner = winner
-                            return winner
-        return None
 
 
 class ConnectFour(Command, ReactionTrigger):
@@ -130,17 +33,152 @@ class ConnectFour(Command, ReactionTrigger):
     description = "Begins a Connect Four game with another player(s)"
     needsContent = True
 
-    games = []
+    class Game:
+        def __init__(self, players=None, board=None):
+            self.players = players
+            self.board = board
+
+            self.turn = 0
+            self.winner = -1
+
+        def parse_msg(self, msg, client):
+            embed = msg.embeds[0]
+
+            for field in embed.fields:
+                if field.name == "Players":
+                    self.players = []
+                    for player in field.value.split(" vs. "):
+                        player = player.split()
+                        self.players.append(
+                            {
+                                "piece": player[0],
+                                "user": utils.user_from_mention(client, player[1]),
+                            }
+                        )
+                    break
+
+            # construct player map for faster index lookup, maps piece to player index
+            pieces = {":black_circle:": -1}
+            for (i, player) in enumerate(self.players):
+                pieces[player["piece"]] = i
+
+            self.board = embed.description.split("\n")[1:-1]
+            for r in range(len(self.board)):
+                row = self.board[r]
+                for (piece, i) in pieces.items():
+                    row = row.replace(piece, chr(i + 1))
+                self.board[r] = [ord(c) - 1 for c in row]
+
+            if msg.content == "Draw!":
+                return
+            mention = re.search("<@(\d+)>", msg.content)
+            user = [
+                i
+                for (i, player) in enumerate(self.players)
+                if player["user"].id == int(mention.group(1))
+            ][0]
+            if msg.content.endswith(" has won!"):
+                self.winner = user
+            else:
+                self.turn = user
+
+        def is_draw(self):
+            for row in self.board:
+                if -1 in row:
+                    return False
+            return True
+
+        def get_content(self):
+            if self.winner == -1:
+                if self.is_draw():
+                    return "Draw!"
+                else:
+                    return f"It's {self.players[self.turn]['user'].mention}'s turn."
+            else:
+                return f"{self.players[self.winner]['user'].mention} has won!"
+
+        def get_piece(self, player):
+            if player == -1:
+                return ":black_circle:"
+            return self.players[player]["piece"]
+
+        def get_embed(self):
+            board = self.board
+            for r in range(len(board)):
+                for c in range(len(board[r])):
+                    board[r][c] = self.get_piece(board[r][c])
+
+            embed = discord.Embed(
+                title="Connect Four",
+                description="\n".join(
+                    [
+                        "".join([col["name"] for col in COLUMNS[: len(self.board[0])]]),
+                        "\n".join(["".join(row) for row in board]),
+                        "".join([col["name"] for col in COLUMNS[: len(self.board[0])]]),
+                    ]
+                ),
+            )
+            embed.add_field(
+                name="Players",
+                value=" vs. ".join(
+                    [
+                        player["piece"] + " " + player["user"].mention
+                        for player in self.players
+                    ]
+                ),
+            )
+            embed.set_footer(text="Duck Games by @Elly")
+
+            return embed
+
+        def in_board(self, pos):
+            return (
+                pos[0] >= 0
+                and pos[1] >= 0
+                and pos[0] < len(self.board)
+                and pos[1] < len(self.board[pos[0]])
+            )
+
+        def nearby_winner(self, pos):
+            player = self.board[pos[0]][pos[1]]
+
+            directions = [(1, 0), (1, 1), (0, 1), (-1, 1)]
+            for direction in directions:
+                length = 1
+
+                peek = (pos[0] + direction[0], pos[1] + direction[1])
+                while self.in_board(peek) and self.board[peek[0]][peek[1]] == player:
+                    length += 1
+                    peek = (peek[0] + direction[0], peek[1] + direction[1])
+
+                peek = (pos[0] - direction[0], pos[1] - direction[1])
+                while self.in_board(peek) and self.board[peek[0]][peek[1]] == player:
+                    length += 1
+                    peek = (peek[0] - direction[0], peek[1] - direction[1])
+
+                if length >= 4:
+                    self.winner = player
+
+        def take_turn(self, col):
+            if self.winner != -1:
+                return None
+            if self.board[0][col] != -1:
+                return None
+            row = 0
+            while row + 1 < len(self.board) and self.board[row + 1][col] == -1:
+                row += 1
+            self.board[row][col] = self.turn
+            self.turn = (self.turn + 1) % len(self.players)
+
+            self.nearby_winner((row, col))
+
+            return (row, col)
 
     async def execute_command(self, client, msg, content):
-        if len(self.games) >= client.config["connectfour"]["max_games"]:
-            await msg.channel.send(client.messages["connectfour_err_games"])
-            return
-
         pieces = (
             client.config["connectfour"]["pieces"]
             if "pieces" in client.config["connectfour"]
-            else ["\U0001F534", "\U0001F535", "\u26AA"]
+            else [":red_circle:", ":large_blue_circle:", ":white_circle:"]
         )
 
         players = list(set([*msg.mentions, msg.author]))
@@ -151,18 +189,20 @@ class ConnectFour(Command, ReactionTrigger):
             return
         max_players = min(client.config["connectfour"]["max_players"], len(pieces))
         if len(players) > max_players:
-            await msg.channel.send(client.messages["connectfour_err_players"])
+            await msg.channel.send(
+                client.messages["connectfour_err_players"].format(max_players)
+            )
             return
         random.shuffle(players)
+        players = [
+            {"piece": pieces[i], "user": player} for (i, player) in enumerate(players)
+        ]
 
         rows = utils.get_flag("r", content, "6")
-        if not rows.isdigit():
+        if not rows.isdigit() or int(rows) < 1:
             await msg.channel.send(client.messages["connectfour_err_num"])
             return
         rows = int(rows)
-        if rows < 4:
-            await msg.channel.send(client.messages["connectfour_err_min_rows"])
-            return
         max_rows = client.config["connectfour"]["max_rows"]
         if rows > max_rows:
             await msg.channel.send(
@@ -171,13 +211,10 @@ class ConnectFour(Command, ReactionTrigger):
             return
 
         cols = utils.get_flag("c", content, "7")
-        if not cols.isdigit():
+        if not cols.isdigit() or int(cols) < 1:
             await msg.channel.send(client.messages["connectfour_err_num"])
             return
         cols = int(cols)
-        if cols < 4:
-            await msg.channel.send(client.messages["connectfour_err_min_cols"])
-            return
         max_cols = min(client.config["connectfour"]["max_cols"], len(COLUMNS))
         if cols > max_cols:
             await msg.channel.send(
@@ -185,46 +222,35 @@ class ConnectFour(Command, ReactionTrigger):
             )
             return
 
-        game = ConnectFourGame(pieces, players, rows, cols)
-        if not game.can_send():
-            await msg.channel.send(client.messages["connectfour_err_size"])
-            return
-        await game.start(msg.channel)
-        self.games.append(game)
+        game = ConnectFour.Game(
+            players, [[-1 for c in range(cols)] for r in range(rows)]
+        )
+        msg = await msg.channel.send(game.get_content(), embed=game.get_embed())
+        for col in COLUMNS[:cols]:
+            await msg.add_reaction(col["emoji"])
 
     async def execute_reaction(self, client, reaction):
         if client.user.id == reaction.user_id:
             return
-        for game in self.games:
-            if game.message is None:
-                continue
-            if game.message.id != reaction.message_id:
-                continue
+        channel = await client.fetch_channel(reaction.channel_id)
+        msg = await channel.fetch_message(reaction.message_id)
+        if len(msg.embeds) == 0 or msg.embeds[0].title != "Connect Four":
+            return
 
-            channel = await client.fetch_channel(reaction.channel_id)
-            message = await channel.fetch_message(reaction.message_id)
-            await message.remove_reaction(
-                reaction.emoji, client.get_user(reaction.user_id)
-            )
+        await msg.remove_reaction(reaction.emoji, client.get_user(reaction.user_id))
 
-            if game.players[game.turn].id != reaction.user_id:
-                continue
-            if reaction.emoji.name not in game.cols:
-                continue
+        game = ConnectFour.Game()
+        game.parse_msg(msg, client)
 
-            col = game.cols.index(reaction.emoji.name)
-            # ignore if the top row of this column is occupied
-            if game.board[0][col] != -1:
-                continue
-            row = 0
-            while row + 1 < len(game.board) and game.board[row + 1][col] == -1:
-                row += 1
-            game.board[row][col] = game.turn
-            if row == 0:
-                await message.remove_reaction(reaction.emoji, client.user)
+        cols = [col["emoji"] for col in COLUMNS[: len(game.board[0])]]
+        if reaction.emoji.name not in cols:
+            return
+        if reaction.user_id != game.players[game.turn]["user"].id:
+            return
+        pos = game.take_turn(cols.index(reaction.emoji.name))
+        if pos is None:
+            return
 
-            game.turn = (game.turn + 1) % len(game.players)
-
-            await game.update()
-            if game.get_winner() is not None:
-                self.games.remove(game)
+        if pos[0] == 0:
+            await msg.remove_reaction(reaction.emoji, client.user)
+        await msg.edit(content=game.get_content(), embed=game.get_embed())

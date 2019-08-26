@@ -36,14 +36,10 @@
 
 	"no_xkcd_found":"Sorry, I could not find any XKCD for `{}`. Don't forget you can also get a random XKCD with just the command `!xkcd`",
 
-  "connectfour_err_cols": ":warning: The maximum number of columns in a Connect Four game is {}.",
-  "connectfour_err_games": ":warning: There are too many games of Connect Four in progress. Please wait for one to end.",
-  "connectfour_err_min_cols": ":warning: You may not have fewer than 4 columns.",
-  "connectfour_err_min_rows": ":warning: You may not have fewer than 4 rows.",
   "connectfour_err_max_cols": ":warning: You may not have more than {} columns.",
   "connectfour_err_max_rows": ":warning: You may not have more than {} rows.",
   "connectfour_err_no_opponent": ":warning: You must specify at least one opponent.",
   "connectfour_err_num": ":warning: The number you entered is invalid.",
-  "connectfour_err_players": ":warning: This game exceeds the maximum number of players allowed in a game.",
-  "connectfour_err_size": ":warning: The size of the board is too large to send in a message."
+  "connectfour_err_players": ":warning: You may only have up to {} players in a game.",
+  "connectfour_err_size": ":warning: The size of the board is too large."
 }
