@@ -194,8 +194,8 @@ class AddClass(Command, ReactionTrigger):
                 msg.channel,
                 client.messages["class_add_confirmation"].format(course_name),
             )
-        except:
-            await msg.channel.send("ERROR: Unable to add class")
+        except Exception as e:
+            await msg.channel.send(client.messages["err_adding_class"].format(e))
 
     async def add_role(self, client, msg, role_id, role_name):
         role = client.SERVER.get_role(role_id)
@@ -299,8 +299,8 @@ class RemoveClass(Command, ReactionTrigger):
             await msg.channel.send(
                 client.messages["class_remove_confirmation"].format(course_name)
             )
-        except:
-            await msg.channel.send("ERROR: Unable to remove class")
+        except Exception as e:
+            await msg.channel.send(client.messages["err_removing_class"].format(e))
 
     async def remove_role(self, client, msg, role_id, role_name):
         role = client.SERVER.get_role(role_id)
