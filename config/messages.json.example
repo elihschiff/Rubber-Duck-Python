@@ -27,10 +27,11 @@
 
 	"add_class_prompt": ", your search for **{}** retrieved these results.\nClick the corresponding reaction to add that class:",
 	"class_add_confirmation": "You have been added to {}.",
-	"err_too_many_channels": "There was an error adding you to this class.  Please message a server admin and we'll figure something out.  Tell them this: {}",
+	"err_adding_class": "There was an error adding you to this class.  Please message a server admin and we'll figure something out.  Tell them this: {}",
 
 	"remove_class_prompt": ", your search for **{}** retrieved these results.\nClick the corresponding reaction to remove that class:",
 	"class_remove_confirmation": "You have been removed from {}.",
+	"err_removing_class": "There was an error removing you from this class.  Please message a server admin and we'll figure something out.  Tell them this: {}",
 
 	"invalid_command": "Sorry, I didn't understand the command `{}`.  To get a list of valid commands, send `!help`.",
 
