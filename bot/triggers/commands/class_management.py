@@ -49,7 +49,7 @@ def fuzzy_search(c, query, max_results):
 
 
 class AddClass(Command, ReactionTrigger):
-    names = ["add", "join"]
+    names = ["add", "join", "register"]
     description = "Adds you to class specific channels"
     needsContent = True
 
@@ -213,7 +213,7 @@ class AddClass(Command, ReactionTrigger):
 
 
 class RemoveClass(Command, ReactionTrigger):
-    names = ["remove", "leave", "sub"]
+    names = ["remove", "leave", "sub", "unregister"]
     description = "Removes you from class specific channels"
     needsContent = True
 
