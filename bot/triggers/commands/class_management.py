@@ -48,6 +48,36 @@ def fuzzy_search(c, query, max_results):
     return results
 
 
+async def add_role(client, msg, role_id, role_name):
+    role = client.SERVER.get_role(role_id)
+    server_member = client.SERVER.get_member(msg.author.id)
+    await server_member.add_roles(role)
+
+    if role_name != "-------":
+        await utils.delay_send(
+            msg.channel, client.messages["add_role_confirmation"].format(role_name)
+        )
+    else:
+        await msg.author.send(client.messages["add_hidden_role"])
+        if msg.channel.type is not discord.ChannelType.private:
+            await utils.delay_send(msg.channel, "DMed!")
+
+
+async def remove_role(client, msg, role_id, role_name):
+    role = client.SERVER.get_role(role_id)
+    server_member = client.SERVER.get_member(msg.author.id)
+    await server_member.remove_roles(role)
+
+    if role_name != "-------":
+        await utils.delay_send(
+            msg.channel, client.messages["remove_role_confirmation"].format(role_name)
+        )
+    else:
+        await msg.author.send(client.messages["remove_hidden_role"])
+        if msg.channel.type is not discord.ChannelType.private:
+            await utils.delay_send(msg.channel, "DMed!")
+
+
 class AddClass(Command, ReactionTrigger):
     names = ["add", "join", "register"]
     description = "Adds you to class specific channels"
@@ -66,23 +96,24 @@ class AddClass(Command, ReactionTrigger):
 
         for role in client.config["general_roles"].keys():
             if content.lower() == role.lower():
-                await self.add_role(
-                    client, msg, client.config["general_roles"][role], role
-                )
+                await add_role(client, msg, client.config["general_roles"][role], role)
+                if (
+                    content.lower() == "All-Seer".lower()
+                    or content.lower() == "All Seer".lower()
+                ):
+                    await remove_role(
+                        client, msg, client.config["NON_ALL_SEER_ID"], "Not All-Seer"
+                    )
                 return
 
         for major in client.config["major_roles"].keys():
             if content.lower() == major.lower():
-                await self.add_role(
-                    client, msg, client.config["major_roles"][major], major
-                )
+                await add_role(client, msg, client.config["major_roles"][major], major)
                 return
 
         for major in client.config["major_abbreviations"].keys():
             if content.lower() in client.config["major_abbreviations"][major]:
-                await self.add_role(
-                    client, msg, client.config["major_roles"][major], major
-                )
+                await add_role(client, msg, client.config["major_roles"][major], major)
                 return
 
         client.lock.acquire()
@@ -197,20 +228,6 @@ class AddClass(Command, ReactionTrigger):
         except Exception as e:
             await msg.channel.send(client.messages["err_adding_class"].format(e))
 
-    async def add_role(self, client, msg, role_id, role_name):
-        role = client.SERVER.get_role(role_id)
-        server_member = client.SERVER.get_member(msg.author.id)
-        await server_member.add_roles(role)
-
-        if role_name != "-------":
-            await utils.delay_send(
-                msg.channel, client.messages["add_role_confirmation"].format(role_name)
-            )
-        else:
-            await msg.author.send(client.messages["add_hidden_role"])
-            if msg.channel.type is not discord.ChannelType.private:
-                await utils.delay_send(msg.channel, "DMed!")
-
 
 class RemoveClass(Command, ReactionTrigger):
     names = ["remove", "leave", "sub", "unregister"]
@@ -220,21 +237,28 @@ class RemoveClass(Command, ReactionTrigger):
     async def execute_command(self, client, msg, content):
         for role in client.config["general_roles"].keys():
             if content.lower() == role.lower():
-                await self.remove_role(
+                await remove_role(
                     client, msg, client.config["general_roles"][role], role
                 )
+                if (
+                    content.lower() == "All-Seer".lower()
+                    or content.lower() == "All Seer".lower()
+                ):
+                    await add_role(
+                        client, msg, client.config["NON_ALL_SEER_ID"], "Not All-Seer"
+                    )
                 return
 
         for major in client.config["major_roles"].keys():
             if content.lower() == major.lower():
-                await self.remove_role(
+                await remove_role(
                     client, msg, client.config["major_roles"][major], major
                 )
                 return
 
         for major in client.config["major_abbreviations"].keys():
             if content.lower() in client.config["major_abbreviations"][major]:
-                await self.remove_role(
+                await remove_role(
                     client, msg, client.config["major_roles"][major], major
                 )
                 return
@@ -301,18 +325,3 @@ class RemoveClass(Command, ReactionTrigger):
             )
         except Exception as e:
             await msg.channel.send(client.messages["err_removing_class"].format(e))
-
-    async def remove_role(self, client, msg, role_id, role_name):
-        role = client.SERVER.get_role(role_id)
-        server_member = client.SERVER.get_member(msg.author.id)
-        await server_member.remove_roles(role)
-
-        if role_name != "-------":
-            await utils.delay_send(
-                msg.channel,
-                client.messages["remove_role_confirmation"].format(role_name),
-            )
-        else:
-            await msg.author.send(client.messages["remove_hidden_role"])
-            if msg.channel.type is not discord.ChannelType.private:
-                await utils.delay_send(msg.channel, "DMed!")

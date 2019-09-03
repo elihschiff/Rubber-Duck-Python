@@ -21,6 +21,7 @@
 	"WOLFRAM_ID": "",
 
 	"ALL_SEER_ID": 0,
+	"NON_ALL_SEER_ID": 0,
 	"TIME_OUT_ID": 0,
 
 	"LOG_SERVER_ID": 0,
@@ -32,6 +33,7 @@
 
 	"general_roles": {
 		"All-Seer": 0,
+		"All Seer": 0,
 		"-------": 0,
 		"Incoming Freshman": 0,
 		"Freshman": 0,
