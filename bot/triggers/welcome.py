@@ -10,4 +10,7 @@ class Welcome(NewMemberTrigger):
                 client.messages["welcome_public"].format(member.mention)
             )
 
+        non_all_seer = client.SERVER.get_role(client.config["NON_ALL_SEER_ID"])
+        await member.add_roles(non_all_seer)
+
         await member.send(client.messages["welcome_dm"])
