@@ -24,6 +24,7 @@
 	"add_hidden_role": "You have been added to the hidden role.  Please do not discuss this role publicly.",
 	"remove_role_confirmation": "You have been removed from the role `{}`.",
 	"remove_hidden_role": "You have been removed from the hidden role.  Please do not discuss this role publicly.",
+	"class_add_welcome":"Welcome to {}, {}",
 
 	"add_class_prompt": ", your search for **{}** retrieved these results.\nClick the corresponding reaction to add that class:",
 	"class_add_confirmation": "You have been added to {}.",
