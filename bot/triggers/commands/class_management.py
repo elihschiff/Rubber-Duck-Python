@@ -225,6 +225,11 @@ class AddClass(Command, ReactionTrigger):
                 msg.channel,
                 client.messages["class_add_confirmation"].format(course_name),
             )
+
+            await utils.delay_send(
+                channel,
+                client.messages["class_add_welcome"].format(course_name, user.mention),
+            )
         except Exception as e:
             await msg.channel.send(client.messages["err_adding_class"].format(e))
 
