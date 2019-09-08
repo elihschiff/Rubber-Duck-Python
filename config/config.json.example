@@ -18,6 +18,8 @@
   },
 	"welcome_channel_id": 0,
 
+	"recent_class_cache_size":100,
+
 	"WOLFRAM_ID": "",
 
 	"ALL_SEER_ID": 0,

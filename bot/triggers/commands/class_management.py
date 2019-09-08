@@ -132,6 +132,10 @@ class AddClass(Command, ReactionTrigger):
             "No results match",
         )
 
+    # a temp var that is ok to reset on reboot.
+    # It keeps a list of people and classes that were recently added to reduce welcome message spam
+    recent_class_cache = []
+
     async def execute_reaction(self, client, reaction):
         user = await client.fetch_user(reaction.user_id)
         if user.bot:
@@ -226,10 +230,20 @@ class AddClass(Command, ReactionTrigger):
                 client.messages["class_add_confirmation"].format(course_name),
             )
 
+            # check if this user and channel is in the cache
+            for past_user, past_channel in self.recent_class_cache:
+                if past_user == user.id and past_channel == channel.id:
+                    return
+
+            self.recent_class_cache.append((user.id, channel.id))
+            if len(self.recent_class_cache) > client.config["recent_class_cache_size"]:
+                self.recent_class_cache.pop(0)
+
             await utils.delay_send(
                 channel,
                 client.messages["class_add_welcome"].format(course_name, user.mention),
             )
+
         except Exception as e:
             await msg.channel.send(client.messages["err_adding_class"].format(e))
 
