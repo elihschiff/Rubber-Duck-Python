@@ -8,4 +8,6 @@ class Echo(Command):
     needsContent = True
 
     async def execute_command(self, client, msg, content):
+        content.replace("@everyone", "@\u200beveryone")
+        content.replace("@here", "@\u200bhere")
         await utils.delay_send(msg.channel, content)

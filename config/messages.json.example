@@ -1,5 +1,5 @@
 {
-	"academic_integrity": "Please do not share any class related code on this server. If you see any code please PM an admin to have it removed. \nAlso make sure you are following the Academic Integrity as stated on page 16 of the Student Handbook: https://info.rpi.edu/sites/default/files/Rensselaer%20Handbook%20of%20Student%20Rights%20%26%20Responsibilities%20%C2%BB.pdf",
+	"academic_integrity": "Please do not share any class related work on this server. If you see any code please PM an admin to have it removed. \nAlso make sure you are following the Academic Integrity as stated on page 16 of the Student Handbook: https://info.rpi.edu/sites/default/files/Rensselaer%20Handbook%20of%20Student%20Rights%20%26%20Responsibilities%20%C2%BB.pdf",
 	"code": "My code can be found here: https://gitlab.com/rpi-academic-discord/slithering-duck\nPlease add any issues to the issue tracker or submit pull requests.\nRubber Duck is courtesy of \"Eli#8092\" and \"Phi11ipus#4667\". If you find any bugs or have a feature suggestion, feel free to send one of them a DM.",
 
 	"welcome_public": "Welcome {}! Make sure to check your PM for how to view private class-specific chats.",
