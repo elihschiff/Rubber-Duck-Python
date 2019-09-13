@@ -105,6 +105,11 @@ class MockMessage:
     def __init__(self):
         self.id = 0
         self.mentions = []
+        self.content = ""
+
+    @property
+    def clean_content(self):
+        return self.content
 
 
 def init_message(content=""):
