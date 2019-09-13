@@ -32,7 +32,7 @@ class Command(MessageTrigger):
     async def execute_message(self, client, msg) -> bool:
         (idx, recognized) = await self.is_valid(msg)
         if idx is not None:
-            await self.execute_command(client, msg, msg.content[idx:].strip())
+            await self.execute_command(client, msg, msg.clean_content[idx:].strip())
         return recognized
 
     async def execute_command(self, client, msg, content: str):
