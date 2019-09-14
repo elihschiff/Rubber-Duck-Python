@@ -29,7 +29,7 @@
 	"LOG_SERVER_ID": 0,
 	"DM_LOG_CHANNEL_ID": 0,
 
-	"CLASS_CATEGORY_ID": 0,
+	"CLASS_CATEGORY_IDS": [],
 
 	"add_skip_words":["major", "class"],
 

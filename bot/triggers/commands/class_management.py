@@ -179,7 +179,7 @@ class AddClass(Command, ReactionTrigger):
             new_channel_name = course_name.strip().replace(" ", "-").lower()
 
             added = False
-            for category_id in client.config["CLASS_CATEGORY_ID"]:
+            for category_id in client.config["CLASS_CATEGORY_IDS"]:
                 class_category_channel = client.get_channel(category_id)
 
                 all_seer = client.SERVER.get_role(client.config["ALL_SEER_ID"])
