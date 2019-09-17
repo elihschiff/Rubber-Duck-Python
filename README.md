@@ -15,7 +15,7 @@ Next, generate all the different config JSON files.  Example files are visible i
 ```bash
 $ cp config/config.json.example config/config.json
 $ cp config/messages.json.example config/messages.json
-$ cp config/quacks.json.example config/quacks.json
+$ cp config/quacks.txt.example config/quacks.txt
 $ cp config/courses.json.example config/courses.json
 ```
 While most of the json files should work out of the box, `config.json` must be filled out or the bot may crash while running.
@@ -50,7 +50,7 @@ To run tests, execute the following command:
 $ python3 -m unittest bot.tests -v
 ```
 
-All the code is also formatted useing the [Python Black Code Formatter](https://pypi.org/project/black/). Please make sure to format your code before making a pull request.
+All the code is also formatted using the [Python Black Code Formatter](https://pypi.org/project/black/). Please make sure to format your code before making a pull request.
 
 ## Discord Server and Bot Setup
 

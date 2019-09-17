@@ -71,12 +71,14 @@ class ConnectFour(Command, ReactionTrigger):
 
             if msg.content == "Draw!":
                 return
-            mention = re.search("<@(\d+)>", msg.content)
+            mention = re.search("<@!?(\d+)>", msg.content)
+
             user = [
                 i
                 for (i, player) in enumerate(self.players)
                 if player["user"].id == int(mention.group(1))
             ][0]
+
             if msg.content.endswith(" has won!"):
                 self.winner = user
             else:
@@ -182,6 +184,7 @@ class ConnectFour(Command, ReactionTrigger):
         )
 
         players = list(set([*msg.mentions, msg.author]))
+
         if len(players) < 2:
             await utils.delay_send(
                 msg.channel, client.messages["connectfour_err_no_opponent"]
