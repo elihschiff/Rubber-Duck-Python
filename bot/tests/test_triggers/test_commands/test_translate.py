@@ -35,7 +35,7 @@ class TestTranslate(unittest.TestCase):
     @test_utils.async_test
     async def test_translate_multiple_messages(self):
         test_input = "我是一隻鴨子"
-        expected_output = '"我是一隻鴨子" translates from ZH-CN to: `I am a duck`'
+        expected_output = '"我是一隻鴨子" translates from ZH-CN to: `I was a duck`'
 
         msg = test_utils.init_message(test_input)
         msg2 = test_utils.init_message("!translate")
@@ -51,7 +51,7 @@ class TestTranslate(unittest.TestCase):
     @test_utils.async_test
     async def test_translate_one_message_from_bot(self):
         test_strings = [
-            ("我是一隻鴨子", '"我是一隻鴨子" translates from ZH-CN to: `I am a duck`'),
+            ("我是一隻鴨子", '"我是一隻鴨子" translates from ZH-CN to: `I was a duck`'),
             (
                 "אני ברווז גומי",
                 '"אני ברווז גומי" translates from IW to: `I\'m a rubber duck`',
@@ -76,7 +76,7 @@ class TestTranslate(unittest.TestCase):
     @test_utils.async_test
     async def test_translate_multiple_messages_from_bot(self):
         test_input = "我是一隻鴨子"
-        expected_output = '"我是一隻鴨子" translates from ZH-CN to: `I am a duck`'
+        expected_output = '"我是一隻鴨子" translates from ZH-CN to: `I was a duck`'
 
         msg = test_utils.init_message(test_input)
         msg2 = test_utils.init_message("!translate")

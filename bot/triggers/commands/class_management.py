@@ -53,11 +53,11 @@ async def add_role(client, msg, role_id, role_name):
     server_member = client.SERVER.get_member(msg.author.id)
     await server_member.add_roles(role)
 
-    if role_name != "-------":
+    if role_name != "-------" and role_id != client.config["NOT_ALL_SEER_ID"]:
         await utils.delay_send(
             msg.channel, client.messages["add_role_confirmation"].format(role_name)
         )
-    else:
+    elif role_name == "-------":
         await msg.author.send(client.messages["add_hidden_role"])
         if msg.channel.type is not discord.ChannelType.private:
             await utils.delay_send(msg.channel, "DMed!")
@@ -68,11 +68,11 @@ async def remove_role(client, msg, role_id, role_name):
     server_member = client.SERVER.get_member(msg.author.id)
     await server_member.remove_roles(role)
 
-    if role_name != "-------":
+    if role_name != "-------" and role_id != client.config["NOT_ALL_SEER_ID"]:
         await utils.delay_send(
             msg.channel, client.messages["remove_role_confirmation"].format(role_name)
         )
-    else:
+    elif role_name == "-------":
         await msg.author.send(client.messages["remove_hidden_role"])
         if msg.channel.type is not discord.ChannelType.private:
             await utils.delay_send(msg.channel, "DMed!")

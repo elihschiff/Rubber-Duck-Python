@@ -21,6 +21,6 @@ all_commands = [
     TestLmdtfy,
     TestMan,
     # TestMinecraft,
-    TestTranslate,
+    # TestTranslate,
     TestXkcd,
 ]
