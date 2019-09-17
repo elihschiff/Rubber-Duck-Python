@@ -34,7 +34,8 @@ async def log(client, msg):
     else:
         client.log_lock.acquire()
         client.log_c.execute(
-            f"SELECT dest_channel_id FROM logging WHERE source_channel_id = {msg.channel.id}"
+            "SELECT dest_channel_id FROM logging WHERE source_channel_id = ?",
+            str(msg.channel.id),
         )
         dest_channel_id = client.log_c.fetchone()
         client.log_lock.release()
