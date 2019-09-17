@@ -87,5 +87,7 @@ async def invalid_command(client, msg):
     if msg.author.bot or len(msg.content) < 2 or msg.content[0] != "!":
         return False
 
-    await msg.channel.send(client.messages["invalid_command"].format(msg.content))
+    cleaned_content = msg.content.replace("`", "'")
+
+    await msg.channel.send(client.messages["invalid_command"].format(cleaned_content))
     return True
