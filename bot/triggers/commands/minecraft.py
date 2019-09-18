@@ -35,4 +35,4 @@ class Minecraft(Command):
                 int(client.config["minecraft"]["host_id"])
             ).display_name
         )
-        await msg.channel.send(embed=embed)
+        await utils.delay_send(msg.channel, "", embed=embed)

@@ -16,4 +16,4 @@ class Help(Command):
                 f"**{command.prefixes[0]}{command.names[0]}:** {command.description}\n"
             )
         response.add_field(name="General Commands", value=commands_str, inline=True)
-        await msg.channel.send(embed=response)
+        await utils.delay_send(msg.channel, "", embed=response)
