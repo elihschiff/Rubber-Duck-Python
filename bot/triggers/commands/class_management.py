@@ -53,7 +53,7 @@ async def add_role(client, msg, role_id, role_name):
     server_member = client.SERVER.get_member(msg.author.id)
     await server_member.add_roles(role)
 
-    if role_name != "-------" and role_id != client.config["NOT_ALL_SEER_ID"]:
+    if role_name != "-------" and role_id != client.config["NON_ALL_SEER_ID"]:
         await utils.delay_send(
             msg.channel, client.messages["add_role_confirmation"].format(role_name)
         )
@@ -68,7 +68,7 @@ async def remove_role(client, msg, role_id, role_name):
     server_member = client.SERVER.get_member(msg.author.id)
     await server_member.remove_roles(role)
 
-    if role_name != "-------" and role_id != client.config["NOT_ALL_SEER_ID"]:
+    if role_name != "-------" and role_id != client.config["NON_ALL_SEER_ID"]:
         await utils.delay_send(
             msg.channel, client.messages["remove_role_confirmation"].format(role_name)
         )
