@@ -167,7 +167,7 @@ class AddClass(Command, ReactionTrigger):
 
         course_name = msg.content[start_idx:end_idx].strip()
         client.lock.acquire()
-        client.c.execute("SELECT * FROM classes WHERE name = ?", course_name)
+        client.c.execute(f"SELECT * FROM classes WHERE name = '{course_name}'")
         course = client.c.fetchone()
         channel_id = int(course[2])
         client.lock.release()
@@ -329,7 +329,7 @@ class RemoveClass(Command, ReactionTrigger):
 
         course_name = msg.content[start_idx:end_idx].strip()
         client.lock.acquire()
-        client.c.execute("SELECT channel_id FROM classes WHERE name = ?", course_name)
+        client.c.execute(f"SELECT channel_id FROM classes WHERE name = '{course_name}'")
         channel_id = int(client.c.fetchone()[0])
         client.lock.release()
 
