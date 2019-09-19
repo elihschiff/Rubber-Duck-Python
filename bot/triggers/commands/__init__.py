@@ -54,6 +54,7 @@ from .lmdtfy import Lmdtfy, Lmgtfy
 from .man import Man
 from .math import Math
 from .minecraft import Minecraft
+from .steam import Steam
 from .tictactoe import TicTacToe
 from .translate import Translate
 from .wikipedia import Wikipedia
@@ -75,6 +76,7 @@ all_commands = [
     Math(),
     # Minecraft(),
     RemoveClass(),
+    Steam(),
     TicTacToe(),
     Translate(),
     Wikipedia(),

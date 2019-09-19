@@ -9,3 +9,4 @@ requests>=2.22.0
 Wikipedia-API
 wolframalpha
 xkcd
+beautifulsoup4
