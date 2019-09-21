@@ -1,9 +1,11 @@
 import sys
 import discord
+from discord import ChannelType
 import json
 import subprocess
 import threading
 import sqlite3
+import traceback
 
 from .triggers import msg_triggers, new_member_triggers, reaction_triggers
 
@@ -48,6 +50,11 @@ class DuckClient(discord.Client):
         print(f"Connected as {self.user}!")
 
     async def on_message(self, msg):
+        # the bot should do nothing if the server the message were sent in is not
+        # the main server or a dm
+        if msg.channel.type is not ChannelType.private and msg.guild != self.SERVER:
+            return
+
         try:
             await logging.log(self, msg)
         except:
@@ -63,7 +70,11 @@ class DuckClient(discord.Client):
         for trigger in msg_triggers:
             if type(trigger).__name__ in self.config["disabled_triggers"]["msg"]:
                 continue
-            if await trigger.execute_message(self, msg):
+            try:
+                if await trigger.execute_message(self, msg):
+                    replied = True
+            except Exception as e:
+                await sendTraceback(self, msg.content)
                 replied = True
 
         if not replied:
@@ -74,10 +85,39 @@ class DuckClient(discord.Client):
         for trigger in new_member_triggers:
             if type(trigger).__name__ in self.config["disabled_triggers"]["new_member"]:
                 continue
-            await trigger.execute_new_member(self, member)
+
+            try:
+                await trigger.execute_new_member(self, member)
+            except Exception as e:
+                await sendTraceback(self)
 
     async def on_raw_reaction_add(self, reaction):
         for trigger in reaction_triggers:
             if type(trigger).__name__ in self.config["disabled_triggers"]["reaction"]:
                 continue
-            await trigger.execute_reaction(self, reaction)
+
+            try:
+                await trigger.execute_reaction(self, reaction)
+            except Exception as e:
+                await sendTraceback(self)
+
+
+# prints a traceback and sends it to discord
+async def sendTraceback(client, content=""):
+    # print the traceback to the terminal
+    print(traceback.format_exc())
+
+    # if there is a traceback server and channel, send the traceback in discord as well
+    try:
+        traceback_server = client.get_guild(client.config["TRACEBACK_SERVER_ID"])
+        traceback_channel = traceback_server.get_channel(
+            client.config["TRACEBACK_CHANNEL_ID"]
+        )
+        msg_to_send = f"```bash\n{traceback.format_exc()}\n```"
+        if content:
+            msg_to_send = f"`{content}`\n" + msg_to_send
+        await traceback_channel.send(msg_to_send)
+    except:
+        print(
+            "\nNote: traceback was not sent to Discord, if you want this double check your config.json"
+        )
