@@ -50,11 +50,6 @@ class DuckClient(discord.Client):
         print(f"Connected as {self.user}!")
 
     async def on_message(self, msg):
-        # the bot should do nothing if the server the message were sent in is not
-        # the main server or a dm
-        if msg.channel.type is not ChannelType.private and msg.guild != self.SERVER:
-            return
-
         try:
             await logging.log(self, msg)
         except:
