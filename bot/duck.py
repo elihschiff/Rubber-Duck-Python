@@ -47,6 +47,17 @@ class DuckClient(discord.Client):
             args.extend(sys.argv[1:])
             subprocess.call(args)
         self.SERVER = self.get_guild(self.config["SERVER_ID"])
+
+        try:
+            traceback_server = self.get_guild(self.config["TRACEBACK_SERVER_ID"])
+            self.TRACEBACK_CHANNEL = traceback_server.get_channel(
+                self.config["TRACEBACK_CHANNEL_ID"]
+            )
+        except:
+            self.TRACEBACK_CHANNEL = None
+
+        self.LOG_SERVER = self.get_guild(self.config["LOG_SERVER_ID"])
+
         print(f"Connected as {self.user}!")
 
     async def on_message(self, msg):
@@ -104,14 +115,10 @@ async def sendTraceback(client, content=""):
 
     # if there is a traceback server and channel, send the traceback in discord as well
     try:
-        traceback_server = client.get_guild(client.config["TRACEBACK_SERVER_ID"])
-        traceback_channel = traceback_server.get_channel(
-            client.config["TRACEBACK_CHANNEL_ID"]
-        )
         msg_to_send = f"```bash\n{traceback.format_exc()}\n```"
         if content:
             msg_to_send = f"`{content}`\n" + msg_to_send
-        await traceback_channel.send(msg_to_send)
+        await client.TRACEBACK_CHANNEL.send(msg_to_send)
     except:
         print(
             "\nNote: traceback was not sent to Discord, if you want this double check your config.json"
