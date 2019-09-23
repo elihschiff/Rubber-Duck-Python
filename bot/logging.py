@@ -2,9 +2,8 @@ from discord import ChannelType, File
 
 
 async def log(client, msg):
-    LOG_SERVER = client.get_guild(client.config["LOG_SERVER_ID"])
-    if LOG_SERVER is None:
-        # check does not need to be here (log_server is only necessary in the case
+    if client.LOG_SERVER is None:
+        # check does not need to be here (client.LOG_SERVER is only necessary in the case
         # that no corresponding logging channel exists) since the client can receive
         # a channel by its id alone, but putting the check here helps ensuring a sane
         # config file
@@ -23,7 +22,9 @@ async def log(client, msg):
         attached_files.append(saved_attachment)
 
     if msg.channel.type is ChannelType.private:
-        destination_channel = LOG_SERVER.get_channel(client.config["DM_LOG_CHANNEL_ID"])
+        destination_channel = client.LOG_SERVER.get_channel(
+            client.config["DM_LOG_CHANNEL_ID"]
+        )
         rcvd_channel_tag = ""
         if msg.author == client.user:
             rcvd_channel_tag = (
@@ -40,7 +41,9 @@ async def log(client, msg):
         client.log_lock.release()
 
         if dest_channel_id is None:
-            destination_channel = await LOG_SERVER.create_text_channel(msg.channel.name)
+            destination_channel = await client.LOG_SERVER.create_text_channel(
+                msg.channel.name
+            )
 
             client.log_lock.acquire()
             client.log_c.execute(
@@ -50,7 +53,7 @@ async def log(client, msg):
             client.log_lock.release()
 
         else:
-            destination_channel = LOG_SERVER.get_channel(dest_channel_id[0])
+            destination_channel = client.LOG_SERVER.get_channel(dest_channel_id[0])
 
         log_content = f"{msg.author.name} ({msg.author.id}): {msg.clean_content}"
 
