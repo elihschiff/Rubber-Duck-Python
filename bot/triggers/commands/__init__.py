@@ -57,6 +57,7 @@ from .minecraft import Minecraft
 from .steam import Steam
 from .tictactoe import TicTacToe
 from .translate import Translate
+from .version import Version
 from .wikipedia import Wikipedia
 from .xkcd import Xkcd
 
@@ -79,6 +80,7 @@ all_commands = [
     Steam(),
     TicTacToe(),
     Translate(),
+    Version(),
     Wikipedia(),
     Xkcd(),
 ]
