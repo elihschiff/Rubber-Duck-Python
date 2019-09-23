@@ -17,7 +17,7 @@ COLUMNS = [
     {"emoji": "7\u20E3", "name": ":seven:"},
     {"emoji": "8\u20E3", "name": ":eight:"},
     {"emoji": "9\u20E3", "name": ":nine:"},
-    {"emoji": "\U0001F51F", "name": ":ten:"},
+    {"emoji": "\U0001F51F", "name": ":keycap_ten:"},
     *[
         {
             "emoji": chr(0x1F1E6 + i),
