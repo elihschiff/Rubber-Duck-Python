@@ -28,9 +28,10 @@ class Man(Command):
         if which_page > 0:
             url = f"https://linux.die.net/man/{which_page}/{prgm}"
             r = requests.get(url)
-            if "<h1>Not Found</h1>" in r.text:
+            if "<h1>Not Found</h1>" in r.text or "<h1>Section " in r.text:
                 await utils.delay_send(
-                    msg.channel, f"Could not find man page for `{content}`"
+                    msg.channel,
+                    f"Could not find man page for `{prgm}` in section `{args[0]}`",
                 )
             else:
                 await utils.delay_send(msg.channel, url)
@@ -39,7 +40,7 @@ class Man(Command):
         for page in range(0, 9):
             url = f"https://linux.die.net/man/{page}/{prgm}"
             r = requests.get(url)
-            if "<h1>Not Found</h1>" not in r.text:
+            if "<h1>Not Found</h1>" not in r.text and "<h1>Section " not in r.text:
                 await utils.delay_send(msg.channel, url)
                 return
 
