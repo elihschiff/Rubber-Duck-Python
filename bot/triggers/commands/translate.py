@@ -13,13 +13,8 @@ class Translate(Command):
 
     async def execute_command(self, client, msg, content):
         if len(content) == 0:
-            this_message = False
-            async for message in msg.channel.history(limit=10):
-                if this_message and not message.author.bot:
-                    content = message.content
-                    break
-                if message.id == msg.id:
-                    this_message = True
+            async for message in msg.channel.history(limit=1, before=msg):
+                content = message.content
 
         translation = self.translator.translate(content)
         response = f'"{content}" translates from {translation.src.upper()} to: `{translation.text}`'
