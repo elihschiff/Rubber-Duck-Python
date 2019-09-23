@@ -24,12 +24,23 @@ class TestMan(unittest.TestCase):
 
     @test_utils.async_test
     async def test_man_invalid(self):
-        test_strings = ["abcd", "2 echo", "3"]
+        test_strings = ["abcd", "3"]
         for string in test_strings:
             msg = test_utils.init_message(f"!man {string}")
             await self.client.on_message(msg)
             self.assertEqual(
                 msg.channel.test_result, f"Could not find man page for `{string}`"
+            )
+            self.assertIsNone(msg.channel.embed_dict)
+            self.assertIsNone(msg.channel.filename)
+        test_strings = ["2 echo", "3 ls"]
+        for string in test_strings:
+            msg = test_utils.init_message(f"!man {string}")
+            split = string.split(" ")
+            await self.client.on_message(msg)
+            self.assertEqual(
+                msg.channel.test_result,
+                f"Could not find man page for `{split[1]}` in section `{split[0]}`",
             )
             self.assertIsNone(msg.channel.embed_dict)
             self.assertIsNone(msg.channel.filename)
