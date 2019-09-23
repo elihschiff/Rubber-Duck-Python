@@ -48,6 +48,7 @@ from .code import Code
 from .echo import Echo
 from .emoji_mode import EmojiMode
 from .games import ConnectFour
+from .java import Java
 from .latex import Latex  # latex machine broke
 from .list_classes import ListClasses
 from .lmdtfy import Lmdtfy, Lmgtfy
@@ -69,6 +70,7 @@ all_commands = [
     ConnectFour(),
     Echo(),
     EmojiMode(),
+    Java(),
     Latex(),  # latex machine broke
     ListClasses(),
     Lmdtfy(),
