@@ -22,6 +22,8 @@
 
 	"WOLFRAM_ID": "",
 
+	"MOD_ROLE_ID": 0,
+
 	"ALL_SEER_ID": 0,
 	"NON_ALL_SEER_ID": 0,
 	"TIME_OUT_ID": 0,

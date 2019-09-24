@@ -55,9 +55,6 @@ async def invalid_emoji_message(client, msg) -> bool:
     if msg.channel.type is ChannelType.private or msg.channel.type is ChannelType.group:
         return False
 
-    if utils.user_is_admin(msg.author):
-        return False
-
     hits = 0
 
     client.lock.acquire()
@@ -66,6 +63,9 @@ async def invalid_emoji_message(client, msg) -> bool:
     )
     hits += client.c.fetchone()[0]
     client.lock.release()
+
+    if hits > 0 and utils.user_is_mod(client, msg.author):
+        return False
 
     client.lock.acquire()
     client.c.execute(

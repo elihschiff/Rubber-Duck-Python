@@ -93,8 +93,8 @@ class EmojiMode(Command):
             client.messages["emoji_mode_user_deactivate_public"].format(user.mention)
         )
 
-    async def valid_command(self, msg) -> bool:
-        return utils.user_is_admin(msg.author)
+    async def valid_command(self, client, msg) -> bool:
+        return utils.user_is_mod(client, msg.author)
 
     async def execute_command(self, client, msg, content):
         if content == "":

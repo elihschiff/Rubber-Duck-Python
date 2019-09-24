@@ -5,7 +5,7 @@ import re
 class Command(MessageTrigger):
     prefixes = ["!"]
 
-    async def is_valid(self, msg) -> (int, bool):
+    async def is_valid(self, client, msg) -> (int, bool):
         command = ""
         for name in self.names:
             for prefix in self.prefixes:
@@ -22,7 +22,7 @@ class Command(MessageTrigger):
             return (None, True)
 
         try:
-            if not await self.valid_command(msg):
+            if not await self.valid_command(client, msg):
                 return (None, True)
         except:
             pass
@@ -30,7 +30,7 @@ class Command(MessageTrigger):
         return (len(command), True)
 
     async def execute_message(self, client, msg) -> bool:
-        (idx, recognized) = await self.is_valid(msg)
+        (idx, recognized) = await self.is_valid(client, msg)
         if idx is not None:
             await self.execute_command(client, msg, msg.clean_content[idx:].strip())
         return recognized
