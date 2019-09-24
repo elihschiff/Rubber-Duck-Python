@@ -64,9 +64,6 @@ async def invalid_emoji_message(client, msg) -> bool:
     hits += client.c.fetchone()[0]
     client.lock.release()
 
-    if hits > 0 and utils.user_is_mod(client, msg.author):
-        return False
-
     client.lock.acquire()
     client.c.execute(
         f"SELECT count(*) FROM emoji_users WHERE user_id = {msg.author.id}"
@@ -75,6 +72,9 @@ async def invalid_emoji_message(client, msg) -> bool:
     client.lock.release()
 
     if hits > 0:
+        if utils.user_is_mod(client, msg.author):
+            return False
+
         if not valid_emoji(msg.content, msg):
             await msg.delete()
             await send_message_to_violator(client, msg.author)
