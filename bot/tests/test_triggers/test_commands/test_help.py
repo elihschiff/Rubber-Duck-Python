@@ -14,7 +14,6 @@ class TestHelp(unittest.TestCase):
     async def test_help(self):
         msg = test_utils.init_message("!help")
         await self.client.on_message(msg)
-        # expected_help = discord.Embed()
         commands_str = ""
         for command in all_commands:
             if command.description:
