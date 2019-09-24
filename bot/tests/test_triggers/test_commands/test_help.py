@@ -14,14 +14,12 @@ class TestHelp(unittest.TestCase):
     async def test_help(self):
         msg = test_utils.init_message("!help")
         await self.client.on_message(msg)
-        expected_help = discord.Embed()
         commands_str = ""
         for command in all_commands:
-            commands_str += (
-                f"**{command.prefixes[0]}{command.names[0]}:** {command.description}\n"
-            )
-        expected_help.add_field(
-            name="General Commands", value=commands_str, inline=True
+            if command.description:
+                commands_str += f"**{command.prefixes[0]}{command.names[0]}:** {command.description}\n"
+        expected_help = discord.Embed(
+            title="General Commands", description=commands_str
         )
         self.assertEqual(msg.channel.embed_dict, expected_help.to_dict())
         self.assertEqual(msg.channel.test_result, "")
