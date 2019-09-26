@@ -196,6 +196,12 @@ class ConnectFour(Game, ReactionTrigger):
                 client.messages["connectfour_err_players"].format(max_players)
             )
             return
+
+        # make sure the tagged player is not a bot
+        for player in players:
+            if player.bot:
+                await msg.channel.send(client.messages["connectfour_err_bot_player"])
+                return
         random.shuffle(players)
         players = [
             {"piece": pieces[i], "user": player} for (i, player) in enumerate(players)

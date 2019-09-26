@@ -76,21 +76,13 @@ class RockPaperScissors(Game, ReactionTrigger):
 
         players = list(set([*msg.mentions, msg.author]))
         if len(players) != 2:
-            await utils.delay_send(
-                msg.channel,
-                "RPS is for TF2 memers only. Valve can't count above 2, so neither can we.",
-            )
+            await msg.channel.send(client.messages["rockpaperscissors_num_players"])
             return
 
         # make sure the tagged player is not a bot
         for player in players:
-            if player is msg.author:
-                continue
             if player.bot:
-                await utils.delay_send(
-                    msg.channel,
-                    "The bot is too busy doing the Kazotsky Kick to play RPS!",
-                )
+                await msg.channel.send(client.messages["rockpaperscissors_bot_player"])
                 return
 
         # collect the players to hash for game management
@@ -106,10 +98,9 @@ class RockPaperScissors(Game, ReactionTrigger):
             if isinstance(game, RPSGame):
                 print("Error: There is already an active RPS game between", player_set)
                 await msg.channel.send(
-                    ":warning: There is already an active RPS game between "
-                    + players[0].mention
-                    + " and "
-                    + players[1].mention
+                    client.messages["rockpaperscissors_existing_game"].format(
+                        players[0].mention, players[1].mention
+                    )
                 )
                 return
 

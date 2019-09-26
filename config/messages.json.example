@@ -43,5 +43,13 @@
   "connectfour_err_no_opponent": ":warning: You must specify at least one opponent.",
   "connectfour_err_num": ":warning: The number you entered is invalid.",
   "connectfour_err_players": ":warning: You may only have up to {} players in a game.",
-  "connectfour_err_size": ":warning: The size of the board is too large."
+  "connectfour_err_size": ":warning: The size of the board is too large.",
+  "connectfour_err_bot_player": ":warning: A bot can not be a player.",
+
+  "tictactoe_err_num_players": ":warning: There can only be 2 players in a game.",
+  "tictactoe_err_bot_player": ":warning: A bot can not be a player.",
+
+  "rockpaperscissors_existing_game": ":warning: There is already an active RPS game between {} and {}",
+  "rockpaperscissors_num_players": ":warning: There can only be 2 players in a game.",
+  "rockpaperscissors_bot_player": ":warning: A bot can not be a player."
 }

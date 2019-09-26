@@ -211,21 +211,13 @@ class TicTacToe(Game, ReactionTrigger):
 
         players = list(set([*msg.mentions, msg.author]))
         if len(players) != 2:
-            await utils.delay_send(
-                msg.channel,
-                "Tic Tac Toe can only be played with 2 players, silly billy!",
-            )
+            await msg.channel.send(client.messages["tictactoe_err_num_players"])
             return
 
         # make sure the tagged player is not a bot
         for player in players:
-            if player is msg.author:
-                continue
             if player.bot:
-                await utils.delay_send(
-                    msg.channel,
-                    "Our code monkeys haven't trained the bots to play Tic Tac Toe yet...",
-                )
+                await msg.channel.send(client.messages["tictactoe_err_bot_player"])
                 return
 
         players = [
