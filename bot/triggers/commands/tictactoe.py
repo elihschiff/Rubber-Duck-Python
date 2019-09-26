@@ -1,4 +1,4 @@
-from . import Command
+from .games import Game
 from .. import utils
 from ..reaction_trigger import ReactionTrigger
 
@@ -18,8 +18,8 @@ POSITIONS = [
 ]
 
 
-class TicTacToe(Command, ReactionTrigger):
-    names = ["tictactoe", "ttt"]
+class TicTacToe(Game, ReactionTrigger):
+    names = ["ttt", "tictactoe"]
     description = "Begins a game of Tic Tac Toe with a player."
     needsContent = True
 
@@ -124,7 +124,7 @@ class TicTacToe(Command, ReactionTrigger):
                 return self.pieces[player]
             return self.players[player]["piece"]
 
-        def get_embed(self):
+        def get_embed(self, footer):
             board = self.board
             for r in range(3):
                 for c in range(3):
@@ -143,7 +143,7 @@ class TicTacToe(Command, ReactionTrigger):
                     ]
                 ),
             )
-            embed.set_footer(text="Duck Games not by @Elly")
+            embed.set_footer(text=footer)
 
             return embed
 
@@ -238,7 +238,9 @@ class TicTacToe(Command, ReactionTrigger):
             [[-1 - c - 3 * r for c in range(3)] for r in range(3)],
         )
 
-        msg = await msg.channel.send(game.get_content(), embed=game.get_embed())
+        msg = await msg.channel.send(
+            game.get_content(), embed=game.get_embed(self.get_game_footer(client))
+        )
 
         for spot in POSITIONS[:9]:
             await msg.add_reaction(spot["emoji"])
@@ -268,4 +270,7 @@ class TicTacToe(Command, ReactionTrigger):
             return
 
         await msg.remove_reaction(reaction.emoji, client.user)
-        await msg.edit(content=game.get_content(), embed=game.get_embed())
+        await msg.edit(
+            content=game.get_content(),
+            embed=game.get_embed(self.get_game_footer(client)),
+        )

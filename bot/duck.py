@@ -23,6 +23,7 @@ class DuckClient(discord.Client):
         config_filename="config/config.json",
         messages_filename="config/messages.json",
         quacks_filename="config/quacks.txt",
+        games_filename="config/games.txt",
     ):
         super().__init__()
 
@@ -32,6 +33,8 @@ class DuckClient(discord.Client):
             self.messages = json.load(messages_file)
         with open(quacks_filename, "r") as quacks_file:
             self.quacks = quacks_file.read().split("\n%\n")
+        with open(games_filename, "r") as games_file:
+            self.game_footers = games_file.read().split("\n%\n")
 
         self.lock = threading.Lock()
         self.connection = sqlite3.connect("database.db")
@@ -103,7 +106,10 @@ class DuckClient(discord.Client):
                 continue
 
             try:
-                await trigger.execute_reaction(self, reaction)
+                result = await trigger.execute_reaction(self, reaction)
+                # if you delete the message reacted to, return False
+                if result is False:
+                    break
             except Exception as e:
                 await sendTraceback(self)
 
