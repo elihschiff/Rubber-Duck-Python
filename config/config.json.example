@@ -13,8 +13,9 @@
   "connectfour": {
     "max_cols": 15,
     "max_games": 10,
-    "max_players": 4,
-    "max_rows": 10
+    "max_players": 8,
+    "max_rows": 10,
+    "pieces": [":red_circle:", ":large_blue_circle:", ":white_circle:", ":no_mouth:", ":full_moon_with_face:", ":smiling_imp:", ":sick:", ":radioactive:"]
   },
 	"welcome_channel_id": 0,
 
