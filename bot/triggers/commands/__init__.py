@@ -45,9 +45,9 @@ class Command(MessageTrigger):
 from .ai import AI
 from .class_management import AddClass, RemoveClass
 from .code import Code
+from .connectfour import ConnectFour
 from .echo import Echo
 from .emoji_mode import EmojiMode
-from .games import ConnectFour
 from .java import Java
 from .latex import Latex  # latex machine broke
 from .list_classes import ListClasses
@@ -56,6 +56,7 @@ from .man import Man
 from .math import Math
 from .minecraft import Minecraft
 from .poll import Poll
+from .rps import RockPaperScissors
 from .steam import Steam
 from .tictactoe import TicTacToe
 from .translate import Translate
@@ -81,6 +82,7 @@ all_commands = [
     # Minecraft(),
     Poll(),
     RemoveClass(),
+    RockPaperScissors(),
     Steam(),
     TicTacToe(),
     Translate(),
