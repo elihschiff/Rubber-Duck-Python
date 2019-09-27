@@ -35,6 +35,7 @@
 	"err_removing_class": "There was an error removing you from this class.  Please message a server admin and we'll figure something out.  Tell them this: {}",
 
 	"invalid_command": "Sorry, I didn't understand the command `{}`.  To get a list of valid commands, send `!help`.",
+	"send_to_spam_channel":"To limit spam that command only works in:{}",
 
 	"no_xkcd_found":"Sorry, I could not find any XKCD for `{}`. Don't forget you can also get a random XKCD with just the command `!xkcd`",
 
