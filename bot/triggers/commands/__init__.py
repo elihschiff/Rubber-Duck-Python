@@ -1,4 +1,5 @@
 from ..message_trigger import MessageTrigger
+from .. import utils
 import re
 
 
@@ -7,6 +8,7 @@ class Command(MessageTrigger):
 
     async def is_valid(self, client, msg) -> (int, bool):
         command = ""
+
         for name in self.names:
             for prefix in self.prefixes:
                 if re.match(f"^{prefix}{name}\\b", msg.content.lower()):
@@ -17,6 +19,21 @@ class Command(MessageTrigger):
 
         if len(command) == 0:
             return (None, False)
+
+        # checks if a trigger causes spam and then if that trigger should run given the channel it was sent in
+        try:  # any command without self.causes_spam will cause an exception and skip this to run like normal
+            if self.causes_spam:
+                if msg.channel.id not in client.config["spam_channel_ids"]:
+                    channel_tags = ""
+                    for id in client.config["spam_channel_ids"]:
+                        channel_tags += f" <#{id}>"
+                    await utils.delay_send(
+                        msg.channel,
+                        client.messages["send_to_spam_channel"].format(channel_tags),
+                    )
+                    return (None, True)
+        except:
+            pass
 
         if self.needsContent and len(msg.content[len(command) :].strip()) == 0:
             return (None, True)
