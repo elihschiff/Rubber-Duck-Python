@@ -8,7 +8,7 @@ GLOBAL_GAMES = dict()
 
 
 class Game(Command):
-
+    causes_spam = True
     # get a randomized game footer
     def get_game_footer(self, client):
         return random.choice(client.game_footers)

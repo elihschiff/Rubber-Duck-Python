@@ -18,6 +18,7 @@
     "pieces": [":red_circle:", ":large_blue_circle:", ":white_circle:", ":no_mouth:", ":full_moon_with_face:", ":smiling_imp:", ":sick:", ":radioactive:"]
   },
 	"welcome_channel_id": 0,
+	"spam_channel_ids": [],
 
 	"recent_class_cache_size":100,
 
