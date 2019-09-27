@@ -152,13 +152,13 @@ class AddClass(Command, ReactionTrigger):
         if user not in msg.mentions:
             return
 
-        if (
-            reaction.emoji.name not in utils.emoji_numbers
-            and reaction.emoji.name != utils.no_matching_results_emote
-        ):
+        if " add " not in msg.content:
             return
 
-        if " add " not in msg.content:
+        if reaction.emoji.name == utils.no_matching_results_emote:
+            await utils.delay_send(msg.channel, client.messages["add_no_roles_match"])
+
+        if reaction.emoji.name not in utils.emoji_numbers:
             return
 
         line_start_idx = msg.content.index(reaction.emoji.name)
@@ -314,13 +314,15 @@ class RemoveClass(Command, ReactionTrigger):
         if user not in msg.mentions:
             return
 
-        if (
-            reaction.emoji.name not in utils.emoji_numbers
-            and reaction.emoji.name != utils.no_matching_results_emote
-        ):
+        if " remove " not in msg.content:
             return
 
-        if " remove " not in msg.content:
+        if reaction.emoji.name == utils.no_matching_results_emote:
+            await utils.delay_send(
+                msg.channel, client.messages["remove_no_roles_match"]
+            )
+
+        if reaction.emoji.name not in utils.emoji_numbers:
             return
 
         line_start_idx = msg.content.index(reaction.emoji.name)

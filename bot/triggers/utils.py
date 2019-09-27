@@ -6,8 +6,11 @@ import re
 
 async def delay_send(sendable, msg, delay_factor=1.0, embed=None):
     delay = (0.5 + 0.003 * len(msg)) * delay_factor
-    # print(delay)
-    delay = max(2, delay)
+
+    # delay will never take more than 2 seconds to respond
+    delay = min(2, delay)
+    # delay will never take less than .25 seconds to respond
+    delay = max(0.25, delay)
 
     async with sendable.typing():
         await asyncio.sleep(delay)
