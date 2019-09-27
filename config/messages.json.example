@@ -22,10 +22,10 @@
 
 	"add_role_confirmation": "You have been given the role `{}`.",
 	"add_hidden_role": "You have been added to the hidden role.  Please do not discuss this role publicly.",
-	"add_no_roles_match": "It looks like none of the roles matched your search. Your search may have not been in the correct format. For example to add data structures type `!add Data Structures` or `!add csci 1200`",
+	"add_no_roles_match": "It looks like none of the roles matched your search. Your search may have not been in the correct format. For example to add Data Structures type, `!add Data Structures` or `!add csci 1200`",
 	"remove_role_confirmation": "You have been removed from the role `{}`.",
 	"remove_hidden_role": "You have been removed from the hidden role.  Please do not discuss this role publicly.",
-	"remove_no_roles_match": "It looks like none of the roles matched your search. Your search may have not been in the correct format. For example to add data structures type `!remove Data Structures` or `!remove csci 1200`",
+	"remove_no_roles_match": "It looks like none of the roles matched your search. Your search may have not been in the correct format. For example to remove Data Structures type, `!remove Data Structures` or `!remove csci 1200`",
 	"class_add_welcome":"Welcome to {}, {}",
 
 	"add_class_prompt": ", your search for **{}** retrieved these results.\nClick the corresponding reaction to add that class:",
