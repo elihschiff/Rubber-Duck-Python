@@ -2,6 +2,7 @@ from .games import Game, GLOBAL_GAMES
 from ..reaction_trigger import ReactionTrigger
 
 import discord
+import re
 
 reaccs = [
     {"emoji": "\U0001f311", "name": ":new_moon:"},
@@ -65,6 +66,16 @@ class RockPaperScissors(Game, ReactionTrigger):
 
         embed.add_field(
             name="Players", value=" vs. ".join([player.mention for player in players])
+        )
+
+        embed.set_footer(text=self.get_game_footer(client))
+        return embed
+
+    def get_wait_embed(self, waiting_for, players, client):
+
+        embed = discord.Embed(
+            title="Rock Paper Scissors",
+            description=f"Nice pick!\nWaiting for {waiting_for}",
         )
 
         embed.set_footer(text=self.get_game_footer(client))
@@ -163,6 +174,8 @@ class RockPaperScissors(Game, ReactionTrigger):
             player1, player2 = players
             answer1, answer2 = [ans for ans in game.answer_dict.values()]
 
+            content = f"{player1} and {player2}:\nThe results are in!\n"
+
             embed = discord.Embed(
                 title="Rock Paper Scissors",
                 description=f"{player1}: {answer1}\n{player2}: {answer2}\n\n",
@@ -179,9 +192,9 @@ class RockPaperScissors(Game, ReactionTrigger):
 
             # grab the original channel and send who won
             orig_channel = await client.fetch_channel(game.orig_channel)
-            await orig_channel.send(content=None, embed=embed)
+            notif = await orig_channel.send(content=content, embed=embed)
 
-            # remove the private messages
+            # edit the private messages and shortly after, delete them
             for user_id, message_id in zip(game.players, game.msg_ids):
                 usr = await client.fetch_user(user_id)
                 dm_channel = usr.dm_channel
@@ -191,3 +204,21 @@ class RockPaperScissors(Game, ReactionTrigger):
             # delete the game so people can play again
             GLOBAL_GAMES[frozenset(players)].remove(game)
             return False
+        else:
+            # still waiting so tell the player that they're waiting
+
+            author = await client.fetch_user(reaction.user_id)
+            waiting_for = None
+
+            for player in players:
+                player_id = re.search("<@!?(\d+)>", player)
+                if int(player_id.group(1)) != author.id:
+                    waiting_for = player
+                    break
+            if waiting_for is None:
+                print("ERROR\tRPS: can't find opponent!")
+                return
+
+            await msg.edit(
+                content="", embed=self.get_wait_embed(waiting_for, players, client)
+            )
