@@ -18,7 +18,7 @@ class Steam(Command):
                 page_link = (
                     "https://store.steampowered.com/search/?term=" + filtered_content
                 )
-                page_response = requests.get(page_link, timeout=5)
+                page_response = requests.get(page_link, timeout=30)
                 page_content = page_content = BeautifulSoup(
                     page_response.content, "html.parser"
                 )
@@ -35,7 +35,7 @@ class Steam(Command):
                     "birthtime": "376030801",
                     "lastagecheckage": "1-0-1982",
                 }
-                game_page_response = requests.get(link, cookies=cookies, timeout=5)
+                game_page_response = requests.get(link, cookies=cookies, timeout=30)
                 game_page_content = BeautifulSoup(
                     game_page_response.content, "html.parser"
                 )
