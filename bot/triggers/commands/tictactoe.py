@@ -4,6 +4,7 @@ from ..reaction_trigger import ReactionTrigger
 
 import discord
 import re
+import random
 
 POSITIONS = [
     {"emoji": "1\u20E3", "name": ":one:"},
@@ -219,6 +220,8 @@ class TicTacToe(Game, ReactionTrigger):
             if player.bot:
                 await msg.channel.send(client.messages["tictactoe_err_bot_player"])
                 return
+
+        random.shuffle(players)
 
         players = [
             {"piece": pieces[i], "user": player} for (i, player) in enumerate(players)
