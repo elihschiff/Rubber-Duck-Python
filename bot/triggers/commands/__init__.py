@@ -63,6 +63,7 @@ from .ai import AI
 from .class_management import AddClass, RemoveClass
 from .code import Code
 from .connectfour import ConnectFour
+from .cpp_ref import CppRef
 from .echo import Echo
 from .emoji_mode import EmojiMode
 from .java import Java
@@ -87,6 +88,7 @@ all_commands = [
     AI(),
     Code(),
     ConnectFour(),
+    CppRef(),
     Echo(),
     EmojiMode(),
     Java(),

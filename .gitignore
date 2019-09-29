@@ -7,3 +7,4 @@ bot_token
 *.db
 *.db-journal
 .env
+**/.DS_Store
