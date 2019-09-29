@@ -5,7 +5,6 @@ import json
 import subprocess
 import threading
 import sqlite3
-import traceback
 
 from .triggers import msg_triggers, new_member_triggers, reaction_triggers
 
@@ -15,6 +14,8 @@ from .triggers.quack import quack
 from .triggers.emoji_mode import invalid_emoji_message
 
 from . import logging
+
+from .triggers import utils
 
 
 class DuckClient(discord.Client):
@@ -83,7 +84,7 @@ class DuckClient(discord.Client):
                 if await trigger.execute_message(self, msg):
                     replied = True
             except Exception as e:
-                await sendTraceback(self, msg.content)
+                await utils.sendTraceback(self, msg.content)
                 replied = True
 
         if not replied:
@@ -98,7 +99,7 @@ class DuckClient(discord.Client):
             try:
                 await trigger.execute_new_member(self, member)
             except Exception as e:
-                await sendTraceback(self)
+                await utils.sendTraceback(self)
 
     async def on_raw_reaction_add(self, reaction):
         for trigger in reaction_triggers:
@@ -111,21 +112,4 @@ class DuckClient(discord.Client):
                 if result is False:
                     break
             except Exception as e:
-                await sendTraceback(self)
-
-
-# prints a traceback and sends it to discord
-async def sendTraceback(client, content=""):
-    # print the traceback to the terminal
-    print(traceback.format_exc())
-
-    # if there is a traceback server and channel, send the traceback in discord as well
-    try:
-        msg_to_send = f"```bash\n{traceback.format_exc()}\n```"
-        if content:
-            msg_to_send = f"`{content}`\n" + msg_to_send
-        await client.TRACEBACK_CHANNEL.send(msg_to_send)
-    except:
-        print(
-            "\nNote: traceback was not sent to Discord, if you want this double check your config.json"
-        )
+                await utils.sendTraceback(self)

@@ -70,4 +70,4 @@ class Steam(Command):
                 await msg.channel.send(embed=embed)
             except Exception as ex:
                 await msg.channel.send("An error occured when finding the game")
-                print(ex)
+                await utils.sendTraceback(client, msg.content)
