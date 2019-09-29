@@ -25,8 +25,6 @@ async def log(client, msg):
         open(tmp_location, "wb").write(r.content)
 
         attached_file_locations.append(tmp_location)
-        print("file saved")
-    print("all files saved")
 
     if msg.channel.type is ChannelType.private:
         destination_channel = client.LOG_SERVER.get_channel(
@@ -80,5 +78,4 @@ async def log(client, msg):
     )
 
     for location in attached_file_locations:
-        print(location)
         os.remove(location)
