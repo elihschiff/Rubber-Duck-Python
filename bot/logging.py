@@ -57,7 +57,15 @@ async def log(client, msg):
 
         log_content = f"{msg.author.name} ({msg.author.id}): {msg.clean_content}"
 
-    await destination_channel.send(log_content, files=attached_files)
+    # only sends the first embed, as far as I know a message cannot have more than
+    # 1 embed anyway even though msg.embeds is a list
+    attached_embed = None
+    if len(msg.embeds) > 0:
+        attached_embed = msg.embeds[0]
+
+    await destination_channel.send(
+        log_content, files=attached_files, embed=attached_embed
+    )
 
     for attached_file in attached_files:
         os.remove(attached_file.filename)

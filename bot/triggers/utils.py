@@ -2,6 +2,7 @@ import time
 import asyncio
 import discord
 import re
+import traceback
 
 
 async def delay_send(sendable, msg, delay_factor=1.0, embed=None):
@@ -99,3 +100,23 @@ def user_from_mention(client, mention):
         return None
     else:
         return client.get_user(int(match.group(1)))
+
+
+# prints a traceback and sends it to discord
+# to get a traceback sent to steam put this line in any except: call
+# await utils.sendTraceback(client, "")
+async def sendTraceback(client, content=""):
+    # print the traceback to the terminal
+    print(content)
+    print(traceback.format_exc())
+
+    # if there is a traceback server and channel, send the traceback in discord as well
+    try:
+        msg_to_send = f"```bash\n{traceback.format_exc()}\n```"
+        if content:
+            msg_to_send = f"`{content}`\n" + msg_to_send
+        await client.TRACEBACK_CHANNEL.send(msg_to_send)
+    except:
+        print(
+            "\nNote: traceback was not sent to Discord, if you want this double check your config.json"
+        )
