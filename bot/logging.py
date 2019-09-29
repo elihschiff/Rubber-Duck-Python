@@ -1,4 +1,7 @@
-from discord import ChannelType, File
+import discord
+from discord import ChannelType
+import requests
+import os
 
 
 async def log(client, msg):
@@ -15,11 +18,13 @@ async def log(client, msg):
     destination_channel = None
     log_content = None
 
-    attached_files = []
+    attached_file_locations = []
     for attachment in msg.attachments:
-        saved_attachment = File(f"/tmp/{msg.id}-{attachment.filename}")
-        await attachment.save(saved_attachment.fp, use_cached=True)
-        attached_files.append(saved_attachment)
+        tmp_location = f"/tmp/{msg.id}-{attachment.filename}"
+        r = requests.get(attachment.url, allow_redirects=True)
+        open(tmp_location, "wb").write(r.content)
+
+        attached_file_locations.append(tmp_location)
 
     if msg.channel.type is ChannelType.private:
         destination_channel = client.LOG_SERVER.get_channel(
@@ -63,9 +68,14 @@ async def log(client, msg):
     if len(msg.embeds) > 0:
         attached_embed = msg.embeds[0]
 
+    attached_files_to_send = []
+    for location in attached_file_locations:
+        opened_file = discord.File(location)
+        attached_files_to_send.append(opened_file)
+
     await destination_channel.send(
-        log_content, files=attached_files, embed=attached_embed
+        log_content, files=attached_files_to_send, embed=attached_embed
     )
 
-    for attached_file in attached_files:
-        os.remove(attached_file.filename)
+    for location in attached_file_locations:
+        os.remove(location)
