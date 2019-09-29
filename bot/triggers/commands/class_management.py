@@ -246,6 +246,7 @@ class AddClass(Command, ReactionTrigger):
 
         except Exception as e:
             await msg.channel.send(client.messages["err_adding_class"].format(e))
+            await utils.sendTraceback(client, msg.content)
 
 
 class RemoveClass(Command, ReactionTrigger):
@@ -346,3 +347,4 @@ class RemoveClass(Command, ReactionTrigger):
             )
         except Exception as e:
             await msg.channel.send(client.messages["err_removing_class"].format(e))
+            await utils.sendTraceback(client, msg.content)
