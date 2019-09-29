@@ -7,7 +7,7 @@ import discord
 
 
 class Steam(Command):
-    names = ["steam"]
+    names = ["steam", "epic"]
     description = "Gets some steam games"
     needsContent = True
 
