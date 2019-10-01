@@ -50,6 +50,8 @@ class DuckClient(discord.Client):
             args = ["kill", "-9"]
             args.extend(sys.argv[1:])
             subprocess.call(args)
+
+        self.LOG_SERVER = self.get_guild(self.config["LOG_SERVER_ID"])
         self.SERVER = self.get_guild(self.config["SERVER_ID"])
 
         try:
@@ -60,14 +62,12 @@ class DuckClient(discord.Client):
         except:
             self.TRACEBACK_CHANNEL = None
 
-        self.LOG_SERVER = self.get_guild(self.config["LOG_SERVER_ID"])
-
         print(f"Connected as {self.user}!")
 
     async def on_message(self, msg):
         try:
-            await logging.log(self, msg)
-        except:
+            await logging.log_message(self, msg)
+        except AttributeError:
             pass
 
         if msg.author.bot:
@@ -90,6 +90,22 @@ class DuckClient(discord.Client):
         if not replied:
             if not await invalid_command(self, msg):
                 await quack(self, msg)
+
+    async def on_raw_message_edit(self, msg):
+        channel = await self.fetch_channel(msg.data["channel_id"])
+        msg_full = await channel.fetch_message(msg.message_id)
+        user = await self.fetch_user(msg_full.author.id)
+
+        try:
+            await logging.log_message(self, msg_full, "(EDITED)")
+        except AttributeError:
+            pass
+
+    async def on_raw_message_delete(self, msg):
+        try:
+            await logging.log_message_delete(self, msg)
+        except AttributeError:
+            pass
 
     async def on_member_join(self, member):
         for trigger in new_member_triggers:
