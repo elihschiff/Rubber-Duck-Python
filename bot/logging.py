@@ -94,7 +94,7 @@ async def get_log_content(msg, client):
                 f" to {msg.channel.recipient.name} ({msg.channel.recipient.id})"
             )
 
-        log_content = f"{msg.author.name} ({msg.author.id}){rcvd_channel_tag}: {msg.clean_content}"
+        log_content = f"{msg.author.name} ({msg.author.id}){rcvd_channel_tag} [{msg.id}]: {msg.clean_content}"
     else:
         log_content = (
             f"{msg.author.name} ({msg.author.id}) [{msg.id}]: {msg.clean_content}"
