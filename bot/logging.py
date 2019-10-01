@@ -4,15 +4,11 @@ import requests
 import os
 
 
-async def log(client, msg):
-    if client.LOG_SERVER is None:
-        # check does not need to be here (client.LOG_SERVER is only necessary in the case
-        # that no corresponding logging channel exists) since the client can receive
-        # a channel by its id alone, but putting the check here helps ensuring a sane
-        # config file
+async def log_message(client, msg, action_taken=""):
+    if log_server_missing(client):
         return
 
-    if msg.channel.type is not ChannelType.private and msg.guild != client.SERVER:
+    if not_valid_channel(msg.channel, msg.guild, client):
         return
 
     destination_channel = await get_log_channel(msg, client)
@@ -20,12 +16,32 @@ async def log(client, msg):
     attached_embed = get_embed(msg)
     (attached_files_to_send, files_to_remove) = get_files(msg)
 
+    if action_taken:
+        action_taken += " "
+
     await destination_channel.send(
-        log_content, files=attached_files_to_send, embed=attached_embed
+        f"{action_taken}{log_content}",
+        files=attached_files_to_send,
+        embed=attached_embed,
     )
 
-    for location in files_to_remove:
-        os.remove(location)
+    remove_files(files_to_remove)
+
+
+def not_valid_channel(channel, guild, client):
+    if channel.type is not ChannelType.private and guild != client.SERVER:
+        return True
+    return False
+
+
+def log_server_missing(client):
+    if client.LOG_SERVER is None:
+        # check does not need to be here (client.LOG_SERVER is only necessary in the case
+        # that no corresponding logging channel exists) since the client can receive
+        # a channel by its id alone, but putting the check here helps ensuring a sane
+        # config file
+        return True
+    return False
 
 
 async def get_log_channel(msg, client):
@@ -99,3 +115,8 @@ def get_files(msg):
         opened_file = discord.File(location)
         attached_files_to_send.append(opened_file)
     return attached_files_to_send, attached_file_locations
+
+
+def remove_files(files_to_remove):
+    for location in files_to_remove:
+        os.remove(location)
