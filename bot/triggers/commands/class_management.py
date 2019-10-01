@@ -84,10 +84,16 @@ class AddClass(Command, ReactionTrigger):
     needsContent = True
 
     async def execute_command(self, client, msg, content):
+
+        if content == "%":
+            await utils.delay_send(msg.channel, client.messages["add_mod_message"])
+            return
+
         for word in client.config["add_skip_words"]:
             if content.split()[0].lower() == word.lower():
                 content = " ".join(content.split()[1:]).strip()
                 break
+
         if not content:
             await utils.delay_send(
                 msg.channel, client.messages["invalid_class_add_format"]

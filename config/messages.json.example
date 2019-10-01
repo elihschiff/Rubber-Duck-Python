@@ -28,6 +28,8 @@
 	"remove_no_roles_match": "It looks like none of the roles matched your search. Your search may have not been in the correct format. For example to remove Data Structures type, `!remove Data Structures` or `!remove csci 1200`",
 	"class_add_welcome":"Welcome to {}, {}",
 
+	"add_mod_message": "Ding dong you're wrong",
+
 	"add_class_prompt": ", your search for **{}** retrieved these results.\nClick the corresponding reaction to add that class:",
 	"class_add_confirmation": "You have been added to {}.",
 	"err_adding_class": "There was an error adding you to this class.  Please message a server admin and we'll figure something out.  Tell them this: {}",
