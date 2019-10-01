@@ -3,7 +3,8 @@ from discord import ChannelType
 import requests
 import os
 
-
+# action_taken gets put in front of the log message
+# an example might be "(EDITED)" to show this message was edited
 async def log_message(client, msg, action_taken=""):
     if log_server_missing(client):
         return
@@ -11,7 +12,7 @@ async def log_message(client, msg, action_taken=""):
     if not_valid_channel(msg.channel, msg.guild, client):
         return
 
-    destination_channel = await get_log_channel(msg, client)
+    destination_channel = await get_log_channel(msg.channel, client)
     log_content = await get_log_content(msg, client)
     attached_embed = get_embed(msg)
     (attached_files_to_send, files_to_remove) = get_files(msg)
@@ -26,6 +27,15 @@ async def log_message(client, msg, action_taken=""):
     )
 
     remove_files(files_to_remove)
+
+
+async def log_message_delete(client, msg):
+    if msg.cached_message:
+        await log_message(client, msg.cached_message, "(DELETED)")
+    else:
+        channel_removed_from = await client.fetch_channel(msg.channel_id)
+        destination_channel = await get_log_channel(channel_removed_from, client)
+        await destination_channel.send(f"(DELETED) id:{msg.message_id}")
 
 
 def not_valid_channel(channel, guild, client):
@@ -44,27 +54,27 @@ def log_server_missing(client):
     return False
 
 
-async def get_log_channel(msg, client):
-    if msg.channel.type is ChannelType.private:
+async def get_log_channel(channel, client):
+    if channel.type is ChannelType.private:
         destination_channel = client.LOG_SERVER.get_channel(
             client.config["DM_LOG_CHANNEL_ID"]
         )
     else:
         client.log_lock.acquire()
         client.log_c.execute(
-            f"SELECT dest_channel_id FROM logging WHERE source_channel_id = {msg.channel.id}"
+            f"SELECT dest_channel_id FROM logging WHERE source_channel_id = {channel.id}"
         )
         dest_channel_id = client.log_c.fetchone()
         client.log_lock.release()
 
         if dest_channel_id is None:
             destination_channel = await client.LOG_SERVER.create_text_channel(
-                msg.channel.name
+                channel.name
             )
 
             client.log_lock.acquire()
             client.log_c.execute(
-                f"INSERT INTO logging (source_channel_id, dest_channel_id) VALUES ({msg.channel.id}, {destination_channel.id})"
+                f"INSERT INTO logging (source_channel_id, dest_channel_id) VALUES ({channel.id}, {destination_channel.id})"
             )
             client.log_connection.commit()
             client.log_lock.release()
@@ -86,7 +96,9 @@ async def get_log_content(msg, client):
 
         log_content = f"{msg.author.name} ({msg.author.id}){rcvd_channel_tag}: {msg.clean_content}"
     else:
-        log_content = f"{msg.author.name} ({msg.author.id}): {msg.clean_content}"
+        log_content = (
+            f"{msg.author.name} ({msg.author.id}) [{msg.id}]: {msg.clean_content}"
+        )
 
     return log_content
 

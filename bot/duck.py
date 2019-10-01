@@ -97,7 +97,13 @@ class DuckClient(discord.Client):
         user = await self.fetch_user(msg_full.author.id)
 
         try:
-            await logging.log_message(self, msg_full, "(EDIT)")
+            await logging.log_message(self, msg_full, "(EDITED)")
+        except AttributeError:
+            pass
+
+    async def on_raw_message_delete(self, msg):
+        try:
+            await logging.log_message_delete(self, msg)
         except AttributeError:
             pass
 
