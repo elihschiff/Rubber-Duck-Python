@@ -15,28 +15,24 @@ async def log(client, msg):
     if msg.channel.type is not ChannelType.private and msg.guild != client.SERVER:
         return
 
-    destination_channel = None
-    log_content = None
+    destination_channel = await get_log_channel(msg, client)
+    log_content = await get_log_content(msg, client)
+    attached_embed = get_embed(msg)
+    (attached_files_to_send, files_to_remove) = get_files(msg)
 
-    attached_file_locations = []
-    for attachment in msg.attachments:
-        tmp_location = f"/tmp/{msg.id}-{attachment.filename}"
-        r = requests.get(attachment.url, allow_redirects=True)
-        open(tmp_location, "wb").write(r.content)
+    await destination_channel.send(
+        log_content, files=attached_files_to_send, embed=attached_embed
+    )
 
-        attached_file_locations.append(tmp_location)
+    for location in files_to_remove:
+        os.remove(location)
 
+
+async def get_log_channel(msg, client):
     if msg.channel.type is ChannelType.private:
         destination_channel = client.LOG_SERVER.get_channel(
             client.config["DM_LOG_CHANNEL_ID"]
         )
-        rcvd_channel_tag = ""
-        if msg.author == client.user:
-            rcvd_channel_tag = (
-                f" to {msg.channel.recipient.name} ({msg.channel.recipient.id})"
-            )
-
-        log_content = f"{msg.author.name} ({msg.author.id}){rcvd_channel_tag}: {msg.clean_content}"
     else:
         client.log_lock.acquire()
         client.log_c.execute(
@@ -60,22 +56,46 @@ async def log(client, msg):
         else:
             destination_channel = client.LOG_SERVER.get_channel(dest_channel_id[0])
 
+    return destination_channel
+
+
+async def get_log_content(msg, client):
+    if msg.channel.type is ChannelType.private:
+        # if rubber duck is the account who sent the message
+        rcvd_channel_tag = ""
+        if msg.author == client.user:
+            rcvd_channel_tag = (
+                f" to {msg.channel.recipient.name} ({msg.channel.recipient.id})"
+            )
+
+        log_content = f"{msg.author.name} ({msg.author.id}){rcvd_channel_tag}: {msg.clean_content}"
+    else:
         log_content = f"{msg.author.name} ({msg.author.id}): {msg.clean_content}"
 
-    # only sends the first embed, as far as I know a message cannot have more than
-    # 1 embed anyway even though msg.embeds is a list
+    return log_content
+
+
+# only sends the first embed, as far as I know a message cannot have more than
+# 1 embed anyway even though msg.embeds is a list
+def get_embed(msg):
     attached_embed = None
     if len(msg.embeds) > 0:
         attached_embed = msg.embeds[0]
+    return attached_embed
+
+
+# returns the files to send and also the locations so they may be removed later
+def get_files(msg):
+    attached_file_locations = []
+    for attachment in msg.attachments:
+        tmp_location = f"/tmp/{msg.id}-{attachment.filename}"
+        r = requests.get(attachment.url, allow_redirects=True)
+        open(tmp_location, "wb").write(r.content)
+
+        attached_file_locations.append(tmp_location)
 
     attached_files_to_send = []
     for location in attached_file_locations:
         opened_file = discord.File(location)
         attached_files_to_send.append(opened_file)
-
-    await destination_channel.send(
-        log_content, files=attached_files_to_send, embed=attached_embed
-    )
-
-    for location in attached_file_locations:
-        os.remove(location)
+    return attached_files_to_send, attached_file_locations
