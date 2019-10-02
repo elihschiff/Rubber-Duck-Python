@@ -173,25 +173,23 @@ class TicTacToe(Game, ReactionTrigger):
                     self.winner = self.turn
                     return
             # diagonal
-            if pos == 0 or pos == 8:
-                end = True
-                for i in range(3):
-                    if self.board[i][i] != self.turn:
-                        end = False
-                        break
-                if end:
-                    self.winner = self.turn
-                    return
+            end = True
+            for i in range(3):
+                if self.board[i][i] != self.turn:
+                    end = False
+                    break
+            if end:
+                self.winner = self.turn
+                return
             # anti diagonal
-            if pos == 2 or pos == 6:
-                end = True
-                for i in range(3):
-                    if self.board[2 - i][i] != self.turn:
-                        end = False
-                        break
-                if end:
-                    self.winner = self.turn
-                    return
+            end = True
+            for i in range(3):
+                if self.board[2 - i][i] != self.turn:
+                    end = False
+                    break
+            if end:
+                self.winner = self.turn
+                return
 
         def take_turn(self, pos):
             if self.winner != -1:

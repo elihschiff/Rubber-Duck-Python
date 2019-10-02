@@ -152,6 +152,9 @@ class RockPaperScissors(Game, ReactionTrigger):
                 break
 
         # find the game in the global game dict
+        if frozenset(players) not in GLOBAL_GAMES.keys():
+            await channel.send(content="Sorry, this RPS game is out of date!")
+            return
         games = GLOBAL_GAMES[frozenset(players)]
         this_game = None
 
