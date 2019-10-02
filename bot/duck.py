@@ -96,6 +96,8 @@ class DuckClient(discord.Client):
         msg_full = await channel.fetch_message(msg.message_id)
         user = await self.fetch_user(msg_full.author.id)
 
+        if user.bot:
+            return
         try:
             await logging.log_message(self, msg_full, "(EDITED)")
         except AttributeError:

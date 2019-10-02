@@ -31,6 +31,9 @@ async def log_message(client, msg, action_taken=""):
 
 async def log_message_delete(client, msg):
     if msg.cached_message:
+        if msg.author.bot:
+            return
+
         await log_message(client, msg.cached_message, "(DELETED)")
     else:
         channel_removed_from = await client.fetch_channel(msg.channel_id)
