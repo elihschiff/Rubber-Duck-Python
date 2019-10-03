@@ -68,7 +68,7 @@ class ListClasses(Command):
                 if len(class_str) + len(prelude) >= 2000:
                     embed = discord.Embed(description=class_str, color=0xDCC308)
 
-                    await utils.delay_send(msg.author.dm_channel, prelude, embed=embed)
+                    await utils.delay_send(msg.author, prelude, embed=embed)
                     class_str = ""
                     delay_msg_sent = True
 
@@ -84,7 +84,7 @@ class ListClasses(Command):
                     )
                 else:
                     await utils.delay_send(
-                        msg.author.dm_channel,
+                        msg.author,
                         client.messages["class_list_prelude"].format(
                             str(content[:4]).upper()
                         ),
@@ -115,9 +115,7 @@ class ListClasses(Command):
             await msg.channel.send("DMed!")
 
         await utils.delay_send(
-            msg.author.dm_channel,
-            client.messages["general_class_list_prelude"],
-            embed=embed,
+            msg.author, client.messages["general_class_list_prelude"], embed=embed
         )
 
         await msg.author.send(client.messages["post_general_class_list"])
