@@ -72,6 +72,7 @@ from .list_classes import ListClasses
 from .lmdtfy import Lmdtfy, Lmgtfy
 from .man import Man
 from .math import Math
+from .minesweeper import Minesweeper
 from .minecraft import Minecraft
 from .poll import Poll
 from .rps import RockPaperScissors
@@ -98,6 +99,7 @@ all_commands = [
     Lmgtfy(),
     Man(),
     Math(),
+    Minesweeper(),
     # Minecraft(),
     Poll(),
     RemoveClass(),
