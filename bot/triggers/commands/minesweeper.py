@@ -48,7 +48,7 @@ class Minesweeper(Command):
             i += 1
 
         num = ["0⃣", "1⃣", "2⃣", "3⃣", "4⃣", "5⃣", "6⃣", "7⃣", "8⃣", "9⃣"]
-        output = ""
+        output = "⁠\n"
         for i in range(height):
             for j in range(width):
                 output += "||"
@@ -62,7 +62,8 @@ class Minesweeper(Command):
         # 11 is the max number of chars per cell
         # times every cell
         # plus a \n for each line
-        if (11 * width * height) + (1 * height) >= 2000:
+        # +2 for the zero width space and newline at the start
+        if (11 * width * height) + (1 * height) + 1 >= 2000:
             await utils.delay_send(msg.channel, client.messages["ms_too_large"])
         else:
             await utils.delay_send(msg.channel, output)
