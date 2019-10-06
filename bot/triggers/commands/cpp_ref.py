@@ -1,9 +1,7 @@
 from . import Command
 from .. import utils
 import requests
-
-
-# next task: what if len args > 2?? HERE***
+from bs4 import BeautifulSoup
 
 
 class CppRef(Command):
@@ -14,43 +12,39 @@ class CppRef(Command):
     async def execute_command(self, client, msg, content):
         args = content.split(" ")
 
-        # check if first link works
+        # check if link using just the first arg works
         if len(args) >= 1:
-            # creating url from content after !cpp assuming it's a stl container
             first = args[0]
-            url = f"http://www.cplusplus.com/reference/stl/{first}/"
-            r = requests.get(url)
+            # getting all sub_links from the main page
+            main_page = f"http://www.cplusplus.com/reference/"
+            r = requests.get(main_page)
+            soup = BeautifulSoup(r.text, "html.parser")
+            links = soup.find_all("a")
+            # keep trying different sublinks until either something works
+            # and we break out of the loop, or loop ends
+            for link in links:
+                sub_link = str(link["href"])
+                # only want links for reference pages (not contact, info, etc.
+                # links that accidentally work)
+                if sub_link[0:10] != "/reference":
+                    continue
+                url = f"http://www.cplusplus.com{sub_link}{first}/"
+                r = requests.get(url)
+                if "<h1>404 Page Not Found</h1>" not in r.text:
+                    break
             if "<h1>404 Page Not Found</h1>" in r.text:
-                # stl container attempt didn't work
-                # try to see if it's an iostream class or object
-                # which has multiple possible links, not just "stl" like with
-                # stl containers, so try with all links, listed in try_list
-                try_list = [
-                    "iostream",
-                    "ios",
-                    "fstream",
-                    "ostream",
-                    "istream",
-                    "iomanip",
-                ]
-                for i in range(0, len(try_list) - 1):
-                    url = f"http://www.cplusplus.com/reference/{try_list[i]}/{first}/"
-                    r = requests.get(url)
-                    if "<h1>404 Page Not Found</h1>" not in r.text:
-                        break
+                # last attempt: maybe it is its own link not under a thread
+                url = f"http://www.cplusplus.com/reference/{first}/{first}/"
+                r = requests.get(url)
                 if "<h1>404 Page Not Found</h1>" in r.text:
-                    # last attempt: maybe it is its own link not under a thread
-                    url = f"http://www.cplusplus.com/reference/{first}/{first}/"
-                    r = requests.get(url)
-                    if "<h1>404 Page Not Found</h1>" in r.text:
-                        # no links work
-                        # return an error to the user in discord and exit function
-                        await utils.delay_send(
-                            msg.channel,
-                            f"Could not find cpp page for `{content}`.\
+                    # no links work
+                    # return an error to the user in discord and exit function
+                    await utils.delay_send(
+                        msg.channel,
+                        f"Could not find cpp page for `{content}`.\
 \nUse format: !cpp [container/class/object] [(optional) member function]",
-                        )
-                        return
+                    )
+                    return
 
         # This code only runs if there is a valid url formed from previous
         # if statement (otherwise we retured). Check if specifying second
