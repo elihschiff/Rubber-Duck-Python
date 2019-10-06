@@ -63,7 +63,7 @@ class Minesweeper(Command):
         # times every cell
         # plus a \n for each line
         # +2 for the zero width space and newline at the start
-        if (11 * width * height) + (1 * height) + 1 >= 2000:
+        if (11 * width * height) + (1 * height) + 2 >= 2000:
             await utils.delay_send(msg.channel, client.messages["ms_too_large"])
         else:
             await utils.delay_send(msg.channel, output)
