@@ -120,12 +120,30 @@ class DuckClient(discord.Client):
                 await utils.sendTraceback(self)
 
     async def on_raw_reaction_add(self, reaction):
+        user = self.SERVER.get_member(reaction.user_id)
+        if not user:  # user is not in the cache
+            user = await self.fetch_user(reaction.user_id)
+
+        # This may need to be removed later but for now we dont every do anything
+        # when a bot sending the reaction so this saves up to 2 api calls
+        if user.bot:
+            return
+
+        channel = self.get_channel(reaction.channel_id)
+        if not channel:  # channel is not in the cache
+            channel = await self.fetch_channel(reaction.channel_id)
+
+        # as far as I know there is not get_message command that checks the cache
+        msg = await channel.fetch_message(reaction.message_id)
+
         for trigger in reaction_triggers:
             if type(trigger).__name__ in self.config["disabled_triggers"]["reaction"]:
                 continue
 
             try:
-                result = await trigger.execute_reaction(self, reaction)
+                result = await trigger.execute_reaction(
+                    self, reaction, channel, msg, user
+                )
                 # if you delete the message reacted to, return False
                 if result is False:
                     break
