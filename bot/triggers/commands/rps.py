@@ -129,12 +129,12 @@ class RockPaperScissors(Game, ReactionTrigger):
         # initialize the game in the game manager
         games.append(RPSGame(msg, [player.id for player in players], msg_ids))
 
-    async def execute_reaction(self, client, reaction):
+    async def execute_reaction(self, client, reaction, channel, msg, user):
         if client.user.id == reaction.user_id:
             return
 
-        channel = await client.fetch_channel(reaction.channel_id)
-        msg = await channel.fetch_message(reaction.message_id)
+        # channel = await client.fetch_channel(reaction.channel_id)
+        # msg = await channel.fetch_message(reaction.message_id)
 
         if len(msg.embeds) == 0 or msg.embeds[0].title != "Rock Paper Scissors":
             return
