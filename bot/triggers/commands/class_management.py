@@ -142,16 +142,16 @@ class AddClass(Command, ReactionTrigger):
     # It keeps a list of people and classes that were recently added to reduce welcome message spam
     recent_class_cache = []
 
-    async def execute_reaction(self, client, reaction):
-        user = await client.fetch_user(reaction.user_id)
+    async def execute_reaction(self, client, reaction, channel, msg, user):
+        # user = await client.fetch_user(reaction.user_id)
         if user.bot:
             return
 
-        channel = await client.fetch_channel(reaction.channel_id)
+        # channel = await client.fetch_channel(reaction.channel_id)
         if channel.type is not discord.ChannelType.private:
             return
 
-        msg = await channel.fetch_message(reaction.message_id)
+        # msg = await channel.fetch_message(reaction.message_id)
         if msg.author != client.user:
             return
 
@@ -305,16 +305,16 @@ class RemoveClass(Command, ReactionTrigger):
             "No results match",
         )
 
-    async def execute_reaction(self, client, reaction):
-        user = await client.fetch_user(reaction.user_id)
+    async def execute_reaction(self, client, reaction, channel, msg, user):
+        # user = await client.fetch_user(reaction.user_id)
         if user.bot:
             return
 
-        channel = await client.fetch_channel(reaction.channel_id)
+        # channel = await client.fetch_channel(reaction.channel_id)
         if channel.type is not discord.ChannelType.private:
             return
 
-        msg = await channel.fetch_message(reaction.message_id)
+        # msg = await channel.fetch_message(reaction.message_id)
         if msg.author != client.user:
             return
 
