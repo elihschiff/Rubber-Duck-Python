@@ -129,7 +129,7 @@ class DuckClient(discord.Client):
         if user.bot:
             return
 
-        channel = self.SERVER.get_channel(reaction.channel_id)
+        channel = self.get_channel(reaction.channel_id)
         if not channel:  # channel is not in the cache
             channel = await self.fetch_channel(reaction.channel_id)
 
