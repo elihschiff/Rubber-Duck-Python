@@ -19,8 +19,6 @@ One of the hardest things to note about duck sounds is that ducks aren't the onl
 %
 Female domestic ducks (except muscovies) make a loud alarm call "QUACK!" when they are startled, hungry, or separated from a member of their group. Drakes (males) can't make this sound at all.  All females have the ability to make this sound, but their inclination to do it seems highly individual.
 %
-Males make a rattling noise by rubbing the bill against the flight feathers in a special display that resembles stylized preening. This display is given toward a mate and presumably helps maintain the pair bond.
-%
 The ubiquitous quack is always associated with ducks, but ducks actually make many other vocal and non-vocal sounds. Recognizing the sounds ducks make is essential for birding by ear whenever these wonderful waterfowl are involved.
 %
 The familiar "quack" attributed to all ducks is usually the female mallard's quacking, though many female dabbling ducks make similar quacking noises. Quacks are not the only sounds in ducks' vocabularies, though. While ducks generally do not sing, they can make a variety of vocalizations.
@@ -120,8 +118,6 @@ while(os.fork()):
 %
 Carpe duckum
 %
-You should fix your code. Looking at it makes me want to walk across a mile of Legos with my bare duckfeet. :duck:
-%
 ```
 DUCK(1)           User Commands          DUCK(1)
 
@@ -134,8 +130,6 @@ SYNOPSIS
 DESCRIPTION
        Quacks to standard output.
 ```
-%
-While you're struggling with bugs, I'm quacking and having a good time.
 %
 Can you quack the code?
 
