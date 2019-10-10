@@ -17,7 +17,7 @@ class Latex(Command):
 
     async def execute_command(self, client, msg, content):
         await utils.delay_send(
-            msg.channel, "LATEX IS CURRENTLY NOT WORKING SORRY ABOUT THAT"
+            msg.channel, "LATEX IS CURRENTLY NOT WORKING. SORRY ABOUT THAT"
         )
         return
 
