@@ -16,6 +16,11 @@ class Latex(Command):
     needsContent = True
 
     async def execute_command(self, client, msg, content):
+        await utils.delay_send(
+            msg.channel, "LATEX IS CURRENTLY NOT WORKING SORRY ABOUT THAT"
+        )
+        return
+
         data = json.dumps(
             {
                 "auth": {"user": "guest", "password": "guest"},
