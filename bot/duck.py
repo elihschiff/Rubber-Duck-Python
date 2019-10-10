@@ -100,6 +100,7 @@ class DuckClient(discord.Client):
             return
         try:
             await logging.log_message(self, msg_full, "(EDITED)")
+            await invalid_emoji_message(self, msg_full)
         except AttributeError:
             pass
 
