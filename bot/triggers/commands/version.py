@@ -10,10 +10,10 @@ class Version(Command):
 
     async def execute_command(self, client, msg, content):
         commit = (
-            subprocess.check_output(["git", "rev-parse", "HEAD"])
+            subprocess.check_output(["git", "log", "-n", "1"])
             .decode("utf-8")
             .strip(" \r\n")
         )
         await utils.delay_send(
-            msg.channel, f"Rubber Duck is currently running commit {commit}"
+            msg.channel, f"Current commit:\n```{commit}```"
         )
