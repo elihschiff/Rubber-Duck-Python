@@ -5,7 +5,7 @@ import discord
 
 class Help(Command):
     names = ["help"]
-    description = "Echoes the given message"
+    description = "Lists commands and their description"
     needsContent = False
 
     async def execute_command(self, client, msg, content):
