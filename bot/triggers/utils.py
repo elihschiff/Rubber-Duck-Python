@@ -12,9 +12,9 @@ async def delay_send(sendable, msg, delay_factor=1.0, embed=None):
     delay = min(2, delay)
     # delay will never take less than .25 seconds to respond
     delay = max(0.25, delay)
-
-    async with sendable.typing():
-        await asyncio.sleep(delay)
+    # delay = 0
+    # async with sendable.typing():
+    await asyncio.sleep(delay)
 
     return await sendable.send(msg, embed=embed)
 
