@@ -25,9 +25,13 @@ class DuckClient(discord.Client):
         messages_filename="config/messages.json",
         quacks_filename="config/quacks.txt",
         games_filename="config/games.txt",
+        path=sys.path[0] + "/",
     ):
         super().__init__()
-
+        config_filename = path + config_filename
+        messages_filename = path + messages_filename
+        quacks_filename = path + quacks_filename
+        games_filename = path + games_filename
         with open(config_filename, "r") as config_file:
             self.config = json.load(config_file)
         with open(messages_filename, "r") as messages_file:
@@ -38,11 +42,11 @@ class DuckClient(discord.Client):
             self.game_footers = games_file.read().split("\n%\n")
 
         self.lock = threading.Lock()
-        self.connection = sqlite3.connect("database.db")
+        self.connection = sqlite3.connect(path + "database.db")
         self.c = self.connection.cursor()
 
         self.log_lock = threading.Lock()
-        self.log_connection = sqlite3.connect("logging.db")
+        self.log_connection = sqlite3.connect(path + "logging.db")
         self.log_c = self.log_connection.cursor()
 
     async def on_ready(self):

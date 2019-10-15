@@ -2,8 +2,9 @@ from bot.duck import *
 from dotenv import load_dotenv
 import os
 import sqlite3
+import sys
 
-connection = sqlite3.connect("database.db")
+connection = sqlite3.connect(sys.path[0] + "/" + "database.db")
 c = connection.cursor()
 
 c.execute("SELECT * FROM classes")

@@ -49,7 +49,8 @@ class Command(MessageTrigger):
     async def execute_message(self, client, msg) -> bool:
         (idx, recognized) = await self.is_valid(client, msg)
         if idx is not None:
-            await self.execute_command(client, msg, msg.clean_content[idx:].strip())
+            async with msg.channel.typing():
+                await self.execute_command(client, msg, msg.clean_content[idx:].strip())
         return recognized
 
     async def execute_command(self, client, msg, content: str):
@@ -64,6 +65,7 @@ from .class_management import AddClass, RemoveClass
 from .code import Code
 from .connectfour import ConnectFour
 from .cpp_ref import CppRef
+from .dining import Dining
 from .echo import Echo
 from .emoji_mode import EmojiMode
 from .java import Java
@@ -91,6 +93,7 @@ all_commands = [
     Code(),
     ConnectFour(),
     CppRef(),
+    Dining(),
     Echo(),
     EmojiMode(),
     Java(),
