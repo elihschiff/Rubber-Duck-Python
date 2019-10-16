@@ -106,7 +106,7 @@ all_commands = [
     Minesweeper(),
     # Minecraft(),
     Poll(),
-    RandomGen(),
+    # RandomGen(),
     RemoveClass(),
     RockPaperScissors(),
     Steam(),
