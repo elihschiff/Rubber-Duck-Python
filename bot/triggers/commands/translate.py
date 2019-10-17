@@ -13,6 +13,10 @@ class Translate(Command):
 
     async def execute_command(self, client, msg, content):
         if len(content) == 0:
+            await msg.channel.send(
+                "Translation of old messages has been temporarily disabled."
+            )
+            return
             async for message in msg.channel.history(limit=1, before=msg):
                 content = message.content
 
