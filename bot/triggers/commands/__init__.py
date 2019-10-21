@@ -69,6 +69,7 @@ from .dining import Dining
 from .echo import Echo
 from .emoji_mode import EmojiMode
 from .java import Java
+from .issue import Issue
 from .latex import Latex  # latex machine broke
 from .list_classes import ListClasses
 from .lmdtfy import Lmdtfy, Lmgtfy
@@ -97,6 +98,7 @@ all_commands = [
     Echo(),
     EmojiMode(),
     Java(),
+    Issue(),
     Latex(),  # latex machine broke
     ListClasses(),
     Lmdtfy(),
