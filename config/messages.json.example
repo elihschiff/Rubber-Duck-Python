@@ -58,5 +58,7 @@
   "rockpaperscissors_num_players": ":warning: There can only be 2 players in a game.",
   "rockpaperscissors_bot_player": ":warning: A bot can not be a player.",
 
+  "pdf_png_failed":"Error converting pdf to png. Your file may be too large, try a shorter pdf file",
+
   "ms_too_large":":warning: The board you requested is too large to send on Discord"
 }

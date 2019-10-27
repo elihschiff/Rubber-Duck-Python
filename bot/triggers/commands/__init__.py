@@ -74,6 +74,7 @@ from .man import Man
 from .math import Math
 from .minesweeper import Minesweeper
 from .minecraft import Minecraft
+from .pdftopng import pdfToPng
 from .poll import Poll
 from .rps import RockPaperScissors
 from .steam import Steam
@@ -101,6 +102,7 @@ all_commands = [
     Math(),
     Minesweeper(),
     # Minecraft(),
+    pdfToPng(),
     Poll(),
     RemoveClass(),
     RockPaperScissors(),

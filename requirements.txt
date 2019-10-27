@@ -10,3 +10,4 @@ Wikipedia-API
 wolframalpha
 xkcd
 beautifulsoup4
+Wand
