@@ -49,7 +49,8 @@ class Command(MessageTrigger):
     async def execute_message(self, client, msg) -> bool:
         (idx, recognized) = await self.is_valid(client, msg)
         if idx is not None:
-            await self.execute_command(client, msg, msg.clean_content[idx:].strip())
+            async with msg.channel.typing():
+                await self.execute_command(client, msg, msg.clean_content[idx:].strip())
         return recognized
 
     async def execute_command(self, client, msg, content: str):
@@ -64,9 +65,11 @@ from .class_management import AddClass, RemoveClass
 from .code import Code
 from .connectfour import ConnectFour
 from .cpp_ref import CppRef
+from .dining import Dining
 from .echo import Echo
 from .emoji_mode import EmojiMode
 from .java import Java
+from .issue import Issue
 from .latex import Latex  # latex machine broke
 from .list_classes import ListClasses
 from .lmdtfy import Lmdtfy, Lmgtfy
@@ -76,6 +79,7 @@ from .minesweeper import Minesweeper
 from .minecraft import Minecraft
 from .pdftopng import pdfToPng
 from .poll import Poll
+from .rand_gen import RandomGen
 from .rps import RockPaperScissors
 from .steam import Steam
 from .tictactoe import TicTacToe
@@ -91,9 +95,11 @@ all_commands = [
     Code(),
     ConnectFour(),
     CppRef(),
+    Dining(),
     Echo(),
     EmojiMode(),
     Java(),
+    Issue(),
     Latex(),  # latex machine broke
     ListClasses(),
     Lmdtfy(),
@@ -104,6 +110,7 @@ all_commands = [
     # Minecraft(),
     pdfToPng(),
     Poll(),
+    # RandomGen(),
     RemoveClass(),
     RockPaperScissors(),
     Steam(),

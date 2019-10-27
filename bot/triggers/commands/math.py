@@ -4,7 +4,7 @@ import wolframalpha
 
 
 class Math(Command):
-    names = ["math", "calc", "calculate"]
+    names = ["math", "calc", "calculate", "solve"]
     description = "Solves a math problem"
     needsContent = True
 
