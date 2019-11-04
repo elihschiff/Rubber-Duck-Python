@@ -61,6 +61,7 @@ class Command(MessageTrigger):
 
 
 from .ai import AI
+from .choice import Choice
 from .class_management import AddClass, RemoveClass
 from .code import Code
 from .connectfour import ConnectFour
@@ -91,6 +92,7 @@ from .xkcd import Xkcd
 all_commands = [
     AddClass(),
     AI(),
+    Choice(),
     Code(),
     ConnectFour(),
     CppRef(),
