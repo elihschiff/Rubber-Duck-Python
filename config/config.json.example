@@ -40,6 +40,10 @@
 
 	"add_skip_words":["major", "class"],
 
+	"default_uptime_urls":[
+		"https://mozilla.org"
+	],
+
 	"general_roles": {
 		"All-Seer": 0,
 		"All Seer": 0,

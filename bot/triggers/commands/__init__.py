@@ -84,6 +84,7 @@ from .rps import RockPaperScissors
 from .steam import Steam
 from .tictactoe import TicTacToe
 from .translate import Translate
+from .uptime import Uptime
 from .version import Version
 from .wikipedia import Wikipedia
 from .xkcd import Xkcd
@@ -116,6 +117,7 @@ all_commands = [
     Steam(),
     TicTacToe(),
     Translate(),
+    Uptime(),
     Version(),
     Wikipedia(),
     Xkcd(),
