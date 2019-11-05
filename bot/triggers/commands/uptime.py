@@ -2,9 +2,8 @@ from . import Command
 from .. import utils
 import discord
 import requests
-import urllib.request
-import os
-import json
+import re
+
 
 
 class Uptime(Command):
@@ -14,49 +13,42 @@ class Uptime(Command):
 
     async def execute_command(self, client, msg, content):
         if content:
-            status_code = 0
+            urls = content.split()
+        else:
+            urls = client.config["default_uptime_urls"]
+
+        msg_to_send = ""
+        for url in urls:
+            print(url)
+            status_code = -1
+
+            # Adds a .com to end of urls that dont have a tld
+            # this just assumes you mean .com but if the websit should be say
+            # .edu it wont work
+            if not re.search(r".\..", url):
+                print('fixing url')
+                url = url + ".com"
+
             try:
                 try:
-                    r = requests.head(content, allow_redirects=True)
+                    r = requests.head(url, allow_redirects=True)
                     status_code = r.status_code
                 except requests.exceptions.MissingSchema:
-                    content = f"https://{content}"
-                    r = requests.head(content, allow_redirects=True)
+                    url = f"https://{url}"
+                    r = requests.head(url, allow_redirects=True)
                     status_code = r.status_code
             except:
+                status_code = -1
                 pass
 
             if validStatusCode(status_code):
-                await utils.delay_send(msg.channel, "<{}> is up".format(content))
-                return
+                msg_to_send += f"<{url}> is up\n"
             else:
-                await utils.delay_send(
-                    msg.channel,
-                    "<{}> is down. Status code: {}".format(content, status_code),
-                )
-                return
-        else:
-            # no content deafult to config file
-
-            try:
-                msg_to_send = ""
-                for url in client.config["default_uptime_urls"]:
-                    r = requests.head(url, allow_redirects=True)
-                    status_code = r.status_code
-                    if validStatusCode(status_code):
-                        msg_to_send += f"<{url}> is up\n"
-                    else:
-                        msg_to_send += f"<{url}> is down. Status code: {status_code}\n"
-
-                embed = discord.Embed(
-                    title="Relevant Website Statuses", description=msg_to_send
-                )
-                await msg.channel.send(embed=embed)
-
-            except:
-                await utils.sendTraceback(
-                    self, "This may mean an invalid url in your config file"
-                )
+                msg_to_send += f"<{url}> is down. Status code: {status_code}\n"
+        embed = discord.Embed(
+            title="Relevant Website Statuses", description=msg_to_send
+        )
+        await msg.channel.send(embed=embed)
 
 
 def validStatusCode(sc):
