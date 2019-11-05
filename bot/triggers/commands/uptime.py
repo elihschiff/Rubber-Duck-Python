@@ -5,7 +5,6 @@ import requests
 import re
 
 
-
 class Uptime(Command):
     names = ["status", "ping", "uptime"]
     description = "Checks if a website is down"
@@ -19,14 +18,12 @@ class Uptime(Command):
 
         msg_to_send = ""
         for url in urls:
-            print(url)
             status_code = -1
 
             # Adds a .com to end of urls that dont have a tld
             # this just assumes you mean .com but if the websit should be say
             # .edu it wont work
             if not re.search(r".\..", url):
-                print('fixing url')
                 url = url + ".com"
 
             try:
