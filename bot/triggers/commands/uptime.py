@@ -49,9 +49,6 @@ class Uptime(Command):
 
 
 def validStatusCode(sc):
-    if sc == 200:
+    if sc == 200 or sc == 401:
         return True
-    elif sc == 401:
-        return True
-
     return False
