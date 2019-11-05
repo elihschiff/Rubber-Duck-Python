@@ -39,7 +39,7 @@ class Uptime(Command):
                 pass
 
             if validStatusCode(status_code):
-                msg_to_send += f"<{url}> is up\n"
+                msg_to_send += f"<{url}> is up. Status code: {status_code}\n"
             else:
                 msg_to_send += f"<{url}> is down. Status code: {status_code}\n"
         embed = discord.Embed(
@@ -49,6 +49,6 @@ class Uptime(Command):
 
 
 def validStatusCode(sc):
-    if sc == 200 or sc == 401:
+    if sc == 200 or sc == 401 or sc == 418:
         return True
     return False
