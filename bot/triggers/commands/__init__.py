@@ -79,7 +79,7 @@ from .math import Math
 from .minesweeper import Minesweeper
 from .minecraft import Minecraft
 from .poll import Poll
-from .rand_gen import RandomGen
+from .rand import Random
 from .rps import RockPaperScissors
 from .steam import Steam
 from .tictactoe import TicTacToe
@@ -111,7 +111,7 @@ all_commands = [
     Minesweeper(),
     # Minecraft(),
     Poll(),
-    RandomGen(),
+    Random(),
     RemoveClass(),
     RockPaperScissors(),
     Steam(),
