@@ -3,7 +3,7 @@ from .. import utils
 import random
 
 
-class RandomGen(Command):
+class Random(Command):
     names = ["random", "rand"]
     description = "Returns a random float or integer with specified parameters"
     needsContent = False
