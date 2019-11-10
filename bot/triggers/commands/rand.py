@@ -27,8 +27,8 @@ class Random(Command):
                 random_val = random.randint(min(arg1, arg2), max(arg1, arg2))
                 await utils.delay_send(msg.channel, str(random_val))
             else:
-                arg1 = int(args[1])
-                arg2 = int(args[2])
+                arg1 = float(args[1])
+                arg2 = float(args[2])
                 random_val = random.uniform(min(arg1, arg2), max(arg1, arg2))
                 await utils.delay_send(msg.channel, str(random_val))
         except (ValueError, IndexError):
