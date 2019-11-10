@@ -10,8 +10,8 @@ own account. Creating a copy of the source code allows you to commit to edit and
 commit to your own project, and then request approval for the code to be added 
 to the main repository. 
 Go to the project you want to fork through the “Project” drop down menu at the 
-top of the website. Then click the “**Fork**” button. You’ll then be brought to 
-a screen that says **“Fork project**,” where you’ll choose where you want to 
+top of the website. Then click the “Fork” button. You’ll then be brought to 
+a screen that says “Fork project”, where you’ll choose where you want to 
 fork. Select the namespace you want to create your fork in.  If the namespace 
 you chose to fork the project to has another project with the same path name, 
 you will be presented with a warning that the forking could not be completed. 
@@ -76,8 +76,8 @@ Use the following commands:
 3. Creating a merge request
 
    When you’ve made edits to your code that you want sent back to the main 
-   project, you can create a merge request. Click “**Merge request**” on the 
-   left side bar, then click “**new merge request**.” Select your forked 
+   project, you can create a merge request. Click “Merge request” on the 
+   left side bar, then click “new merge request.” Select your forked 
    project’s main branch as the source branch and the original project’s main 
    branch as the target branch, and create a merge request. Once you submit your 
    merge request, your changes will be added to the main repository and the 
