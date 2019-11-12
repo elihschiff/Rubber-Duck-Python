@@ -29,6 +29,6 @@ class TestAI(unittest.TestCase):
             msg = test_utils.init_message(f"!{string}")
             msg.author.bot = True
             await self.client.on_message(msg)
-            self.assertEqual(msg.channel.test_result, None)
+            self.assertIsNone(msg.channel.test_result)
             self.assertIsNone(msg.channel.embed_dict)
             self.assertIsNone(msg.channel.filename)
