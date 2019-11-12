@@ -22,21 +22,6 @@ class Command(MessageTrigger):
             if command:
                 break
 
-        # # checks if a trigger causes spam and then if that trigger should run given the channel it was sent in
-        # try:  # any command without self.causes_spam will cause an exception and skip this to run like normal
-        #     if self.causes_spam:
-        #         if msg.channel.id not in client.config["spam_channel_ids"]:
-        #             channel_tags = ""
-        #             for id in client.config["spam_channel_ids"]:
-        #                 channel_tags += f" <#{id}>"
-        #             await utils.delay_send(
-        #                 msg.channel,
-        #                 client.messages["send_to_spam_channel"].format(channel_tags),
-        #             )
-        #             return (None, True)
-        # except:
-        #     pass
-
         if command == "":
             command = msg.content.lower().split()[0]
 
