@@ -39,15 +39,13 @@ class Command(MessageTrigger):
 
         return (len(command), True)
 
-    async def execute_message(self, client, msg, run_check=True) -> bool:
-        if run_check:
-            (idx, recognized) = await self.is_valid(client, msg)
-        else:
-            idx = len(msg.content.lower().split()[0])
-            recognized = True
+    async def get_trigger_score(self, client, msg):
+        (idx, recognized) = await self.is_valid(client, msg)
 
-        if idx is not None and recognized == 1:
+        return recognized, idx
 
+    async def execute_message(self, client, msg, idx):
+        async with msg.channel.typing():
             # checks if a trigger causes spam and then if that trigger should run given the channel it was sent in
             try:  # any command without self.causes_spam will cause an exception and skip this to run like normal
                 if self.causes_spam:
@@ -61,13 +59,10 @@ class Command(MessageTrigger):
                                 channel_tags
                             ),
                         )
-                        return True
+                        return
             except:
                 pass
-
-            async with msg.channel.typing():
-                await self.execute_command(client, msg, msg.clean_content[idx:].strip())
-        return recognized
+            await self.execute_command(client, msg, msg.clean_content[idx:].strip())
 
     async def execute_command(self, client, msg, content: str):
         raise NotImplementedError("'execute_command' not implemented for this command")
