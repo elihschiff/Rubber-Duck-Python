@@ -88,7 +88,7 @@ class DuckClient(discord.Client):
                 continue
             try:
                 trigger_score = await trigger.execute_message(self, msg)
-                if(trigger_score > best_trigger_score):
+                if trigger_score > best_trigger_score:
                     best_trigger = trigger
                     best_trigger_score = trigger_score
                 if trigger_score == 1:
@@ -97,8 +97,7 @@ class DuckClient(discord.Client):
                 await utils.sendTraceback(self, msg.content)
                 replied = True
 
-        print(best_trigger_score, str(best_trigger))
-        if(best_trigger and replied == False):
+        if best_trigger and replied == False:
             await best_trigger.execute_message(self, msg, False)
             replied = True
 

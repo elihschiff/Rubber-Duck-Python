@@ -15,7 +15,7 @@ class Command(MessageTrigger):
             for prefix in self.prefixes:
                 if re.match(f"^{prefix}{name}\\b", msg.content.lower()):
                     command = prefix + name
-                    max_ratio = 1#exact match
+                    max_ratio = 1  # exact match
                     break
                 ratio = fuzz.ratio(msg.content.lower().split()[0], f"{prefix}{name}")
                 max_ratio = ratio if ratio > max_ratio else max_ratio
@@ -37,7 +37,7 @@ class Command(MessageTrigger):
         # except:
         #     pass
 
-        if(command == ""):
+        if command == "":
             command = msg.content.lower().split()[0]
 
         if self.needsContent and len(msg.content[len(command) :].strip()) == 0:
@@ -55,14 +55,14 @@ class Command(MessageTrigger):
         return (len(command), True)
 
     async def execute_message(self, client, msg, run_check=True) -> bool:
-        if(run_check):
+        if run_check:
             (idx, recognized) = await self.is_valid(client, msg)
         else:
             idx = len(msg.content.lower().split()[0])
             recognized = True
 
         if idx is not None and recognized == 1:
-            
+
             # checks if a trigger causes spam and then if that trigger should run given the channel it was sent in
             try:  # any command without self.causes_spam will cause an exception and skip this to run like normal
                 if self.causes_spam:
@@ -72,7 +72,9 @@ class Command(MessageTrigger):
                             channel_tags += f" <#{id}>"
                         await utils.delay_send(
                             msg.channel,
-                            client.messages["send_to_spam_channel"].format(channel_tags),
+                            client.messages["send_to_spam_channel"].format(
+                                channel_tags
+                            ),
                         )
                         return True
             except:
@@ -154,7 +156,7 @@ async def invalid_command(client, msg):
     if msg.author.bot or len(msg.content) < 2 or msg.content[0] != "!":
         return False
 
-    cleaned_content = msg.content.replace("`", "'")
+    cleaned_content = msg.content.replace("`", "'").strip()
 
     await msg.channel.send(client.messages["invalid_command"].format(cleaned_content))
     return True

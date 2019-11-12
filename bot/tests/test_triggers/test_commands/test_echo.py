@@ -34,6 +34,9 @@ class TestEcho(unittest.TestCase):
         for num_spaces in range(0, 1):
             msg = test_utils.init_message("!echo" + " " * num_spaces)
             await self.client.on_message(msg)
-            self.assertIsNone(msg.channel.test_result)
+            self.assertEqual(
+                msg.channel.test_result,
+                self.client.messages["invalid_command"].format(f"!echo"),
+            )
             self.assertIsNone(msg.channel.embed_dict)
             self.assertIsNone(msg.channel.filename)

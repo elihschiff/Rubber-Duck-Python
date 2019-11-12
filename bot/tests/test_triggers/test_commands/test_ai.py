@@ -14,7 +14,7 @@ class TestAI(unittest.TestCase):
 
     @test_utils.async_test
     async def test_ai(self):
-        test_strings = ["ai", "academic integrity"]
+        test_strings = ["ai", "academic_integrity"]
         for string in test_strings:
             msg = test_utils.init_message(f"!{string}")
             await self.client.on_message(msg)
@@ -24,11 +24,11 @@ class TestAI(unittest.TestCase):
 
     @test_utils.async_test
     async def test_ai_from_bot(self):
-        test_strings = ["ai", "academic integrity"]
+        test_strings = ["ai", "academic_integrity"]
         for string in test_strings:
             msg = test_utils.init_message(f"!{string}")
             msg.author.bot = True
             await self.client.on_message(msg)
-            self.assertIsNone(msg.channel.test_result)
+            self.assertEqual(msg.channel.test_result, None)
             self.assertIsNone(msg.channel.embed_dict)
             self.assertIsNone(msg.channel.filename)
