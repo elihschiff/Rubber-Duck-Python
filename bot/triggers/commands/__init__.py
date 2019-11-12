@@ -17,8 +17,11 @@ class Command(MessageTrigger):
                     command = prefix + name
                     max_ratio = 1  # exact match
                     break
-                ratio = fuzz.ratio(msg.content.lower().split()[0], f"{prefix}{name}")
-                max_ratio = ratio if ratio > max_ratio else max_ratio
+                if msg.content.lower().startswith(prefix):
+                    ratio = fuzz.ratio(
+                        msg.content.lower().split()[0], f"{prefix}{name}"
+                    )
+                    max_ratio = ratio if ratio > max_ratio else max_ratio
             if command:
                 break
 
