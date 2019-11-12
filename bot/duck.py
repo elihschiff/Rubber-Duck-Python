@@ -81,15 +81,26 @@ class DuckClient(discord.Client):
             return
 
         replied = False
+        best_trigger = None
+        best_trigger_score = self.config["min_trigger_fuzzy_score"]
         for trigger in msg_triggers:
             if type(trigger).__name__ in self.config["disabled_triggers"]["msg"]:
                 continue
             try:
-                if await trigger.execute_message(self, msg):
+                trigger_score = await trigger.execute_message(self, msg)
+                if(trigger_score > best_trigger_score):
+                    best_trigger = trigger
+                    best_trigger_score = trigger_score
+                if trigger_score == 1:
                     replied = True
             except Exception as e:
                 await utils.sendTraceback(self, msg.content)
                 replied = True
+
+        print(best_trigger_score, str(best_trigger))
+        if(best_trigger and replied == False):
+            await best_trigger.execute_message(self, msg, False)
+            replied = True
 
         if not replied:
             if not await invalid_command(self, msg):

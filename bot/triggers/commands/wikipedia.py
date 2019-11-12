@@ -7,7 +7,7 @@ import wikipediaapi
 class Wikipedia(Command):
     names = ["wiki", "wikipedia"]
     description = "Searches Wikipedia for a phrase"
-    needsContent = False
+    needsContent = True
 
     def __init__(self):
         self.wiki = wikipediaapi.Wikipedia("en")

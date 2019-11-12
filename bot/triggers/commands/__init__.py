@@ -1,6 +1,7 @@
 from ..message_trigger import MessageTrigger
 from .. import utils
 import re
+from fuzzywuzzy import fuzz
 
 
 class Command(MessageTrigger):
@@ -9,46 +10,58 @@ class Command(MessageTrigger):
     async def is_valid(self, client, msg) -> (int, bool):
         command = ""
 
+        max_ratio = 0
         for name in self.names:
             for prefix in self.prefixes:
                 if re.match(f"^{prefix}{name}\\b", msg.content.lower()):
                     command = prefix + name
+                    max_ratio = 1#exact match
                     break
+                ratio = fuzz.ratio(msg.content.lower().split()[0], f"{prefix}{name}")
+                max_ratio = ratio if ratio > max_ratio else max_ratio
             if command:
                 break
 
-        if len(command) == 0:
-            return (None, False)
+        # # checks if a trigger causes spam and then if that trigger should run given the channel it was sent in
+        # try:  # any command without self.causes_spam will cause an exception and skip this to run like normal
+        #     if self.causes_spam:
+        #         if msg.channel.id not in client.config["spam_channel_ids"]:
+        #             channel_tags = ""
+        #             for id in client.config["spam_channel_ids"]:
+        #                 channel_tags += f" <#{id}>"
+        #             await utils.delay_send(
+        #                 msg.channel,
+        #                 client.messages["send_to_spam_channel"].format(channel_tags),
+        #             )
+        #             return (None, True)
+        # except:
+        #     pass
 
-        # checks if a trigger causes spam and then if that trigger should run given the channel it was sent in
-        try:  # any command without self.causes_spam will cause an exception and skip this to run like normal
-            if self.causes_spam:
-                if msg.channel.id not in client.config["spam_channel_ids"]:
-                    channel_tags = ""
-                    for id in client.config["spam_channel_ids"]:
-                        channel_tags += f" <#{id}>"
-                    await utils.delay_send(
-                        msg.channel,
-                        client.messages["send_to_spam_channel"].format(channel_tags),
-                    )
-                    return (None, True)
-        except:
-            pass
+        if(command == ""):
+            command = msg.content.lower().split()[0]
 
         if self.needsContent and len(msg.content[len(command) :].strip()) == 0:
-            return (None, True)
+            return (None, False)
 
         try:
             if not await self.valid_command(client, msg):
-                return (None, True)
+                return (None, False)
         except:
             pass
 
+        if max_ratio != 1:
+            return (None, max_ratio)
+
         return (len(command), True)
 
-    async def execute_message(self, client, msg) -> bool:
-        (idx, recognized) = await self.is_valid(client, msg)
-        if idx is not None:
+    async def execute_message(self, client, msg, run_check=True) -> bool:
+        if(run_check):
+            (idx, recognized) = await self.is_valid(client, msg)
+        else:
+            idx = len(msg.content.lower().split()[0])
+            recognized = True
+
+        if idx is not None and recognized == 1:
             async with msg.channel.typing():
                 await self.execute_command(client, msg, msg.clean_content[idx:].strip())
         return recognized

@@ -21,6 +21,7 @@
 	"spam_channel_ids": [],
 
 	"recent_class_cache_size":100,
+	"min_trigger_fuzzy_score": 90,
 
 	"WOLFRAM_ID": "",
 

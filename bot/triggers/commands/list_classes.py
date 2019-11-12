@@ -8,7 +8,7 @@ import ast
 
 
 class ListClasses(Command):
-    names = ["classes", "list", "class"]
+    names = ["classes", "list", "class", "roles"]
     description = "Lists all the classes"
     needsContent = False
 
