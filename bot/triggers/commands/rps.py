@@ -54,6 +54,9 @@ class RPSGame:
 class RockPaperScissors(Game, ReactionTrigger):
     names = ["rps", "rockpaperscissors"]
     description = "Begins a game of Rock Paper Scissors with a player."
+    description2 = """**Description:** Begins a game of Rock Paper Scissors with a player.
+                      **Usage:** !rps [@ another user]
+                      **Alternate names:** !rockpaperscissors"""
     needsContent = True
 
     def get_content(self):

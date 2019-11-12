@@ -14,6 +14,10 @@ import math
 class Latex(Command):
     names = ["tex", "latex"]
     description = "Renders an image of a latex command"
+    description2 = """**Description:** Renders an image of a latex command
+                      **Usage:** !latex [command]
+                      **Example:** !latex \\cap, !latex \\frac{1}{2}
+                      **Alternate names:** !tex"""
     needsContent = True
 
     async def execute_command(self, client, msg, content):

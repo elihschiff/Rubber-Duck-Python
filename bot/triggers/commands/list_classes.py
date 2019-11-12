@@ -9,7 +9,13 @@ import ast
 
 class ListClasses(Command):
     names = ["classes", "list", "class"]
-    description = "Lists all the classes"
+    description = "Lists all the classes currently offered by the server."
+    description2 = """**Description:** Lists all the classes currently offered \
+    by the server. Note that if a class isn't offered this semester, you might \
+    not be able to add it.
+                      **Usage:** !classes or !class [dept]
+                      **Examples:** !classes, !class CSCI
+                      **Alternate names:** !list, !class"""
     needsContent = False
 
     async def execute_command(self, client, msg, content):

@@ -81,6 +81,12 @@ async def remove_role(client, msg, role_id, role_name):
 class AddClass(Command, ReactionTrigger):
     names = ["add", "join", "register"]
     description = "Adds you to class specific channels"
+    description2 = """**Description:** Adds you to class specific channels
+                      **Usage:** !add [class code]
+                      **Example:** !add cs1200, !add csci1200
+                      **Hidden Features:** !add [role]; !add [major]
+                      (To see available roles, majors, and classes, use !classes)
+                      **Alternate names:** !join, !register"""
     needsContent = True
 
     async def execute_command(self, client, msg, content):
@@ -258,6 +264,12 @@ class AddClass(Command, ReactionTrigger):
 class RemoveClass(Command, ReactionTrigger):
     names = ["remove", "leave", "sub", "unregister"]
     description = "Removes you from class specific channels"
+    description2 = """**Description:** Removes you from class specific channels
+                      **Usage:** !remove [class code]
+                      **Example:** !remove phys1100
+                      **Hidden Features:** !remove [role]; !remove [major]
+                      (To see available roles, majors, and classes, use !classes)
+                      **Alternate names:** !leave, !sub, !unregister"""
     needsContent = True
 
     async def execute_command(self, client, msg, content):
