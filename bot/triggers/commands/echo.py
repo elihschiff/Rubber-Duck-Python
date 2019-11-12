@@ -5,6 +5,9 @@ from .. import utils
 class Echo(Command):
     names = ["echo", "repeat"]
     description = "Echoes the given message"
+    description2 = """**Description:** Echoes the given message
+                      **Usage:** !echo [message]
+                      **Alternate names:** !repeat"""
     needsContent = True
 
     async def execute_command(self, client, msg, content):

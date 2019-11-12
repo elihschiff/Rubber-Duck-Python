@@ -6,6 +6,11 @@ import random
 class Random(Command):
     names = ["random", "rand"]
     description = "Returns a random float or integer with specified parameters"
+    description2 = """**Description:** Returns a random float or integer with specified parameters
+                      **Usage:** !random or !random (optional int/float) num1 num2
+                      **Example:** !random, !random 1 10, !random float 1 10
+                      **Alternate names:** !rand"""
+
     needsContent = False
 
     async def execute_command(self, client, msg, content):

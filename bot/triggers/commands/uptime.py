@@ -7,7 +7,12 @@ import re
 
 class Uptime(Command):
     names = ["status", "ping", "uptime"]
-    description = "Checks if a website is down"
+    description = "Checks if websites are down"
+    description2 = """**Description:** Checks if websites are down
+                      **Usage:** !status [(optional) website(s)]
+                      **Example:** !status lms submitty, !status
+                      **Alternate names:** !ping, !uptime"""
+
     needsContent = False
 
     async def execute_command(self, client, msg, content):

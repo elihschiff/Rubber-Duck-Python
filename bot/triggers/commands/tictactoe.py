@@ -22,6 +22,9 @@ POSITIONS = [
 class TicTacToe(Game, ReactionTrigger):
     names = ["ttt", "tictactoe"]
     description = "Begins a game of Tic Tac Toe with a player."
+    description2 = """**Description:** Begins a game of Tic Tac Toe with a player.
+                      **Usage:** !ttt [@ another user]
+                      **Alternate names:** !tictactoe"""
     needsContent = True
 
     class Game:

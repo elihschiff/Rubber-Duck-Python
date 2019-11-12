@@ -7,6 +7,9 @@ from bs4 import BeautifulSoup
 class CppRef(Command):
     names = ["cpp"]
     description = "Sends a link to a cpp reference page, if it exists"
+    description2 = "**Description:** Sends a link to a cpp reference page, if it exists.\n\
+    **Usage:** !cpp [container/class/object] [(optional) member function]\n\
+    **Examples:** !cpp vector push_back; !cpp sort; !cpp cin"
     needsContent = True
 
     async def execute_command(self, client, msg, content):

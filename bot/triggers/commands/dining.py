@@ -11,6 +11,8 @@ import calendar
 class Dining(Command):
     names = ["dining"]
     description = "Gets currently available dining halls on campus"
+    description2 = """**Description:** Gets currently available dining halls on campus
+                      **Usage:** !dining"""
     needsContent = False
 
     async def execute_command(self, client, msg, content):
