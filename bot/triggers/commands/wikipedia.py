@@ -11,7 +11,7 @@ class Wikipedia(Command):
                       **Usage:** !wiki [phrase]
                       **Example:** !wiki duck
                       **Alternate names:** !wikipedia"""
-    needsContent = False
+    needsContent = True
 
     def __init__(self):
         self.wiki = wikipediaapi.Wikipedia("en")

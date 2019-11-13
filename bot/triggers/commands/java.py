@@ -136,37 +136,36 @@ class Java(Command):
 
     async def execute_command(self, client, msg, content):
         if len(content) > 0:
-            async with msg.channel.typing():
-                r = requests.get(
-                    f"https://docs.oracle.com/apps/search/search.jsp?q={content}&category=java&product=en"
-                    f"/java/javase/13"
-                )
-                search = self.search_index(content)
-                soup = BeautifulSoup(r.text, "html.parser")
-                result = f"Potential match(es) for `{content}`:\n"
-                if search:
-                    result += search + "\n"
-                else:
-                    search = ""
-                for text in soup.find_all("div", attrs={"class": "srch-result"}):
+            r = requests.get(
+                f"https://docs.oracle.com/apps/search/search.jsp?q={content}&category=java&product=en"
+                f"/java/javase/13"
+            )
+            search = self.search_index(content)
+            soup = BeautifulSoup(r.text, "html.parser")
+            result = f"Potential match(es) for `{content}`:\n"
+            if search:
+                result += search + "\n"
+            else:
+                search = ""
+            for text in soup.find_all("div", attrs={"class": "srch-result"}):
+                if (
+                    "Java Platform, Standard Edition Java API Reference, Java SE 13"
+                    in text.contents[1].getText()
+                ):
                     if (
-                        "Java Platform, Standard Edition Java API Reference, Java SE 13"
-                        in text.contents[1].getText()
+                        len(text.contents) > 3
+                        and content.lower() in text.contents[3].getText().lower()
+                        and len(text.contents[3].contents) > 0
                     ):
                         if (
-                            len(text.contents) > 3
-                            and content.lower() in text.contents[3].getText().lower()
-                            and len(text.contents[3].contents) > 0
+                            "class-use" not in text.contents[3].contents[0]["href"]
+                            and "api" in text.contents[3].contents[0]["href"]
+                            and text.contents[3].contents[0]["href"] != search
                         ):
-                            if (
-                                "class-use" not in text.contents[3].contents[0]["href"]
-                                and "api" in text.contents[3].contents[0]["href"]
-                                and text.contents[3].contents[0]["href"] != search
-                            ):
-                                result += text.contents[3].contents[0]["href"] + "\n"
-                if result == f"Potential match(es) for `{content}`:\n":
-                    await utils.delay_send(
-                        msg.channel, f"Could not find Javadoc page for `{content}`"
-                    )
-                    return
-                await utils.delay_send(msg.channel, result)
+                            result += text.contents[3].contents[0]["href"] + "\n"
+            if result == f"Potential match(es) for `{content}`:\n":
+                await utils.delay_send(
+                    msg.channel, f"Could not find Javadoc page for `{content}`"
+                )
+                return
+            await utils.delay_send(msg.channel, result)

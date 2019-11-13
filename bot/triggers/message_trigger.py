@@ -1,5 +1,10 @@
 class MessageTrigger:
-    async def execute_message(self, client, msg) -> bool:
+    async def execute_message(self, client, msg):
         raise NotImplementedError(
-            "'execute' is not implemented for this message trigger"
+            "'execute_message' is not implemented for this message trigger"
+        )
+
+    async def get_trigger_score(self, client, msg):
+        raise NotImplementedError(
+            "'get_trigger_score' is not implemented for this message trigger"
         )
