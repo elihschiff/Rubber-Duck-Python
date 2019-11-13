@@ -8,7 +8,7 @@ import ast
 
 
 class ListClasses(Command):
-    names = ["classes", "list", "class"]
+    names = ["classes", "list", "class", "roles"]
     description = "Lists all the classes currently offered by the server."
     description2 = """**Description:** Lists all the classes currently offered \
     by the server. Note that if a class isn't offered this semester, you might \

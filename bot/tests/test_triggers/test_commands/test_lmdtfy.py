@@ -37,7 +37,10 @@ class TestLmdtfy(unittest.TestCase):
         for num_spaces in range(0, 10):
             msg = test_utils.init_message(f"!lmdtfy" + " " * num_spaces)
             await self.client.on_message(msg)
-            self.assertIsNone(msg.channel.test_result)
+            self.assertEqual(
+                msg.channel.test_result,
+                self.client.messages["invalid_command"].format(f"!lmdtfy"),
+            )
             self.assertIsNone(msg.channel.embed_dict)
             self.assertIsNone(msg.channel.filename)
 
@@ -46,7 +49,10 @@ class TestLmdtfy(unittest.TestCase):
         for num_spaces in range(0, 10):
             msg = test_utils.init_message(f"!lmgtfy" + " " * num_spaces)
             await self.client.on_message(msg)
-            self.assertIsNone(msg.channel.test_result)
+            self.assertEqual(
+                msg.channel.test_result,
+                self.client.messages["invalid_command"].format(f"!lmgtfy"),
+            )
             self.assertIsNone(msg.channel.embed_dict)
             self.assertIsNone(msg.channel.filename)
 

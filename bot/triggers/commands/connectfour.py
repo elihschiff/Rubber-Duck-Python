@@ -186,7 +186,7 @@ class ConnectFour(Game, ReactionTrigger):
         pieces = (
             client.config["connectfour"]["pieces"]
             if "pieces" in client.config["connectfour"]
-            else [":red_circle:", ":large_blue_circle:", ":white_circle:"]
+            else [":red_circle:", ":blue_circle:", ":white_circle:"]
         )
 
         players = list(set([*msg.mentions, msg.author]))

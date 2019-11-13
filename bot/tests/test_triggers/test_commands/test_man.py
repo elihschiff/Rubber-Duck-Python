@@ -50,7 +50,10 @@ class TestMan(unittest.TestCase):
         for num_spaces in range(0, 10):
             msg = test_utils.init_message("!man" + " " * num_spaces)
             await self.client.on_message(msg)
-            self.assertIsNone(msg.channel.test_result)
+            self.assertEqual(
+                msg.channel.test_result,
+                self.client.messages["invalid_command"].format("!man"),
+            )
             self.assertIsNone(msg.channel.embed_dict)
             self.assertIsNone(msg.channel.filename)
 

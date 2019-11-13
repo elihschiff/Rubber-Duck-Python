@@ -18,7 +18,7 @@ class TestQuack(unittest.TestCase):
 
     @test_utils.async_test
     async def test_quack_dm(self):
-        msg = test_utils.init_message()
+        msg = test_utils.init_message("abc")
         msg.channel.type = discord.ChannelType.private
         self.client.user.was_mentioned = False
 
@@ -28,7 +28,7 @@ class TestQuack(unittest.TestCase):
 
     @test_utils.async_test
     async def test_quack_mentioned(self):
-        msg = test_utils.init_message()
+        msg = test_utils.init_message("abc")
         msg.mentions.append(self.client.user)
         self.client.user.was_mentioned = True
 
@@ -41,7 +41,7 @@ class TestQuack(unittest.TestCase):
         self.client.user.was_mentioned = False
 
         for channel in self.quack_channels:
-            msg = test_utils.init_message()
+            msg = test_utils.init_message("abc")
             msg.channel.id = channel
 
             await self.client.on_message(msg)
