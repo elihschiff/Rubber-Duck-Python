@@ -12,3 +12,4 @@ xkcd
 beautifulsoup4
 latex
 pdf2image
+pypng

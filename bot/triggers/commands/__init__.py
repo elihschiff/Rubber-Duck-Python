@@ -80,6 +80,7 @@ from .minesweeper import Minesweeper
 from .minecraft import Minecraft
 from .poll import Poll
 from .rand import Random
+from .rgb import RGB
 from .rps import RockPaperScissors
 from .steam import Steam
 from .tictactoe import TicTacToe
@@ -113,6 +114,7 @@ all_commands = [
     Poll(),
     Random(),
     RemoveClass(),
+    RGB(),
     RockPaperScissors(),
     Steam(),
     TicTacToe(),
