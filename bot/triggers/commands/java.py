@@ -13,6 +13,9 @@ import ast
 class Java(Command):
     names = ["java"]
     description = "Sends a link to a Java reference page if it exists (JavaSE 13)"
+    description2 = """**Description:** Sends a link to a Java reference page if it exists (JavaSE 13)
+                      **Usage:** !java [module/package/tag/type/member]
+                      **Examples:** !java clear, !java map, !java java.base"""
     needsContent = True
 
     def get_file_age(self, filepath):

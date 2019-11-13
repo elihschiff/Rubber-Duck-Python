@@ -31,6 +31,12 @@ COLUMNS = [
 class ConnectFour(Game, ReactionTrigger):
     names = ["c4", "connect4", "connectfour"]
     description = "Begins a Connect Four game with another player(s)"
+    description2 = """**Description:** Begins a Connect Four game with another player(s)
+        **Usage:** !c4 [@ another user] [(optional) -r int] [(optional) -c int]
+        **Example:** !c4 @myfriend, !c4 @myfriend -r 3 -c 4
+        **Hidden Features:** Max eight players.
+        \tDefault (rows x cols) is (6 x 7), but can be flagged. Max (10 x 15).
+        **Alternate names:** !connect4, !connectfour"""
     needsContent = True
 
     class Game:

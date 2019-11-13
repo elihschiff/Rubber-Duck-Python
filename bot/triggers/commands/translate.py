@@ -6,6 +6,10 @@ from googletrans import Translator
 class Translate(Command):
     names = ["translate"]
     description = "Translates a given phrase, or the previous message, into English"
+    description2 = """**Description:** Translates a given phrase, or the previous message, into English
+                      **Usage:** !translate [(optional) message]
+                      **Example:** !translate, !translate hi
+                      (If given no content, the command translates the previous message.)"""
     needsContent = False
 
     def __init__(self):

@@ -7,6 +7,10 @@ import wikipediaapi
 class Wikipedia(Command):
     names = ["wiki", "wikipedia"]
     description = "Searches Wikipedia for a phrase"
+    description2 = """**Description:** Searches Wikipedia for a phrase
+                      **Usage:** !wiki [phrase]
+                      **Example:** !wiki duck
+                      **Alternate names:** !wikipedia"""
     needsContent = True
 
     def __init__(self):

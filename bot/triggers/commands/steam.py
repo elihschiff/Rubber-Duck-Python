@@ -8,7 +8,11 @@ import discord
 
 class Steam(Command):
     names = ["steam", "epic"]
-    description = "Gets some steam games"
+    description = "Looks up a game on the Steam store"
+    description2 = """**Description:** Looks up a game on the Steam store
+                      **Usage:** !steam [game name]
+                      **Example:** !steam tf2, !steam team fortress 2
+                      **Alternate names:** !epic"""
     needsContent = True
 
     async def execute_command(self, client, msg, content):

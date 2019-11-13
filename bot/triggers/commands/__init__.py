@@ -75,6 +75,7 @@ class Command(MessageTrigger):
 
 
 from .ai import AI
+from .choice import Choice
 from .class_management import AddClass, RemoveClass
 from .code import Code
 from .connectfour import ConnectFour
@@ -92,11 +93,13 @@ from .math import Math
 from .minesweeper import Minesweeper
 from .minecraft import Minecraft
 from .poll import Poll
-from .rand_gen import RandomGen
+from .rand import Random
+from .rgb import RGB
 from .rps import RockPaperScissors
 from .steam import Steam
 from .tictactoe import TicTacToe
 from .translate import Translate
+from .uptime import Uptime
 from .version import Version
 from .wikipedia import Wikipedia
 from .xkcd import Xkcd
@@ -105,6 +108,7 @@ from .xkcd import Xkcd
 all_commands = [
     AddClass(),
     AI(),
+    Choice(),
     Code(),
     ConnectFour(),
     CppRef(),
@@ -122,12 +126,14 @@ all_commands = [
     Minesweeper(),
     # Minecraft(),
     Poll(),
-    # RandomGen(),
+    Random(),
     RemoveClass(),
+    RGB(),
     RockPaperScissors(),
     Steam(),
     TicTacToe(),
     Translate(),
+    Uptime(),
     Version(),
     Wikipedia(),
     Xkcd(),
