@@ -25,7 +25,7 @@ class Command(MessageTrigger):
             if command:
                 break
 
-        if command == "":
+        if command == "" and len(msg.content.lower()) > 0:
             command = msg.content.lower().split()[0]
 
         if self.needsContent and len(msg.content[len(command) :].strip()) == 0:
