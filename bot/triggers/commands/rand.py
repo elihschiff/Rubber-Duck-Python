@@ -22,10 +22,16 @@ class Random(Command):
 
         try:
             if len(args) == 2:
-                arg1 = int(args[0])
-                arg2 = int(args[1])
-                random_val = random.randint(min(arg1, arg2), max(arg1, arg2))
-                await utils.delay_send(msg.channel, str(random_val))
+                try:
+                    arg1 = int(args[0])
+                    arg2 = int(args[1])
+                    random_val = random.randint(min(arg1, arg2), max(arg1, arg2))
+                    await utils.delay_send(msg.channel, str(random_val))
+                except ValueError:
+                    arg1 = float(args[0])
+                    arg2 = float(args[1])
+                    random_val = random.uniform(min(arg1, arg2), max(arg1, arg2))
+                    await utils.delay_send(msg.channel, str(random_val))
             elif args[0].lower() == "int":
                 arg1 = int(args[1])
                 arg2 = int(args[2])
