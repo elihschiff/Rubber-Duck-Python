@@ -22,6 +22,7 @@ style-check:
         - pip install black
         script:
         - black --check .
+        allow_failure: true
 
 deploy-to-server:
         stage: deploy
