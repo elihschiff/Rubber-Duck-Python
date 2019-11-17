@@ -13,3 +13,4 @@ beautifulsoup4
 latex
 pdf2image
 pypng
+cairosvg
