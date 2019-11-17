@@ -5,14 +5,12 @@ import os
 import requests
 import json
 import urllib.request
-from PIL import Image, ImageOps
-from latex import build_pdf
-from pdf2image import convert_from_path
 import math
+import cairosvg
 
 
 class Latex(Command):
-    names = ["tex", "latex"]
+    names = ["latex", "tex"]
     description = "Renders an image of a latex command"
     description2 = """**Description:** Renders an image of a latex command
                       **Usage:** !latex [command]
@@ -25,9 +23,7 @@ class Latex(Command):
             url = "https://latex2image.joeraut.com/convert"
             filtered_content = urllib.parse.quote(content)
             payload = (
-                "latexInput="
-                + filtered_content
-                + "&outputFormat=JPG&outputScale=1000%25"
+                "latexInput=" + filtered_content + "&outputFormat=SVG&outputScale=1000%"
             )
             headers = {
                 "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
@@ -35,20 +31,33 @@ class Latex(Command):
             response = requests.request("POST", url, data=payload, headers=headers)
             dict = json.loads(response.text)
             url = r"https://latex2image.joeraut.com/" + dict["imageURL"]
-            tmpLocationJPG = f"/tmp/" + dict["imageURL"][7:]
-            urllib.request.urlretrieve(url, tmpLocationJPG)
+            tmpLocationSVG = f"/tmp/" + dict["imageURL"][7:]
+            tmpLocationPNG = dict["imageURL"][7:-3] + "png"
+            urllib.request.urlretrieve(url, tmpLocationSVG)
             try:
-                img = Image.open(tmpLocationJPG)
-                borderSizeX = 5
-                borderSizeY = 5
-                img_with_border = ImageOps.expand(
-                    img,
-                    border=(borderSizeX, borderSizeY, borderSizeX, borderSizeY),
-                    fill="#FFFFFF",
+                with open(tmpLocationSVG, "r") as in_file:
+                    buf = in_file.readlines()
+                with open(tmpLocationSVG, "w") as out_file:
+                    for line in buf:
+                        if line.startswith("<svg"):
+                            line += """
+                                    <style>
+                                    svg {
+                                        fill: white;
+                                        stroke: black;
+                                        stroke-width: .1px;
+                                        stroke-linejoin: round;
+                                    }
+                                    </style>
+                                    """
+                        out_file.write(line)
+                cairosvg.svg2png(
+                    file_obj=open(tmpLocationSVG, "rb"), write_to=tmpLocationPNG
                 )
-                img_with_border.save(tmpLocationJPG)
-                await msg.channel.send(file=discord.File(tmpLocationJPG))
+                await msg.channel.send(file=discord.File(tmpLocationPNG))
             finally:
-                os.remove(tmpLocationJPG)
+                os.remove(tmpLocationSVG)
+                os.remove(tmpLocationPNG)
+
         except:
             await msg.channel.send("Error rending LaTeX")

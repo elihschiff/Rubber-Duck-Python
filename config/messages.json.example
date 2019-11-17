@@ -29,7 +29,7 @@
 	"class_add_welcome":"Welcome to {}, {}",
 
 	"add_mod_message": "Ding dong you're wrong",
-	"issue": "Rubber Duck is an open source project. If you want to report an issue or implement your own ideas, you can do so here:\nhttps://gitlab.com/rpi-academic-discord/slithering-duck/issues/new\n",
+	"issue": "Rubber Duck is an open source project. If you want to report an issue or implement your own ideas, you can do so here:\n<https://gitlab.com/rpi-academic-discord/slithering-duck/issues/new>\n",
 
 
 	"add_class_prompt": ", your search for **{}** retrieved these results.\nClick the corresponding reaction to add that class:",
