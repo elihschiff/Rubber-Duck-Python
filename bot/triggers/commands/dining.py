@@ -73,6 +73,6 @@ class Dining(Command):
             await utils.delay_send(msg.channel, "", 0, embed=embed)
         except:
             await utils.delay_send(
-                msg.channel, "An error occured in  finding dining halls"
+                msg.channel, "An error occurred in finding dining halls"
             )
             await utils.sendTraceback(client, msg.content)
