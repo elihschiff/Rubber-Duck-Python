@@ -11,6 +11,7 @@ test-suite:
         - apt-get install rename
         - rename "s/\.example$//" config/*
         - pip install -r requirements.txt
+        - apt-get install python3-cairosvg
         - python utilities/gen_config_db.py database.db
         - python utilities/gen_logging_db.py logging.db
         script:
