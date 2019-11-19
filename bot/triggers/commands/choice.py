@@ -1,5 +1,6 @@
 from . import Command
 from .. import utils
+from ..utils import sanitized
 import random
 
 
@@ -14,5 +15,5 @@ class Choice(Command):
 
     async def execute_command(self, client, msg, content):
         choices = content.split()
-        choice = random.choice(choices).replace("`", "'")
+        choice = sanitized(random.choice(choices))
         await utils.delay_send(msg.channel, f"`{choice}`")
