@@ -1,5 +1,6 @@
 from ..message_trigger import MessageTrigger
 from .. import utils
+from ..utils import sanitized
 import re
 from fuzzywuzzy import fuzz
 
@@ -145,7 +146,7 @@ async def invalid_command(client, msg):
     if msg.author.bot or len(msg.content) < 2 or msg.content[0] != "!":
         return False
 
-    cleaned_content = msg.content.replace("`", "'").strip()
-
-    await msg.channel.send(client.messages["invalid_command"].format(cleaned_content))
+    await msg.channel.send(
+        client.messages["invalid_command"].format(sanitized(msg.content.strip()))
+    )
     return True

@@ -1,5 +1,6 @@
 from . import Command
 from .. import utils
+from ..utils import sanitized
 from googletrans import Translator
 
 
@@ -25,11 +26,6 @@ class Translate(Command):
                 content = message.content
 
         translation = self.translator.translate(content)
-        translated_text = translation.text
 
-        content = content.replace("`", "'")
-
-        translated_text = translated_text.replace("`", "'")
-
-        response = f"`{content}` translates from {translation.src.upper()} to: `{translated_text}`"
+        response = f"`{sanitized(content)}` translates from {translation.src.upper()} to: `{sanitized(translation.text)}`"
         await utils.delay_send(msg.channel, response, 1)

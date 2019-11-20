@@ -102,6 +102,10 @@ def user_from_mention(client, mention):
         return client.get_user(int(match.group(1)))
 
 
+def sanitized(msg):
+    return msg.replace("`", "'")
+
+
 # prints a traceback and sends it to discord
 # to get a traceback sent to steam put this line in any except: call
 # await utils.sendTraceback(client, "")
