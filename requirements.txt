@@ -14,5 +14,6 @@ latex
 pdf2image
 pypng
 
+# wheel is required to stop cairosvg from breaking
 wheel
 cairosvg
