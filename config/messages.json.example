@@ -12,6 +12,7 @@
 	"emoji_mode_user_deactivate": "You are no longer in emoji only mode. You are free to send normal text.",
 	"emoji_mode_user_deactivate_public": "{} has been removed from emoji mode.",
 	"emoji_mode_dm": "You sent a message that contained non emoji characters in an emoji only chat. Your message has been removed!",
+	
 
 	"invalid_class_list_format": "This command must be of the form `!list XXXX`, where `XXXX` is the **4 letter department code** you're searching for. Type `!list` to view the list of valid codes. Please note that a major and a department code are different. If you are looking to add a major instead, please type `!add MAJOR`.",
 	"invalid_class_add_format": "This command must be of the form `!add` followed by the course or role you are trying to add.  To list the courses for a subject, use `!list XXXX`, where `XXXX` is the **4 letter department code** you're searching for. Type `!list` to view the list of valid codes. Please note that a major and a department code are different.",
@@ -28,7 +29,7 @@
 	"remove_no_roles_match": "It looks like none of the roles matched your search. Your search may have not been in the correct format. For example to remove Data Structures type, `!remove Data Structures` or `!remove csci 1200`",
 	"class_add_welcome":"Welcome to {}, {}",
 
-	"add_mod_message": "Ding dong you're wrong",
+	"add_mod_message": "You can't just declare yourself a mod",
 	"issue": "Rubber Duck is an open source project. If you want to report an issue or implement your own ideas, you can do so here:\n<https://gitlab.com/rpi-academic-discord/slithering-duck/issues/new>\n",
 
 
