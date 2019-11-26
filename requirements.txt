@@ -13,3 +13,6 @@ beautifulsoup4
 latex
 pdf2image
 pypng
+
+wheel
+cairosvg
