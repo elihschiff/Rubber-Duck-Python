@@ -8,6 +8,11 @@ import random
 class Minesweeper(Command):
     names = ["ms", "mine", "minesweeper"]
     description = "Sends a minesweeper game"
+    description2 = """**Description:** Sends a minesweeper game
+                **Usage:** !ms [(optional) width] [(optional) height]
+                **Examples:** !ms, !ms 3, !ms 10 3
+                **Hidden Features:** If given one number, the grid is a square.
+                **Alternate names:** !mine, !minesweeper"""
     needsContent = False
 
     async def execute_command(self, client, msg, content):
