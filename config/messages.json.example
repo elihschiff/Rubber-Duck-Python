@@ -12,7 +12,6 @@
 	"emoji_mode_user_deactivate": "You are no longer in emoji only mode. You are free to send normal text.",
 	"emoji_mode_user_deactivate_public": "{} has been removed from emoji mode.",
 	"emoji_mode_dm": "You sent a message that contained non emoji characters in an emoji only chat. Your message has been removed!",
-	
 
 	"invalid_class_list_format": "This command must be of the form `!list XXXX`, where `XXXX` is the **4 letter department code** you're searching for. Type `!list` to view the list of valid codes. Please note that a major and a department code are different. If you are looking to add a major instead, please type `!add MAJOR`.",
 	"invalid_class_add_format": "This command must be of the form `!add` followed by the course or role you are trying to add.  To list the courses for a subject, use `!list XXXX`, where `XXXX` is the **4 letter department code** you're searching for. Type `!list` to view the list of valid codes. Please note that a major and a department code are different.",
@@ -27,11 +26,10 @@
 	"remove_role_confirmation": "You have been removed from the role `{}`.",
 	"remove_hidden_role": "You have been removed from the hidden role.  Please do not discuss this role publicly.",
 	"remove_no_roles_match": "It looks like none of the roles matched your search. Your search may have not been in the correct format. For example to remove Data Structures type, `!remove Data Structures` or `!remove csci 1200`",
-	"class_add_welcome":"Welcome to {}, {}",
+	"class_add_welcome": "Welcome to {}, {}",
 
 	"add_mod_message": "You can't just declare yourself a mod",
 	"issue": "Rubber Duck is an open source project. If you want to report an issue or implement your own ideas, you can do so here:\n<https://gitlab.com/rpi-academic-discord/slithering-duck/issues/new>\n",
-
 
 	"add_class_prompt": ", your search for **{}** retrieved these results.\nClick the corresponding reaction to add that class:",
 	"class_add_confirmation": "You have been added to {}.",
@@ -41,25 +39,26 @@
 	"class_remove_confirmation": "You have been removed from {}.",
 	"err_removing_class": "There was an error removing you from this class.  Please message a server admin and we'll figure something out.  Tell them this: {}",
 
+	"invalid_permissions": "Error: Invalid permissions to run this command",
 	"invalid_command": "Sorry, I didn't understand the command `{}`.  To get a list of valid commands, send `!help`.",
-	"send_to_spam_channel":"To limit spam that command only works in:{}",
+	"send_to_spam_channel": "To limit spam that command only works in:{}",
 
-	"no_xkcd_found":"Sorry, I could not find any XKCD for `{}`. Don't forget you can also get a random XKCD with just the command `!xkcd`",
+	"no_xkcd_found": "Sorry, I could not find any XKCD for `{}`. Don't forget you can also get a random XKCD with just the command `!xkcd`",
 
-  "connectfour_err_max_cols": ":warning: You may not have more than {} columns.",
-  "connectfour_err_max_rows": ":warning: You may not have more than {} rows.",
-  "connectfour_err_no_opponent": ":warning: You must specify at least one opponent.",
-  "connectfour_err_num": ":warning: The number you entered is invalid.",
-  "connectfour_err_players": ":warning: You may only have up to {} players in a game.",
-  "connectfour_err_size": ":warning: The size of the board is too large.",
-  "connectfour_err_bot_player": ":warning: A bot can not be a player.",
+	"connectfour_err_max_cols": ":warning: You may not have more than {} columns.",
+	"connectfour_err_max_rows": ":warning: You may not have more than {} rows.",
+	"connectfour_err_no_opponent": ":warning: You must specify at least one opponent.",
+	"connectfour_err_num": ":warning: The number you entered is invalid.",
+	"connectfour_err_players": ":warning: You may only have up to {} players in a game.",
+	"connectfour_err_size": ":warning: The size of the board is too large.",
+	"connectfour_err_bot_player": ":warning: A bot can not be a player.",
 
-  "tictactoe_err_num_players": ":warning: There can only be 2 players in a game.",
-  "tictactoe_err_bot_player": ":warning: A bot can not be a player.",
+	"tictactoe_err_num_players": ":warning: There can only be 2 players in a game.",
+	"tictactoe_err_bot_player": ":warning: A bot can not be a player.",
 
-  "rockpaperscissors_existing_game": ":warning: There is already an active RPS game between {} and {}",
-  "rockpaperscissors_num_players": ":warning: There can only be 2 players in a game.",
-  "rockpaperscissors_bot_player": ":warning: A bot can not be a player.",
+	"rockpaperscissors_existing_game": ":warning: There is already an active RPS game between {} and {}",
+	"rockpaperscissors_num_players": ":warning: There can only be 2 players in a game.",
+	"rockpaperscissors_bot_player": ":warning: A bot can not be a player.",
 
-  "ms_too_large":":warning: The board you requested is too large to send on Discord"
+	"ms_too_large": ":warning: The board you requested is too large to send on Discord"
 }
