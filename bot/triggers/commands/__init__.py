@@ -1,12 +1,12 @@
 from ..message_trigger import MessageTrigger
 from .. import utils
-from ..utils import sanitized
 import re
 from fuzzywuzzy import fuzz
 
 
 class Command(MessageTrigger):
     prefixes = ["!"]
+    requires_mod = False
 
     async def is_valid(self, client, msg) -> (int, bool):
         command = ""
@@ -32,12 +32,6 @@ class Command(MessageTrigger):
         if self.needsContent and len(msg.content[len(command) :].strip()) == 0:
             return (None, False)
 
-        try:
-            if not await self.valid_command(client, msg):
-                return (None, False)
-        except:
-            pass
-
         if max_ratio != 1:
             return (None, max_ratio)
 
@@ -49,6 +43,10 @@ class Command(MessageTrigger):
         return recognized, idx
 
     async def execute_message(self, client, msg, idx):
+        if self.requires_mod and not utils.user_is_mod(client, msg.author):
+            await msg.channel.send(client.messages["invalid_permissions"])
+            return
+
         async with msg.channel.typing():
             # checks if a trigger causes spam and then if that trigger should run given the channel it was sent in
             try:  # any command without self.causes_spam will cause an exception and skip this to run like normal
@@ -143,6 +141,6 @@ async def invalid_command(client, msg):
         return False
 
     await msg.channel.send(
-        client.messages["invalid_command"].format(sanitized(msg.content.strip()))
+        client.messages["invalid_command"].format(utils.sanitized(msg.content.strip()))
     )
     return True

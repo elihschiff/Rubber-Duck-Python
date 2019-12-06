@@ -26,6 +26,7 @@ class EmojiMode(Command):
     names = ["emoji"]
     description = ""  # "Modifies the state of emoji-mode on an entity"
     needsContent = False
+    requires_mod = True
 
     async def channel_emoji_mode_toggle(self, client, channel):
         if channel_in_emoji_state(client, channel):
@@ -92,9 +93,6 @@ class EmojiMode(Command):
         await sending_channel.send(
             client.messages["emoji_mode_user_deactivate_public"].format(user.mention)
         )
-
-    async def valid_command(self, client, msg) -> bool:
-        return utils.user_is_mod(client, msg.author)
 
     async def execute_command(self, client, msg, content):
         if content == "":
