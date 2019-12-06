@@ -41,13 +41,9 @@ class DuckClient(discord.Client):
         with open(games_filename, "r") as games_file:
             self.game_footers = games_file.read().split("\n%\n")
 
-        self.lock = threading.Lock()
-        self.connection = sqlite3.connect(path + "database.db")
-        self.c = self.connection.cursor()
-
-        self.log_lock = threading.Lock()
-        self.log_connection = sqlite3.connect(path + "logging.db")
-        self.log_c = self.log_connection.cursor()
+        self.db_lock = threading.Lock()
+        self.db_connection = sqlite3.connect(path + "database.db")
+        self.db_c = self.db_connection.cursor()
 
     async def on_ready(self):
         if len(sys.argv) > 1:

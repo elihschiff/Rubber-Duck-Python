@@ -20,4 +20,21 @@ c.execute(
     """
 )
 
+
+c.execute(
+    """
+    CREATE TABLE IF NOT EXISTS emoji_users (
+    user_id INTEGER DEFAULT 0
+    );
+    """
+)
+
+c.execute(
+    """
+    CREATE TABLE IF NOT EXISTS emoji_channels (
+    channel_id INTEGER DEFAULT 0
+    );
+    """
+)
+
 connection.commit()

@@ -57,19 +57,19 @@ async def invalid_emoji_message(client, msg) -> bool:
 
     hits = 0
 
-    client.lock.acquire()
-    client.c.execute(
+    client.db_lock.acquire()
+    client.db_c.execute(
         f"SELECT count(*) FROM emoji_channels WHERE channel_id = {msg.channel.id}"
     )
-    hits += client.c.fetchone()[0]
-    client.lock.release()
+    hits += client.db_c.fetchone()[0]
+    client.db_lock.release()
 
-    client.lock.acquire()
-    client.c.execute(
+    client.db_lock.acquire()
+    client.db_c.execute(
         f"SELECT count(*) FROM emoji_users WHERE user_id = {msg.author.id}"
     )
-    hits += client.c.fetchone()[0]
-    client.lock.release()
+    hits += client.db_c.fetchone()[0]
+    client.db_lock.release()
 
     if hits > 0:
         if utils.user_is_mod(client, msg.author):

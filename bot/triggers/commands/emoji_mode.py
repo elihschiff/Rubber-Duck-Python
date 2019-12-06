@@ -5,20 +5,20 @@ from .. import utils
 
 
 def channel_in_emoji_state(client, channel):
-    client.lock.acquire()
-    client.c.execute(
+    client.db_lock.acquire()
+    client.db_c.execute(
         f"SELECT count(*) FROM emoji_channels WHERE channel_id = {channel.id}"
     )
-    hits = client.c.fetchone()[0]
-    client.lock.release()
+    hits = client.db_c.fetchone()[0]
+    client.db_lock.release()
     return hits > 0
 
 
 def user_in_emoji_state(client, user):
-    client.lock.acquire()
-    client.c.execute(f"SELECT count(*) FROM emoji_users WHERE user_id = {user.id}")
-    hits = client.c.fetchone()[0]
-    client.lock.release()
+    client.db_lock.acquire()
+    client.db_c.execute(f"SELECT count(*) FROM emoji_users WHERE user_id = {user.id}")
+    hits = client.db_c.fetchone()[0]
+    client.db_lock.release()
     return hits > 0
 
 
@@ -37,10 +37,10 @@ class EmojiMode(Command):
         if channel_in_emoji_state(client, channel):
             return
 
-        client.lock.acquire()
-        client.c.execute(f"INSERT INTO emoji_channels VALUES ({channel.id})")
-        client.connection.commit()
-        client.lock.release()
+        client.db_lock.acquire()
+        client.db_c.execute(f"INSERT INTO emoji_channels VALUES ({channel.id})")
+        client.db_connection.commit()
+        client.db_lock.release()
 
         await utils.delay_send(
             channel, client.messages["emoji_mode_channel_activate"], delay_factor=0.01
@@ -50,10 +50,12 @@ class EmojiMode(Command):
         if not channel_in_emoji_state(client, channel):
             return
 
-        client.lock.acquire()
-        client.c.execute(f"DELETE FROM emoji_channels WHERE channel_id = {channel.id}")
-        client.connection.commit()
-        client.lock.release()
+        client.db_lock.acquire()
+        client.db_c.execute(
+            f"DELETE FROM emoji_channels WHERE channel_id = {channel.id}"
+        )
+        client.db_connection.commit()
+        client.db_lock.release()
 
         await utils.delay_send(
             channel, client.messages["emoji_mode_channel_deactivate"], delay_factor=0.01
@@ -69,10 +71,10 @@ class EmojiMode(Command):
         if user_in_emoji_state(client, user):
             return
 
-        client.lock.acquire()
-        client.c.execute(f"INSERT INTO emoji_users VALUES ({user.id})")
-        client.connection.commit()
-        client.lock.release()
+        client.db_lock.acquire()
+        client.db_c.execute(f"INSERT INTO emoji_users VALUES ({user.id})")
+        client.db_connection.commit()
+        client.db_lock.release()
 
         await user.send(client.messages["emoji_mode_user_activate"])
         await sending_channel.send(
@@ -83,10 +85,10 @@ class EmojiMode(Command):
         if not user_in_emoji_state(client, user):
             return
 
-        client.lock.acquire()
-        client.c.execute(f"DELETE FROM emoji_users WHERE user_id = {user.id}")
-        client.connection.commit()
-        client.lock.release()
+        client.db_lock.acquire()
+        client.db_c.execute(f"DELETE FROM emoji_users WHERE user_id = {user.id}")
+        client.db_connection.commit()
+        client.db_lock.release()
 
         await user.send(client.messages["emoji_mode_user_deactivate"])
         await sending_channel.send(
@@ -94,9 +96,15 @@ class EmojiMode(Command):
         )
 
     async def valid_command(self, client, msg) -> bool:
-        return utils.user_is_mod(client, msg.author)
+        return True
 
     async def execute_command(self, client, msg, content):
+        if not utils.user_is_mod(client, msg.author):
+            await utils.delay_send(
+                msg.channel, "Error: Invalid permissions to run this command"
+            )
+            return
+
         if content == "":
             await self.channel_emoji_mode_toggle(client, msg.channel)
             return

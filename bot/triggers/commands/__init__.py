@@ -75,69 +75,24 @@ class Command(MessageTrigger):
         return self.names[0] < other.names[0]
 
 
-from .ai import AI
-from .choice import Choice
-from .class_management import AddClass, RemoveClass
 from .code import Code
 from .connectfour import ConnectFour
-from .cpp_ref import CppRef
-from .dining import Dining
-from .echo import Echo
 from .emoji_mode import EmojiMode
-from .java import Java
-from .issue import Issue
-from .latex import Latex  # latex machine broke
-from .list_classes import ListClasses
 from .lmdtfy import Lmdtfy, Lmgtfy
-from .man import Man
-from .math import Math
 from .minesweeper import Minesweeper
-from .minecraft import Minecraft
-from .poll import Poll
-from .rand import Random
-from .rgb import RGB
 from .rps import RockPaperScissors
-from .steam import Steam
 from .tictactoe import TicTacToe
-from .translate import Translate
-from .uptime import Uptime
-from .version import Version
-from .wikipedia import Wikipedia
-from .xkcd import Xkcd
 
 # Commands will auto alphabetize
 all_commands = [
-    AddClass(),
-    AI(),
-    Choice(),
     Code(),
     ConnectFour(),
-    CppRef(),
-    Dining(),
-    Echo(),
     EmojiMode(),
-    Java(),
-    Issue(),
-    Latex(),  # latex machine broke
-    ListClasses(),
     Lmdtfy(),
     Lmgtfy(),
-    Man(),
-    Math(),
     Minesweeper(),
-    # Minecraft(),
-    Poll(),
-    Random(),
-    RemoveClass(),
-    RGB(),
     RockPaperScissors(),
-    Steam(),
     TicTacToe(),
-    Translate(),
-    Uptime(),
-    Version(),
-    Wikipedia(),
-    Xkcd(),
 ]
 all_commands.sort()
 
