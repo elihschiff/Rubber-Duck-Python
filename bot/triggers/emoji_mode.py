@@ -16,6 +16,7 @@ discord_emote_re = re.compile("<:[^:]+:(\d+)>")
 discord_emote_animated_re = re.compile("<a:[^:]+:(\d+)>")
 discord_emote_id_re = re.compile(":(\d+)>")
 
+invalid_emoji_re = re.compile("🇦|🇧|🇨|🇩|🇪|🇫|🇬|🇮|🇯|🇰|🇱|🇲|🇳|🇴|🇵|🇷|🇸|🇹|🇺|🇻|🇼|🇽|🇾|🇿|🇶")
 
 # explains to the violator why their message was deleted
 async def send_message_to_violator(client, user):
@@ -44,6 +45,7 @@ def valid_emoji(content, msg) -> bool:
 
     content = discord_emote_re.sub(validate_discord_emote, content)
     content = discord_emote_animated_re.sub(validate_discord_emote, content)
+    content = invalid_emoji_re.sub("a", content)
     content = emoji.get_emoji_regexp().sub("", content)
 
     return len(content.split()) == 0  # calling split() discounts whitepace
