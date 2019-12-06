@@ -54,7 +54,7 @@ async def generate_react_menu(
 def user_is_mod(client, user) -> bool:
     try:
         for role in user.roles:
-            if role.id == client.config["MOD_ROLE_ID"]:
+            if role.id == client.config["mod_role_id"]:
                 return True
     except:
         pass

@@ -53,7 +53,7 @@ async def add_role(client, msg, role_id, role_name):
     server_member = client.SERVER.get_member(msg.author.id)
     await server_member.add_roles(role)
 
-    if role_name != "-------" and role_id != client.config["NON_ALL_SEER_ID"]:
+    if role_name != "-------" and role_id != client.config["non_all_seer_id"]:
         await utils.delay_send(
             msg.channel, client.messages["add_role_confirmation"].format(role_name)
         )
@@ -68,7 +68,7 @@ async def remove_role(client, msg, role_id, role_name):
     server_member = client.SERVER.get_member(msg.author.id)
     await server_member.remove_roles(role)
 
-    if role_name != "-------" and role_id != client.config["NON_ALL_SEER_ID"]:
+    if role_name != "-------" and role_id != client.config["non_all_seer_id"]:
         await utils.delay_send(
             msg.channel, client.messages["remove_role_confirmation"].format(role_name)
         )
@@ -114,7 +114,7 @@ class AddClass(Command, ReactionTrigger):
                     or content.lower() == "All Seer".lower()
                 ):
                     await remove_role(
-                        client, msg, client.config["NON_ALL_SEER_ID"], "Not All-Seer"
+                        client, msg, client.config["non_all_seer_id"], "Not All-Seer"
                     )
                 return
 
@@ -191,11 +191,11 @@ class AddClass(Command, ReactionTrigger):
             new_channel_name = course_name.strip().replace(" ", "-").lower()
 
             added = False
-            for category_id in client.config["CLASS_CATEGORY_IDS"]:
+            for category_id in client.config["class_category_ids"]:
                 class_category_channel = client.get_channel(category_id)
 
-                all_seer = client.SERVER.get_role(client.config["ALL_SEER_ID"])
-                time_out = client.SERVER.get_role(client.config["TIME_OUT_ID"])
+                all_seer = client.SERVER.get_role(client.config["all_seer_id"])
+                time_out = client.SERVER.get_role(client.config["time_out_id"])
 
                 try:
                     channel = await class_category_channel.create_text_channel(
@@ -283,7 +283,7 @@ class RemoveClass(Command, ReactionTrigger):
                     or content.lower() == "All Seer".lower()
                 ):
                     await add_role(
-                        client, msg, client.config["NON_ALL_SEER_ID"], "Not All-Seer"
+                        client, msg, client.config["non_all_seer_id"], "Not All-Seer"
                     )
                 return
 

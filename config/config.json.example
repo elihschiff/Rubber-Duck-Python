@@ -1,32 +1,5 @@
 {
-	"disabled_triggers":{
-		"msg":[],
-		"new_member":[],
-		"reaction":[]
-	},
-	"quack_channels": [],
 	"SERVER_ID": 0,
-
-  "connectfour": {
-    "max_cols": 15,
-    "max_games": 10,
-    "max_players": 8,
-    "max_rows": 10,
-    "pieces": [":red_circle:", ":large_blue_circle:", ":white_circle:", ":no_mouth:", ":full_moon_with_face:", ":smiling_imp:", ":sick:", ":radioactive:"]
-  },
-	"welcome_channel_id": 0,
-	"spam_channel_ids": [],
-
-	"recent_class_cache_size":100,
-	"min_trigger_fuzzy_score": 90,
-
-	"WOLFRAM_ID": "",
-
-	"MOD_ROLE_ID": 0,
-
-	"ALL_SEER_ID": 0,
-	"NON_ALL_SEER_ID": 0,
-	"TIME_OUT_ID": 0,
 
 	"LOG_SERVER_ID": 0,
 	"DM_LOG_CHANNEL_ID": 0,
@@ -34,9 +7,36 @@
 	"TRACEBACK_SERVER_ID": 0,
 	"TRACEBACK_CHANNEL_ID": 0,
 
-	"CLASS_CATEGORY_IDS": [],
+	"disabled_triggers": {
+		"msg": [],
+		"new_member": [],
+		"reaction": []
+	},
 
-	"add_skip_words":["major", "class"],
+	"mod_role_id": 0,
+	"all_seer_id": 0,
+	"non_all_seer_id": 0,
+	"time_out_id": 0,
+
+	"recent_class_cache_size": 100,
+	"min_trigger_fuzzy_score": 90,
+
+	"add_skip_words": ["major", "class"],
+
+	"welcome_channel_id": 0,
+	"quack_channels": [],
+	"class_category_ids": [],
+	"spam_channel_ids": [],
+
+	"wolfram_id": "",
+
+	"connectfour": {
+		"max_cols": 15,
+		"max_games": 10,
+		"max_players": 8,
+		"max_rows": 10,
+		"pieces": [":red_circle:", ":large_blue_circle:", ":white_circle:", ":no_mouth:", ":full_moon_with_face:", ":smiling_imp:", ":sick:", ":radioactive:"]
+	},
 
 	"general_roles": {
 		"All-Seer": 0,

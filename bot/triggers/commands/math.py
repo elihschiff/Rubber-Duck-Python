@@ -13,7 +13,7 @@ class Math(Command):
     needsContent = True
 
     async def execute_command(self, client, msg, content):
-        wolfram = wolframalpha.Client(client.config["WOLFRAM_ID"])
+        wolfram = wolframalpha.Client(client.config["wolfram_id"])
         query_res = wolfram.query(content)
         try:
             for pod in query_res.pods:
