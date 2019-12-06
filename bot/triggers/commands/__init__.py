@@ -92,7 +92,6 @@ from .lmdtfy import Lmdtfy, Lmgtfy
 from .man import Man
 from .math import Math
 from .minesweeper import Minesweeper
-from .minecraft import Minecraft
 from .poll import Poll
 from .rand import Random
 from .rgb import RGB
@@ -100,7 +99,6 @@ from .rps import RockPaperScissors
 from .steam import Steam
 from .tictactoe import TicTacToe
 from .translate import Translate
-from .uptime import Uptime
 from .version import Version
 from .wikipedia import Wikipedia
 from .xkcd import Xkcd
@@ -118,14 +116,13 @@ all_commands = [
     EmojiMode(),
     Java(),
     Issue(),
-    Latex(),  # latex machine broke
+    Latex(),
     ListClasses(),
     Lmdtfy(),
     Lmgtfy(),
     Man(),
     Math(),
     Minesweeper(),
-    # Minecraft(),
     Poll(),
     Random(),
     RemoveClass(),
@@ -134,7 +131,6 @@ all_commands = [
     Steam(),
     TicTacToe(),
     Translate(),
-    Uptime(),
     Version(),
     Wikipedia(),
     Xkcd(),
