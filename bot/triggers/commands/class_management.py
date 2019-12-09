@@ -11,15 +11,16 @@ import ast
 from fuzzywuzzy import process
 
 
-def fuzzy_search(c, query, max_results):
+async def fuzzy_search(client, query, max_results):
     # this matches the length of class_list but always has the name of a class corresponding
     # with the item in class_list. So if class_list has the item "DS" in slot 12 this will
     # have "Data Structures" in slot 12
     real_name_list = []
     class_list = []  # a list of ever class and every course_code etc
 
-    c.execute("SELECT * FROM classes")
-    records = c.fetchall()
+    async with client.lock:
+        client.c.execute("SELECT * FROM classes")
+        records = client.c.fetchall()
     for i in records:
         real_name = "**" + ", ".join(json.loads(i[3].replace("'", '"'))) + "**: " + i[1]
 
@@ -128,9 +129,7 @@ class AddClass(Command, ReactionTrigger):
                 await add_role(client, msg, client.config["major_roles"][major], major)
                 return
 
-        client.lock.acquire()
-        options = fuzzy_search(client.c, content, 5)
-        client.lock.release()
+        options = await fuzzy_search(client, content, 5)
 
         if msg.channel.type is not discord.ChannelType.private:
             await utils.delay_send(msg.channel, "DMed!")
@@ -178,11 +177,10 @@ class AddClass(Command, ReactionTrigger):
         end_idx = msg.content.index("\n", line_start_idx)
 
         course_name = msg.content[start_idx:end_idx].strip()
-        client.lock.acquire()
-        client.c.execute(f"SELECT * FROM classes WHERE name = '{course_name}'")
-        course = client.c.fetchone()
-        channel_id = int(course[2])
-        client.lock.release()
+        async with client.lock:
+            client.c.execute(f"SELECT * FROM classes WHERE name = '{course_name}'")
+            course = client.c.fetchone()
+            channel_id = int(course[2])
 
         channel = None
         if channel_id != 0:
@@ -217,12 +215,11 @@ class AddClass(Command, ReactionTrigger):
                 except discord.HTTPException as e:
                     continue
 
-                client.lock.acquire()
-                client.c.execute(
-                    f"UPDATE classes SET channel_id = {channel.id} WHERE name = '{course_name}'"
-                )
-                client.connection.commit()
-                client.lock.release()
+                async with client.lock:
+                    client.c.execute(
+                        f"UPDATE classes SET channel_id = {channel.id} WHERE name = '{course_name}'"
+                    )
+                    client.connection.commit()
 
                 break
 
@@ -301,9 +298,7 @@ class RemoveClass(Command, ReactionTrigger):
                 )
                 return
 
-        client.lock.acquire()
-        options = fuzzy_search(client.c, content, 5)
-        client.lock.release()
+        options = await fuzzy_search(client, content, 5)
 
         if msg.channel.type is not discord.ChannelType.private:
             await utils.delay_send(msg.channel, "DMed!")
@@ -349,10 +344,11 @@ class RemoveClass(Command, ReactionTrigger):
         end_idx = msg.content.index("\n", line_start_idx)
 
         course_name = msg.content[start_idx:end_idx].strip()
-        client.lock.acquire()
-        client.c.execute(f"SELECT channel_id FROM classes WHERE name = '{course_name}'")
-        channel_id = int(client.c.fetchone()[0])
-        client.lock.release()
+        async with client.lock:
+            client.c.execute(
+                f"SELECT channel_id FROM classes WHERE name = '{course_name}'"
+            )
+            channel_id = int(client.c.fetchone()[0])
 
         try:
             if channel_id != 0:

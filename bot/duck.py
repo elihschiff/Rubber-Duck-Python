@@ -3,7 +3,7 @@ import discord
 from discord import ChannelType
 import json
 import subprocess
-import threading
+import asyncio
 import sqlite3
 
 from .triggers import msg_triggers, new_member_triggers, reaction_triggers
@@ -41,11 +41,11 @@ class DuckClient(discord.Client):
         with open(games_filename, "r") as games_file:
             self.game_footers = games_file.read().split("\n%\n")
 
-        self.lock = threading.Lock()
+        self.lock = asyncio.Lock()
         self.connection = sqlite3.connect(path + "database.db")
         self.c = self.connection.cursor()
 
-        self.log_lock = threading.Lock()
+        self.log_lock = asyncio.Lock()
         self.log_connection = sqlite3.connect(path + "logging.db")
         self.log_c = self.log_connection.cursor()
 
