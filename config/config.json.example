@@ -18,6 +18,8 @@
 	"non_all_seer_id": 0,
 	"time_out_id": 0,
 
+	"thumb_id": 0,
+
 	"recent_class_cache_size": 100,
 	"min_trigger_fuzzy_score": 90,
 

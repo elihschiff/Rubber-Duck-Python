@@ -1,5 +1,6 @@
 from .commands.help import Help
 from .commands import all_commands
+from .commands.delete import Delete
 from .welcome import Welcome
 from .commands.class_management import AddClass, RemoveClass
 from .commands.connectfour import ConnectFour
@@ -14,6 +15,7 @@ new_member_triggers = [Welcome()]
 reaction_triggers = [
     AddClass(),
     ConnectFour(),
+    Delete(),
     RockPaperScissors(),
     TicTacToe(),
     RemoveClass(),

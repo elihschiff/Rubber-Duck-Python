@@ -3,10 +3,13 @@ import os
 import sqlite3
 import json
 
-if len(sys.argv) < 2 or not sys.argv[1].endswith(".db"):
+if len(sys.argv) < 2 or len(sys.argv) > 3 or not sys.argv[1].endswith(".db"):
     print(f"Usage: {sys.argv[0]} DB_FILE (JSON_FILE)")
     sys.exit(1)
 
+if os.path.exists(sys.argv[1]):
+    print("ERROR: database already exists... Aborting!")
+    sys.exit(1)
 
 connection = sqlite3.connect(sys.argv[1])
 c = connection.cursor()
@@ -19,29 +22,21 @@ c = connection.cursor()
 # identifiers is a json array as a string of the different abbreviations one might use for a class. EX: ["DS", "data struct"]
 c.execute(
     """
-    CREATE TABLE IF NOT EXISTS classes (
+    CREATE TABLE classes (
     ID INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     channel_id INTEGER DEFAULT 0,
     course_codes TEXT NOT NULL,
     departments TEXT NOT NULL,
-    identifiers TEXT NULL DEFAULT '[]'
+    identifiers TEXT NULL DEFAULT '[]',
+    active INTEGER DEFAULT 1
     );
     """
 )
 
 c.execute(
     """
-    CREATE TABLE IF NOT EXISTS logging (
-    source_channel_id INTEGER DEFAULT 0,
-    dest_channel_id INTEGER DEFAULT 0
-    );
-    """
-)
-
-c.execute(
-    """
-    CREATE TABLE IF NOT EXISTS emoji_users (
+    CREATE TABLE emoji_users (
     user_id INTEGER DEFAULT 0
     );
     """
@@ -49,28 +44,23 @@ c.execute(
 
 c.execute(
     """
-    CREATE TABLE IF NOT EXISTS emoji_channels (
+    CREATE TABLE emoji_channels (
     channel_id INTEGER DEFAULT 0
     );
     """
 )
 
-if len(sys.argv) > 2 and os.path.exists(sys.argv[2]):
+if len(sys.argv) == 3:
     print("Updating courses in database")
     with open(sys.argv[2], "r") as courses_file:
         courses = json.load(courses_file)
         for course in courses:
             # Discord limits the length of a channel to 100 characters, therefore we keep the course name as the first 100 chars in the database so we dont have to worry about that later
-            course_name_discord = course[:100]
+            course_name_discord = course[:100].upper()
 
-            c.execute(  # for a specific class gets rid of the old data so we can insert the new data from the json
-                """DELETE FROM classes WHERE name = :name
-                """,
-                {"name": course_name_discord},
-            )
             c.execute(  # inserts the new data for a class
-                """REPLACE INTO classes (name, channel_id, course_codes, departments, identifiers) VALUES
-                (:name, :channel_id, :course_codes, :departments, :identifiers );""",
+                """INSERT INTO classes (name, channel_id, course_codes, departments, identifiers) VALUES
+                   (:name, :channel_id, :course_codes, :departments, :identifiers );""",
                 {
                     "name": course_name_discord,
                     "channel_id": courses[course]["channel_id"],
@@ -79,5 +69,4 @@ if len(sys.argv) > 2 and os.path.exists(sys.argv[2]):
                     "identifiers": str(courses[course]["identifiers"]),
                 },
             )
-
-connection.commit()
+            connection.commit()

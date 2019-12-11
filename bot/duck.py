@@ -73,6 +73,8 @@ class DuckClient(discord.Client):
             await logging.log_message(self, msg)
         except AttributeError:
             pass
+        except Exception as e:
+            await utils.sendTraceback(self, msg.content)
 
         if msg.author.bot:
             return
