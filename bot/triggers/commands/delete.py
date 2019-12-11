@@ -63,6 +63,8 @@ class Delete(Command, ReactionTrigger):
         ):
             return
 
+        await msg.clear_reactions()
+
         channel_to_delete = msg.channel_mentions[0]  # only one channel per message
         log_equivalent = await get_log_channel(channel_to_delete, client)
         deleted_id = channel_to_delete.id
@@ -89,3 +91,6 @@ class Delete(Command, ReactionTrigger):
             client.log_connection.commit()
 
         await log_equivalent.send(f"CHANNEL WAS: {deleted_name}")
+
+        if channel_to_delete.id != msg.channel.id:
+            await msg.channel.send("DELETED {deleted_name}")
