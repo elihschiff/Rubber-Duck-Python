@@ -6,6 +6,7 @@ import discord
 import string
 import json
 import ast
+import re
 
 # from fuzzyfinder import fuzzyfinder
 from fuzzywuzzy import process
@@ -19,8 +20,9 @@ async def fuzzy_search(client, query, max_results):
     class_list = []  # a list of ever class and every course_code etc
 
     async with client.lock:
-        client.c.execute("SELECT * FROM classes")
+        client.c.execute("SELECT * FROM classes WHERE active != 0")
         records = client.c.fetchall()
+
     for i in records:
         real_name = "**" + ", ".join(json.loads(i[3].replace("'", '"'))) + "**: " + i[1]
 
@@ -89,6 +91,9 @@ class AddClass(Command, ReactionTrigger):
                       (To see available roles, majors, and classes, use !classes)
                       **Alternate names:** !join, !register"""
     needsContent = True
+
+    def __init__(self):
+        self.alphanum_re = re.compile("[^\w ]+")
 
     async def execute_command(self, client, msg, content):
 
@@ -186,7 +191,9 @@ class AddClass(Command, ReactionTrigger):
         if channel_id != 0:
             channel = client.get_channel(channel_id)
         else:
-            new_channel_name = course_name.strip().replace(" ", "-").lower()
+            course_name = " ".join(course_name.replace("/", " ").split())
+            new_channel_name = self.alphanum_re.sub(" ", course_name.lower())
+            new_channel_name = " ".join(new_channel_name.split()).replace(" ", "-")
 
             added = False
             for category_id in client.config["class_category_ids"]:

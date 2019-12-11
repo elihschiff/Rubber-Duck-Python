@@ -70,9 +70,19 @@ async def get_log_channel(channel, client):
             dest_channel_id = client.log_c.fetchone()
 
         if dest_channel_id is None:
-            destination_channel = await client.LOG_SERVER.create_text_channel(
-                channel.name
-            )
+            try:
+                destination_channel = await client.LOG_SERVER.create_text_channel(
+                    channel.name
+                )
+            except discord.HTTPException:
+                client.log_lock.acquire()
+                client.log_c.execute("SELECT * FROM unused_logging")
+                dest_channel_id = client.log_c.fetchone()[0]
+                client.log_lock.release()
+
+                destination_channel = client.LOG_SERVER.get_channel(dest_channel_id[0])
+                await destination_channel.edit(name=channel.name)
+                await destination_channel.send(f"CHANNEL NOW LOGGING: {channel.name}")
 
             async with client.log_lock:
                 client.log_c.execute(
