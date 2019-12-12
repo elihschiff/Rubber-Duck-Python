@@ -1,6 +1,9 @@
-from . import ai, choice, random
+# NOTE: To make the lives of future developers easier,
+#       please keep these in alphabetical order
 
-all_commands = [ai, choice, random]
+from . import ai, choice, issue, random
+
+all_commands = [ai, choice, issue, random]
 
 
 def load_cogs(bot):
