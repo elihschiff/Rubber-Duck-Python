@@ -1,4 +1,5 @@
 from bot.duck import *
+from bot.triggers import load_cogs
 from dotenv import load_dotenv
 import os
 
@@ -6,5 +7,7 @@ import os
 load_dotenv()
 
 duck = DuckClient()
+
+load_cogs(duck)
 
 duck.run(os.getenv("BOT_TOKEN"))
