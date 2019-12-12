@@ -31,4 +31,4 @@ def load(bot):
         if isinstance(error, UserInputError):
             await ctx.send(f"Usage: `{usage}`")
         else:
-            print(type(error))
+            raise error
