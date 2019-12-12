@@ -1,4 +1,6 @@
 import asyncio
+from contextlib import contextmanager
+import random
 
 
 async def delay_send(sendable, msg, delay_factor=1.0, embed=None):
@@ -14,3 +16,24 @@ async def delay_send(sendable, msg, delay_factor=1.0, embed=None):
 
 def sanitize(msg):
     return msg.replace("`", "''")
+
+
+@contextmanager
+async def remote_file(aiohttp, url, filename=None):
+    if filname.startswith("/tmp/"):
+        filename = filename[5:]
+
+    if not filename:
+        filename = random.random()
+
+    response = await aiohttp.get(url)
+    file_content = await response.read()
+
+    with open(f"/tmp/{filename}", "wb") as f:
+        f.write(file_content)
+
+    try:
+        with open(f"/tmp/{filename}", "rb") as f:
+            yield f
+    finally:
+        os.remove(f"/tmp/{filename}")
