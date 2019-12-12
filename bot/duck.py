@@ -1,4 +1,6 @@
 from discord.ext.commands import Bot
+
+import aiohttp
 import json
 
 
@@ -21,6 +23,8 @@ class DuckClient(Bot):
             self.quacks = quacks_file.read().split("\n%\n")
         with open(games_filename, "r") as games_file:
             self.game_footers = games_file.read().split("\n%\n")
+
+        self.aiohttp = aiohttp.ClientSession()
 
     async def on_ready(self):
         print(f"Connected as {self.user}!")
