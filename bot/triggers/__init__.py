@@ -1,6 +1,6 @@
-from . import ai, choice
+from . import ai, choice, random
 
-all_commands = [ai, choice]
+all_commands = [ai, choice, random]
 
 
 def load_cogs(bot):
