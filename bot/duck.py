@@ -76,7 +76,7 @@ class DuckClient(discord.Client):
         except Exception as e:
             await utils.sendTraceback(self, msg.content)
 
-        if msg.author.bot:
+        if msg.author.bot or utils.user_in_timeout(self, msg.author):
             return
 
         if await invalid_emoji_message(self, msg):
