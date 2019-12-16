@@ -4,18 +4,6 @@ stages:
         - test
         - deploy
 
-test-suite:
-        stage: test
-        before_script:
-        - apt-get update -y
-        - apt-get install rename -y
-        - rename "s/\.example$//" config/*
-        - pip install -r requirements.txt
-        - python utilities/gen_config_db.py database.db
-        - python utilities/gen_logging_db.py logging.db
-        script:
-        - python -m unittest bot.tests -v
-
 style-check:
         stage: test
         before_script:
