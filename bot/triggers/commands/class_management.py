@@ -90,12 +90,15 @@ class AddClass(Command, ReactionTrigger):
                       **Hidden Features:** !add [role]; !add [major]
                       (To see available roles, majors, and classes, use !classes)
                       **Alternate names:** !join, !register"""
-    needsContent = True
+    needsContent = False
 
     def __init__(self):
         self.alphanum_re = re.compile("[^\w ]+")
 
     async def execute_command(self, client, msg, content):
+        if not content:
+            await utils.delay_send(msg.channel, client.messages["add_no_content"])
+            return
 
         if content == "%":
             await utils.delay_send(msg.channel, client.messages["add_mod_message"])
@@ -274,9 +277,13 @@ class RemoveClass(Command, ReactionTrigger):
                       **Hidden Features:** !remove [role]; !remove [major]
                       (To see available roles, majors, and classes, use !classes)
                       **Alternate names:** !leave, !sub, !unregister"""
-    needsContent = True
+    needsContent = False
 
     async def execute_command(self, client, msg, content):
+        if not content:
+            await utils.delay_send(msg.channel, client.messages["remove_no_content"])
+            return
+
         for role in client.config["general_roles"].keys():
             if content.lower() == role.lower():
                 await remove_role(
