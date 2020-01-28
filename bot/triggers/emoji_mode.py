@@ -15,6 +15,7 @@ from discord import ChannelType
 discord_emote_re = re.compile("<:[^:]+:(\d+)>")
 discord_emote_animated_re = re.compile("<a:[^:]+:(\d+)>")
 discord_emote_id_re = re.compile(":(\d+)>")
+nested_emote_re = re.compile("<[^>]+<")
 
 invalid_emoji_re = re.compile("🇦|🇧|🇨|🇩|🇪|🇫|🇬|🇮|🇯|🇰|🇱|🇲|🇳|🇴|🇵|🇷|🇸|🇹|🇺|🇻|🇼|🇽|🇾|🇿|🇶")
 
@@ -43,7 +44,7 @@ def validate_discord_emote(emote) -> str:
 # returns true if the message only contains emoji and whitespace.  It will
 # validate discord emotes as well.
 def valid_emoji(content, msg) -> bool:
-    if len(msg.embeds) or len(msg.attachments):
+    if len(msg.embeds) or len(msg.attachments) or nested_emote_re.match(content):
         return False
 
     content = discord_emote_re.sub(validate_discord_emote, content)
