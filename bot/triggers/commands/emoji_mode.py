@@ -72,7 +72,11 @@ class EmojiMode(Command):
             client.c.execute(f"INSERT INTO emoji_users VALUES ({user.id})")
             client.connection.commit()
 
-        await user.send(client.messages["emoji_mode_user_activate"])
+        try:
+            await user.send(client.messages["emoji_mode_user_activate"])
+        except HTTPException:
+            pass
+
         await sending_channel.send(
             client.messages["emoji_mode_user_activate_public"].format(user.mention)
         )
@@ -85,7 +89,11 @@ class EmojiMode(Command):
             client.c.execute(f"DELETE FROM emoji_users WHERE user_id = {user.id}")
             client.connection.commit()
 
-        await user.send(client.messages["emoji_mode_user_deactivate"])
+        try:
+            await user.send(client.messages["emoji_mode_user_deactivate"])
+        except HTTPException:
+            pass
+
         await sending_channel.send(
             client.messages["emoji_mode_user_deactivate_public"].format(user.mention)
         )
