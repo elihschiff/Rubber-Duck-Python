@@ -20,7 +20,10 @@ invalid_emoji_re = re.compile("🇦|🇧|🇨|🇩|🇪|🇫|🇬|🇮|🇯|🇰
 
 # explains to the violator why their message was deleted
 async def send_message_to_violator(client, user):
-    await user.send(client.messages["emoji_mode_dm"])
+    try:
+        await user.send(client.messages["emoji_mode_dm"])
+    except HTTPException:
+        pass
 
 
 # validates a single discord emote by verifying that its id is a real emote
