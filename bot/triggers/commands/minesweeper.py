@@ -14,6 +14,7 @@ class Minesweeper(Command):
                 **Hidden Features:** If given one number, the grid is a square.
                 **Alternate names:** !mine, !minesweeper"""
     needsContent = False
+    causes_spam = True
 
     async def execute_command(self, client, msg, content):
         height = 8

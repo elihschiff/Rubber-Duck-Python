@@ -132,6 +132,8 @@ class RockPaperScissors(Game, ReactionTrigger):
         # initialize the game in the game manager
         games.append(RPSGame(msg, [player.id for player in players], msg_ids))
 
+        msg.channel.send(client.messages["rockpaperscissors_game_init"])
+
     async def execute_reaction(self, client, reaction, channel, msg, user):
         if client.user.id == reaction.user_id:
             return

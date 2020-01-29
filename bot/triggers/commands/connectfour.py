@@ -270,7 +270,13 @@ class ConnectFour(Game, ReactionTrigger):
 
         if pos[0] == 0:
             await msg.remove_reaction(reaction.emoji, client.user)
-        await msg.edit(
-            content=game.get_content(),
-            embed=game.get_embed(self.get_game_footer(client)),
+
+        reactions_to_add = [reaction for reaction in msg.reactions if reaction.me]
+        await msg.delete()
+
+        new_msg = await channel.send(
+            game.get_content(), embed=game.get_embed(self.get_game_footer(client))
         )
+
+        for reaction in reactions_to_add:
+            await new_msg.add_reaction(reaction)
