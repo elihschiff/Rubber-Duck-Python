@@ -79,7 +79,6 @@ from .class_management import AddClass, RemoveClass
 from .code import Code
 from .connectfour import ConnectFour
 from .cpp_ref import CppRef
-from .delete import Delete
 from .dining import Dining
 from .echo import Echo
 from .emoji_mode import EmojiMode
@@ -110,7 +109,6 @@ all_commands = [
     Code(),
     ConnectFour(),
     CppRef(),
-    Delete(),
     Dining(),
     Echo(),
     EmojiMode(),
