@@ -270,7 +270,7 @@ class TicTacToe(Game, ReactionTrigger):
         reactions_to_add = [reaction for reaction in msg.reactions if reaction.me]
         await msg.delete()
 
-        if self.winner != -1 or self.is_draw():
+        if game.winner != -1 or game.is_draw():
             reactions_to_add = []
 
         new_msg = await channel.send(
