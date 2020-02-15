@@ -265,10 +265,13 @@ class TicTacToe(Game, ReactionTrigger):
         if pos is None:
             return
 
-        await msg.remove_reaction(reaction.emoji, client.user)
+        await msg.clear_reaction(reaction.emoji)
 
         reactions_to_add = [reaction for reaction in msg.reactions if reaction.me]
         await msg.delete()
+
+        if self.winner != -1 or self.is_draw():
+            reactions_to_add = []
 
         new_msg = await channel.send(
             game.get_content(), embed=game.get_embed(self.get_game_footer(client))
