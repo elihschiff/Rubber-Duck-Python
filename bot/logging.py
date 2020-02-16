@@ -31,7 +31,7 @@ async def log_message(client, msg, action_taken=""):
 
 async def log_message_delete(client, msg):
     if msg.cached_message:
-        if msg.author.bot:
+        if msg.cached_message.author.bot:
             return
 
         await log_message(client, msg.cached_message, "(DELETED)")
