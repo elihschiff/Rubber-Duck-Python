@@ -56,14 +56,14 @@ async def add_role(client, msg, role_id, role_name):
     server_member = client.SERVER.get_member(msg.author.id)
     await server_member.add_roles(role)
 
-    if role_name != "-------" and role_id != client.config["non_all_seer_id"]:
-        await utils.delay_send(
-            msg.channel, client.messages["add_role_confirmation"].format(role_name)
-        )
-    elif role_name == "-------":
+    if role_name == "-------":
         await msg.author.send(client.messages["add_hidden_role"])
         if msg.channel.type is not discord.ChannelType.private:
             await utils.delay_send(msg.channel, "DMed!")
+    elif role_name:
+        await utils.delay_send(
+            msg.channel, client.messages["add_role_confirmation"].format(role_name)
+        )
 
 
 async def remove_role(client, msg, role_id, role_name):
@@ -71,14 +71,14 @@ async def remove_role(client, msg, role_id, role_name):
     server_member = client.SERVER.get_member(msg.author.id)
     await server_member.remove_roles(role)
 
-    if role_name != "-------" and role_id != client.config["non_all_seer_id"]:
-        await utils.delay_send(
-            msg.channel, client.messages["remove_role_confirmation"].format(role_name)
-        )
-    elif role_name == "-------":
+    if role_name == "-------":
         await msg.author.send(client.messages["remove_hidden_role"])
         if msg.channel.type is not discord.ChannelType.private:
             await utils.delay_send(msg.channel, "DMed!")
+    if role_name:
+        await utils.delay_send(
+            msg.channel, client.messages["remove_role_confirmation"].format(role_name)
+        )
 
 
 class AddClass(Command, ReactionTrigger):
@@ -115,27 +115,20 @@ class AddClass(Command, ReactionTrigger):
             )
             return
 
-        for role in client.config["general_roles"].keys():
-            if content.lower() == role.lower():
-                await add_role(client, msg, client.config["general_roles"][role], role)
-                if (
-                    content.lower() == "All-Seer".lower()
-                    or content.lower() == "All Seer".lower()
+        for role_category in client.roles["role_categories"]:
+            for role in role_category["roles"]:
+                if content.lower() == role["name"].lower() or any(
+                    [
+                        content.lower() == alt_name.lower()
+                        for alt_name in role["alternate_names"]
+                    ]
                 ):
-                    await remove_role(
-                        client, msg, client.config["non_all_seer_id"], "Not All-Seer"
-                    )
-                return
-
-        for major in client.config["major_roles"].keys():
-            if content.lower() == major.lower():
-                await add_role(client, msg, client.config["major_roles"][major], major)
-                return
-
-        for major in client.config["major_abbreviations"].keys():
-            if content.lower() in client.config["major_abbreviations"][major]:
-                await add_role(client, msg, client.config["major_roles"][major], major)
-                return
+                    await add_role(client, msg, role["id"], role["name"])
+                    if role["id"] == client.config["all_seer_id"]:
+                        await remove_role(
+                            client, msg, client.config["non_all_seer_id"], None
+                        )
+                    return
 
         options = await fuzzy_search(client, content, 5)
 
@@ -284,33 +277,25 @@ class RemoveClass(Command, ReactionTrigger):
             await utils.delay_send(msg.channel, client.messages["remove_no_content"])
             return
 
-        for role in client.config["general_roles"].keys():
-            if content.lower() == role.lower():
-                await remove_role(
-                    client, msg, client.config["general_roles"][role], role
-                )
-                if (
-                    content.lower() == "All-Seer".lower()
-                    or content.lower() == "All Seer".lower()
+        for word in client.config["add_skip_words"]:
+            if content.split()[0].lower() == word.lower():
+                content = " ".join(content.split()[1:]).strip()
+                break
+
+        for role_category in client.roles["role_categories"]:
+            for role in role_category["roles"]:
+                if content.lower() == role["name"].lower() or any(
+                    [
+                        content.lower() == alt_name.lower()
+                        for alt_name in role["alternate_names"]
+                    ]
                 ):
-                    await add_role(
-                        client, msg, client.config["non_all_seer_id"], "Not All-Seer"
-                    )
-                return
-
-        for major in client.config["major_roles"].keys():
-            if content.lower() == major.lower():
-                await remove_role(
-                    client, msg, client.config["major_roles"][major], major
-                )
-                return
-
-        for major in client.config["major_abbreviations"].keys():
-            if content.lower() in client.config["major_abbreviations"][major]:
-                await remove_role(
-                    client, msg, client.config["major_roles"][major], major
-                )
-                return
+                    await remove_role(client, msg, role["id"], role["name"])
+                    if role["id"] == client.config["all_seer_id"]:
+                        await add_role(
+                            client, msg, client.config["non_all_seer_id"], None
+                        )
+                    return
 
         options = await fuzzy_search(client, content, 5)
 

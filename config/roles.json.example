@@ -1,0 +1,332 @@
+{
+	"role_categories": [{
+			"category_name": "General Roles",
+			"help_name": "ROLE",
+			"roles": [{
+					"id": 0,
+					"name": "All-Seer",
+					"alternate_names": ["All Seer"]
+				},
+				{
+					"id": 0,
+					"name": "-------",
+					"alternate_names": []
+				},
+				{
+					"id": 0,
+					"name": "Incoming Freshman",
+					"alternate_names": ["Incoming"]
+				},
+				{
+					"id": 0,
+					"name": "Freshman",
+					"alternate_names": []
+				},
+				{
+					"id": 0,
+					"name": "Sophomore",
+					"alternate_names": []
+				},
+				{
+					"id": 0,
+					"name": "Junior",
+					"alternate_names": []
+				},
+				{
+					"id": 0,
+					"name": "Senior",
+					"alternate_names": []
+				},
+				{
+					"id": 0,
+					"name": "Graduate Student",
+					"alternate_names": ["Grad Student", "Grad", "Graduate"]
+				},
+				{
+					"id": 0,
+					"name": "Alumni",
+					"alternate_names": ["Alumna", "Alumnus"]
+				},
+				{
+					"id": 0,
+					"name": "Non-RPI",
+					"alternate_names": []
+				}
+			]
+		},
+		{
+			"category_name": "Major Roles"
+			"help_name": "MAJOR",
+			"roles": [{
+					"id": 0,
+					"name": "Accelerated Science, Technology, and Society (Law) B.S./J.D.",
+					"alternate_names": []
+				},
+				{
+					"id": 0,
+					"name": "Aeronautical Engineering",
+					"alternate_names": ["AERO"]
+				},
+				{
+					"id": 0,
+					"name": "Applied Physics",
+					"alternate_names": []
+				},
+				{
+					"id": 0,
+					"name": "Architecture",
+					"alternate_names": ["ARCH"]
+				},
+				{
+					"id": 0,
+					"name": "Biology",
+					"alternate_names": ["BIO", "BIOL"]
+				},
+				{
+					"id": 0,
+					"name": "Biomedical Engineering",
+					"alternate_names": ["BioMed"]
+				},
+				{
+					"id": 0,
+					"name": "Building Sciences",
+					"alternate_names": []
+				},
+				{
+					"id": 0,
+					"name": "Business Analytics",
+					"alternate_names": []
+				},
+				{
+					"id": 0,
+					"name": "Chemical and Biological Engineering",
+					"alternate_names": []
+				},
+				{
+					"id": 0,
+					"name": "Chemistry",
+					"alternate_names": ["CHEM"]
+				},
+				{
+					"id": 0,
+					"name": "Civil Engineering",
+					"alternate_names": ["Civil"]
+				},
+				{
+					"id": 0,
+					"name": "Cognitive Science",
+					"alternate_names": ["CogsSci", "CogSci", "COGS"]
+				},
+				{
+					"id": 0,
+					"name": "Communication",
+					"alternate_names": ["COMM"]
+				},
+				{
+					"id": 0,
+					"name": "Communication, Media, and Design",
+					"alternate_names": []
+				},
+				{
+					"id": 0,
+					"name": "Computer and Systems Engineering",
+					"alternate_names": ["CSE"]
+				},
+				{
+					"id": 0,
+					"name": "Computer Science",
+					"alternate_names": ["CS", "Comp Sci", "CompSci"]
+				},
+				{
+					"id": 0,
+					"name": "Design, Innovation, and Society",
+					"alternate_names": ["DIS"]
+				},
+				{
+					"id": 0,
+					"name": "Economics",
+					"alternate_names": ["ECON"]
+				},
+				{
+					"id": 0,
+					"name": "Electrical Engineering",
+					"alternate_names": ["EE"]
+				},
+				{
+					"id": 0,
+					"name": "Electronic Arts",
+					"alternate_names": ["EA", "EART", "EARTS"]
+				},
+				{
+					"id": 0,
+					"name": "Electronic Media, Arts, and Communication",
+					"alternate_names": ["EMAC"]
+				},
+				{
+					"id": 0,
+					"name": "Engineering Science",
+					"alternate_names": []
+				},
+				{
+					"id": 0,
+					"name": "Environmental Engineering",
+					"alternate_names": ["Enviro"]
+				},
+				{
+					"id": 0,
+					"name": "Games and Simulation Arts and Sciences",
+					"alternate_names": ["GSAS"]
+				},
+				{
+					"id": 0,
+					"name": "Geology",
+					"alternate_names": ["Geo", "GEOL"]
+				},
+				{
+					"id": 0,
+					"name": "Hydrogeology",
+					"alternate_names": ["Hydro"]
+				},
+				{
+					"id": 0,
+					"name": "Industrial and Management Engineering",
+					"alternate_names": []
+				},
+				{
+					"id": 0,
+					"name": "Materials Engineering",
+					"alternate_names": ["Mat Eng"]
+				},
+				{
+					"id": 0,
+					"name": "Mathematics",
+					"alternate_names": ["MATH"]
+				},
+				{
+					"id": 0,
+					"name": "Mechanical Engineering",
+					"alternate_names": ["MechE", "MECH"]
+				},
+				{
+					"id": 0,
+					"name": "Music",
+					"alternate_names": []
+				},
+				{
+					"id": 0,
+					"name": "Nuclear Engineering",
+					"alternate_names": ["Nuke", "NucE"]
+				},
+				{
+					"id": 0,
+					"name": "Philosophy",
+					"alternate_names": ["PHIL"]
+				},
+				{
+					"id": 0,
+					"name": "Physician-Scientist",
+					"alternate_names": []
+				},
+				{
+					"id": 0,
+					"name": "Physics",
+					"alternate_names": ["PHYS"]
+				},
+				{
+					"id": 0,
+					"name": "Psychological Science",
+					"alternate_names": ["PSYC"]
+				},
+				{
+					"id": 0,
+					"name": "Science, Technology, and Society",
+					"alternate_names": ["STS"]
+				},
+				{
+					"id": 0,
+					"name": "Sustainability Studies",
+					"alternate_names": []
+				}
+			]
+		}
+	],
+	"schools": [{
+			"school_name": "Humanities, Arts, and Social Sciences",
+			"help_name": "XXXX",
+			"departments": [
+				"ARTS",
+				"COGS",
+				"COMM",
+				"ECON",
+				"GSAS",
+				"IHSS",
+				"LANG",
+				"LITR",
+				"PHIL",
+				"PSYC",
+				"STSH",
+				"STSS",
+				"WRIT"
+			]
+		},
+		{
+			"school_name": "Engineering",
+			"help_name": "XXXX",
+			"departments": [
+				"BMED",
+				"CHME",
+				"CIVL",
+				"ECSE",
+				"ENGR",
+				"ENVE",
+				"EPOW",
+				"ISYE",
+				"MANE",
+				"MTLE"
+			]
+		},
+		{
+			"school_name": "Science",
+			"help_name": "XXXX",
+			"departments": [
+				"ASTR",
+				"BCBP",
+				"BIOL",
+				"CHEM",
+				"CSCI",
+				"ERTH",
+				"IENV",
+				"ISCI",
+				"ITWS",
+				"MATH",
+				"MATP",
+				"PHYS"
+			]
+		},
+		{
+			"school_name": "Architecture",
+			"help_name": "XXXX",
+			"departments": [
+				"ARCH",
+				"LGHT"
+			]
+		},
+		{
+			"school_name": "Business Management",
+			"help_name": "XXXX",
+			"departments": [
+				"MGMT"
+			]
+		},
+		{
+			"school_name": "Other",
+			"help_name": "XXXX",
+			"departments": [
+				"ADMN",
+				"USAF",
+				"USAR",
+				"USNA"
+			]
+		}
+	]
+}
