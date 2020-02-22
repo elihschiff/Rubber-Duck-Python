@@ -22,6 +22,7 @@ class DuckClient(discord.Client):
     def __init__(
         self,
         config_filename="config/config.json",
+        roles_filename="config/roles.json",
         messages_filename="config/messages.json",
         quacks_filename="config/quacks.txt",
         games_filename="config/games.txt",
@@ -29,11 +30,14 @@ class DuckClient(discord.Client):
     ):
         super().__init__()
         config_filename = path + config_filename
+        roles_filename = path + roles_filename
         messages_filename = path + messages_filename
         quacks_filename = path + quacks_filename
         games_filename = path + games_filename
         with open(config_filename, "r") as config_file:
             self.config = json.load(config_file)
+        with open(roles_filename, "r") as roles_file:
+            self.roles = json.load(roles_file)
         with open(messages_filename, "r") as messages_file:
             self.messages = json.load(messages_file)
         with open(quacks_filename, "r") as quacks_file:
