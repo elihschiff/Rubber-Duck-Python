@@ -22,10 +22,7 @@ POSITIONS = [
 class TicTacToe(Game, ReactionTrigger):
     names = ["ttt", "tictactoe"]
     description = "Begins a game of Tic Tac Toe with a player."
-    description2 = """**Description:** Begins a game of Tic Tac Toe with a player.
-                      **Usage:** !ttt [@ another user]
-                      **Alternate names:** !tictactoe"""
-    needsContent = True
+    usage = f"{prefixes[0]}ttt [@ another user]"
 
     class Game:
         def __init__(self, players=None, board=None):
@@ -209,6 +206,10 @@ class TicTacToe(Game, ReactionTrigger):
 
     # this is called when a message starting with "!commandname" is run
     async def execute_command(self, client, msg, content):
+        if not content:
+            await utils.delay_send(msg.channel, f"Usage: {usage}")
+            return
+
         pieces = [":x:", ":o:"]
 
         players = list(set([*msg.mentions, msg.author]))

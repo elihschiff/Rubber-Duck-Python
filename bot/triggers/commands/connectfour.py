@@ -31,13 +31,11 @@ COLUMNS = [
 class ConnectFour(Game, ReactionTrigger):
     names = ["c4", "connect4", "connectfour"]
     description = "Begins a Connect Four game with another player(s)"
-    description2 = """**Description:** Begins a Connect Four game with another player(s)
-        **Usage:** !c4 [@ another user] [(optional) -r int] [(optional) -c int]
-        **Example:** !c4 @myfriend, !c4 @myfriend -r 3 -c 4
-        **Hidden Features:** Max eight players.
-        \tDefault (rows x cols) is (6 x 7), but can be flagged. Max (10 x 15).
-        **Alternate names:** !connect4, !connectfour"""
-    needsContent = True
+    usage = f"{prefixes[0]}c4 [@ another player] [(optional) -r rows] [(optional) -c columns]"
+    examples = f"{prefixes[0]}c4 @myfriend, {prefixes[0]}c4 @myfriend -r 3 -c 4"
+    notes = (
+        "Maximum of eight players.  Default dimensions is 6x7, but can go up to 10x15."
+    )
 
     class Game:
         def __init__(self, players=None, board=None):
@@ -183,6 +181,10 @@ class ConnectFour(Game, ReactionTrigger):
             return (row, col)
 
     async def execute_command(self, client, msg, content):
+        if not content:
+            await utils.delay_send(msg.channel, f"Usage: {usage}")
+            return
+
         pieces = (
             client.config["connectfour"]["pieces"]
             if "pieces" in client.config["connectfour"]

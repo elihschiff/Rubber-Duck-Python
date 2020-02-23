@@ -6,12 +6,14 @@ import requests
 class Man(Command):
     names = ["man"]
     description = "Sends a link to a man page, if it exists"
-    description2 = """**Description:** Sends a link to a man page, if it exists
-                      **Usage:** !man [command]
-                      **Example:** !man grep"""
-    needsContent = True
+    usage = f"{prefixes[0]}man [command]"
+    examples = f"{prefixes[0]}man grep"
 
     async def execute_command(self, client, msg, content):
+        if not content:
+            await utils.delay_send(msg.channel, f"Usage: {usage}")
+            return
+
         args = content.split(" ")
         prgm = args[0]
         which_page = 0

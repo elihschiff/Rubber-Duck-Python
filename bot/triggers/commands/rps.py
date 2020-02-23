@@ -54,10 +54,7 @@ class RPSGame:
 class RockPaperScissors(Game, ReactionTrigger):
     names = ["rps", "rockpaperscissors"]
     description = "Begins a game of Rock Paper Scissors with a player."
-    description2 = """**Description:** Begins a game of Rock Paper Scissors with a player.
-                      **Usage:** !rps [@ another user]
-                      **Alternate names:** !rockpaperscissors"""
-    needsContent = True
+    usage = f"{prefixes[0]}rps [@ another user]"
 
     def get_content(self):
         return "You have been challenged to RPS!"
@@ -86,6 +83,10 @@ class RockPaperScissors(Game, ReactionTrigger):
 
     # this is called when a message starting with "!commandname" is run
     async def execute_command(self, client, msg, content):
+        if not content:
+            await utils.delay_send(msg.channel, f"Usage: {usage}")
+            return
+
         pieces = [":new_moon:", ":newspaper:", ":scissors:"]
 
         players = list(set([*msg.mentions, msg.author]))

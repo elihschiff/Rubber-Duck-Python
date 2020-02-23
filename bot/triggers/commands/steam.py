@@ -9,13 +9,14 @@ import discord
 class Steam(Command):
     names = ["steam", "epic"]
     description = "Looks up a game on the Steam store"
-    description2 = """**Description:** Looks up a game on the Steam store
-                      **Usage:** !steam [game name]
-                      **Example:** !steam tf2, !steam team fortress 2
-                      **Alternate names:** !epic"""
-    needsContent = True
+    usage = f"{prefixes[0]}steam [game name]"
+    examples = f"{prefixes[0]}steam team fortress 2"
 
     async def execute_command(self, client, msg, content):
+        if not content:
+            await utils.delay_send(msg.channel, "<https://store.steampowered.com>")
+            return
+
         try:
             filtered_content = urllib.parse.quote(content)
             page_link = (

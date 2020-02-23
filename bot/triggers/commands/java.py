@@ -13,10 +13,8 @@ import ast
 class Java(Command):
     names = ["java"]
     description = "Sends a link to a Java reference page if it exists (JavaSE 13)"
-    description2 = """**Description:** Sends a link to a Java reference page if it exists (JavaSE 13)
-                      **Usage:** !java [module/package/tag/type/member]
-                      **Examples:** !java clear, !java map, !java java.base"""
-    needsContent = True
+    usage = f"{prefixes[0]}java [module/package/tag/type/member]"
+    examples = f"{prefixes[0]}java clear, {prefixes[0]}java java.base"
 
     def get_file_age(self, filepath):
         return time.time() - os.path.getmtime(filepath)
@@ -135,37 +133,40 @@ class Java(Command):
                 )
 
     async def execute_command(self, client, msg, content):
-        if len(content) > 0:
-            r = requests.get(
-                f"https://docs.oracle.com/apps/search/search.jsp?q={content}&category=java&product=en"
-                f"/java/javase/13"
-            )
-            search = self.search_index(content)
-            soup = BeautifulSoup(r.text, "html.parser")
-            result = f"Potential match(es) for `{content}`:\n"
-            if search:
-                result += search + "\n"
-            else:
-                search = ""
-            for text in soup.find_all("div", attrs={"class": "srch-result"}):
+        if not content:
+            await utils.delay_send(msg.channel, f"Usage: {usage}")
+            return
+
+        r = requests.get(
+            f"https://docs.oracle.com/apps/search/search.jsp?q={content}&category=java&product=en"
+            f"/java/javase/13"
+        )
+        search = self.search_index(content)
+        soup = BeautifulSoup(r.text, "html.parser")
+        result = f"Potential match(es) for `{content}`:\n"
+        if search:
+            result += search + "\n"
+        else:
+            search = ""
+        for text in soup.find_all("div", attrs={"class": "srch-result"}):
+            if (
+                "Java Platform, Standard Edition Java API Reference, Java SE 13"
+                in text.contents[1].getText()
+            ):
                 if (
-                    "Java Platform, Standard Edition Java API Reference, Java SE 13"
-                    in text.contents[1].getText()
+                    len(text.contents) > 3
+                    and content.lower() in text.contents[3].getText().lower()
+                    and len(text.contents[3].contents) > 0
                 ):
                     if (
-                        len(text.contents) > 3
-                        and content.lower() in text.contents[3].getText().lower()
-                        and len(text.contents[3].contents) > 0
+                        "class-use" not in text.contents[3].contents[0]["href"]
+                        and "api" in text.contents[3].contents[0]["href"]
+                        and text.contents[3].contents[0]["href"] != search
                     ):
-                        if (
-                            "class-use" not in text.contents[3].contents[0]["href"]
-                            and "api" in text.contents[3].contents[0]["href"]
-                            and text.contents[3].contents[0]["href"] != search
-                        ):
-                            result += text.contents[3].contents[0]["href"] + "\n"
-            if result == f"Potential match(es) for `{content}`:\n":
-                await utils.delay_send(
-                    msg.channel, f"Could not find Javadoc page for `{content}`"
-                )
-                return
-            await utils.delay_send(msg.channel, result)
+                        result += text.contents[3].contents[0]["href"] + "\n"
+        if result == f"Potential match(es) for `{content}`:\n":
+            await utils.delay_send(
+                msg.channel, f"Could not find Javadoc page for `{content}`"
+            )
+            return
+        await utils.delay_send(msg.channel, result)

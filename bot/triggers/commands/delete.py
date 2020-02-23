@@ -8,9 +8,7 @@ class Delete(Command, ReactionTrigger):
     prefixes = ["%", "sudo rm -f"]
     names = ["delete"]
     description = "ADMIN ONLY: Deletes a channel"
-    description2 = "ADMIN ONLY: Deletes a channel"
     requires_mod = True
-    needsContent = False
 
     async def prompt_for_channel_deletion(
         self, client, command_channel, channel_to_delete, author
@@ -32,6 +30,12 @@ class Delete(Command, ReactionTrigger):
         await msg.add_reaction(client.get_emoji(client.config["thumb_id"]))
 
     async def execute_command(self, client, msg, content):
+        if not client.config["ENABLE_MESSAGES"]:
+            await utils.delay_send(
+                "ERROR: I have been configured to not support courses.  Aborting..."
+            )
+            return
+
         if not msg.author.guild_permissions.administrator:
             msg.channel.send(client.messages["invalid_permissions"])
             return

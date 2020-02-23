@@ -29,9 +29,6 @@ class Command(MessageTrigger):
         if command == "" and len(msg.content.lower()) > 0:
             command = msg.content.lower().split()[0]
 
-        if self.needsContent and len(msg.content[len(command) :].strip()) == 0:
-            return (None, False)
-
         if max_ratio != 1:
             return (None, max_ratio)
 

@@ -12,13 +12,14 @@ import cairosvg
 class Latex(Command):
     names = ["latex", "tex"]
     description = "Renders an image of a latex command"
-    description2 = """**Description:** Renders an image of a latex command
-                      **Usage:** !latex [command]
-                      **Example:** !latex \\cap, !latex \\frac{1}{2}
-                      **Alternate names:** !tex"""
-    needsContent = True
+    usage = f"{prefixes[0]}latex [command]"
+    examples = f"{prefixes[0]}latex \\frac{1}{2}"
 
     async def execute_command(self, client, msg, content):
+        if not content:
+            await utils.delay_send(msg.channel, f"Usage: {usage}")
+            return
+
         try:
             url = "https://latex2image.joeraut.com/convert"
             filtered_content = urllib.parse.quote(content)

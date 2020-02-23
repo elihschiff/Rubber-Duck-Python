@@ -112,6 +112,15 @@ def sanitized(msg):
     return msg.replace("`", "'")
 
 
+def get_correct_attr(obj, attr, client):
+    if not client.config["ENABLE_COURSES"] and hasattr(obj, f"{attr}_no_courses"):
+        return getattr(obj, f"{attr}_no_courses")
+    elif hasattr(obj, attr):
+        return getattr(obj, attr)
+    else:
+        return None
+
+
 # prints a traceback and sends it to discord
 # to get a traceback sent to steam put this line in any except: call
 # await utils.sendTraceback(client, "")

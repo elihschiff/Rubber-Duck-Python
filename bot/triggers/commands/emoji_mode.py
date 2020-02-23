@@ -22,8 +22,7 @@ async def user_in_emoji_state(client, user):
 
 class EmojiMode(Command):
     names = ["emoji"]
-    description = ""  # "Modifies the state of emoji-mode on an entity"
-    needsContent = False
+    description = "Modifies the state of emoji-mode on an entity"
     requires_mod = True
 
     async def channel_emoji_mode_toggle(self, client, channel):

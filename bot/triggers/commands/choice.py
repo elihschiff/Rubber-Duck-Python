@@ -7,13 +7,14 @@ import random
 class Choice(Command):
     names = ["choice", "choose"]
     description = "Chooses from a list of things"
-    description2 = """**Description:** Chooses from a list of things
-                      **Usage:** !choice [message]
-                      **Example:** !choice choose from these words
-                      **Alternate names:** !choose"""
-    needsContent = True
+    usage = f"{prefixes[0]}choice [options]"
+    examples = f"{prefixes[0]}choice choose from these words"
 
     async def execute_command(self, client, msg, content):
+        if not content:
+            await utils.delay_send(msg.channel, f"Usage: {usage}")
+            return
+
         choices = content.split()
         choice = sanitized(random.choice(choices))
         await utils.delay_send(msg.channel, f"`{choice}`")

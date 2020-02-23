@@ -9,17 +9,18 @@ import ast
 
 class ListClasses(Command):
     names = ["classes", "list", "class", "roles"]
-    description = "Lists all the classes currently offered by the server."
-    description2 = """**Description:** Lists all the classes currently offered \
-    by the server. Note that if a class isn't offered this semester, you might \
-    not be able to add it.
-                      **Usage:** !classes or !class [dept]
-                      **Examples:** !classes, !class CSCI
-                      **Alternate names:** !list, !class"""
-    needsContent = False
+    description = "Lists all the classes and roles currently offered by the server."
+    usage = f"{prefixes[0]}classes or {prefixes[0]}classes [dept]"
+    examples = "{prefixes[0]}classes, {prefixes[0]}classes CSCI"
+    notes = "If a class isn't offered this semester, you might not be able to add it"
+
+    names_no_courses = ["list", "roles"]
+    description_no_courses = "Lists all the roles addable via the bot"
+    usage = f"{prefixes[0]}list"
+    notes_no_courses = ""
 
     async def execute_command(self, client, msg, content):
-        if len(content) == 0:
+        if not content or not client.config["ENABLE_COURSES"]:
             await self.general_listing(client, msg)
             return
 
