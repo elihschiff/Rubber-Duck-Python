@@ -46,15 +46,15 @@ class DuckClient(discord.Client):
             self.game_footers = games_file.read().split("\n%\n")
 
         if self.config["ENABLE_COURSES"]:
-            self.messages["remove_hidden_role_public"] = self.messages[
-                "remove_course_public"
-            ]
-            self.messages["add_hidden_role_public"] = self.messages["add_course_public"]
+            self.messages["remove_hidden_role_public"] = "DMed!"
+            self.messages["add_hidden_role_public"] = "DMed!"
         else:
             self.messages["remove_hidden_role_public"] = self.messages[
-                "remove_role_public"
+                "remove_no_roles_match"
             ]
-            self.messages["add_hidden_role_public"] = self.messages["add_role_public"]
+            self.messages["add_hidden_role_public"] = self.messages[
+                "add_no_roles_match"
+            ]
 
         self.lock = asyncio.Lock()
         self.connection = sqlite3.connect(path + "database.db")
