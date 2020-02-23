@@ -19,6 +19,6 @@ deploy-to-server:
                 - echo "$SSH_HOST_VERIFICATION" | base64 -d > ~/.ssh/known_hosts
                 - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
                 - chmod -R 700 ~/.ssh
-                - ssh gitlab@$CONTAINER_IP "sh -c 'cd rubber-duck && ./deploy-entry.sh'"
+                - for user in $BOT_USERS; do ssh 34.74.236.201 "sh -c 'sudo runuser -u $user -- sh -c \"cd /home/$user/$user && ./deploy-entry.sh\"'" & ; done
         only:
                 - master@rpi-academic-discord/slithering-duck

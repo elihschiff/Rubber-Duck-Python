@@ -59,7 +59,9 @@ async def add_role(client, msg, role_id, role_name):
     if role_name == "-------":
         await msg.author.send(client.messages["add_hidden_role"])
         if msg.channel.type is not discord.ChannelType.private:
-            await utils.delay_send(msg.channel, "DMed!")
+            await utils.delay_send(
+                msg.channel, client.messages["add_hidden_role_public"]
+            )
     elif role_name:
         await utils.delay_send(
             msg.channel, client.messages["add_role_confirmation"].format(role_name)
@@ -74,8 +76,10 @@ async def remove_role(client, msg, role_id, role_name):
     if role_name == "-------":
         await msg.author.send(client.messages["remove_hidden_role"])
         if msg.channel.type is not discord.ChannelType.private:
-            await utils.delay_send(msg.channel, "DMed!")
-    if role_name:
+            await utils.delay_send(
+                msg.channel, client.messages["remove_hidden_role_public"]
+            )
+    elif role_name:
         await utils.delay_send(
             msg.channel, client.messages["remove_role_confirmation"].format(role_name)
         )
@@ -83,14 +87,16 @@ async def remove_role(client, msg, role_id, role_name):
 
 class AddClass(Command, ReactionTrigger):
     names = ["add", "join", "register"]
-    description = "Adds you to class specific channels"
-    description2 = """**Description:** Adds you to class specific channels
-                      **Usage:** !add [class code]
-                      **Example:** !add cs1200, !add csci1200
-                      **Hidden Features:** !add [role]; !add [major]
-                      (To see available roles, majors, and classes, use !classes)
-                      **Alternate names:** !join, !register"""
-    needsContent = False
+    description = "Adds you to roles and class specific channels"
+    usage = f"{prefixes[0]}add [class code]"
+    examples = f"{prefixes[0]}add cs1200, {prefixes[0]}add Computer Science"
+    notes = f"To see available roles, majors, and classes, use {prefixes[0]}list"
+
+    names_no_courses = ["add", "join", "addrole", "joinrole"]
+    description_no_courses = "Adds you to a role"
+    usage_no_courses = f"{prefixes[0]}add [role]"
+    examples = f"{prefixes[0]}add Computer Science"
+    notes_no_courses = f"To see available roles, use {prefixes[0]}list"
 
     def __init__(self):
         self.alphanum_re = re.compile("[^\w ]+")
@@ -130,6 +136,12 @@ class AddClass(Command, ReactionTrigger):
                         )
                     return
 
+                if not client.config["ENABLE_COURSES"]:
+                    await utils.delay_send(
+                        msg.channel, client.messages["add_no_roles_match"]
+                    )
+                    return
+
         options = await fuzzy_search(client, content, 5)
 
         if msg.channel.type is not discord.ChannelType.private:
@@ -149,6 +161,9 @@ class AddClass(Command, ReactionTrigger):
     recent_class_cache = []
 
     async def execute_reaction(self, client, reaction, channel, msg, user):
+        if not client.config["ENABLE_COURSES"]:
+            return
+
         # user = await client.fetch_user(reaction.user_id)
         if user.bot:
             return
@@ -263,14 +278,14 @@ class AddClass(Command, ReactionTrigger):
 
 class RemoveClass(Command, ReactionTrigger):
     names = ["remove", "leave", "sub", "unregister", "drop"]
-    description = "Removes you from class specific channels"
-    description2 = """**Description:** Removes you from class specific channels
-                      **Usage:** !remove [class code]
-                      **Example:** !remove phys1100
-                      **Hidden Features:** !remove [role]; !remove [major]
-                      (To see available roles, majors, and classes, use !classes)
-                      **Alternate names:** !leave, !sub, !unregister"""
-    needsContent = False
+    description = "Removes you from roles and class specific channels"
+    usage = f"{prefixes[0]}remove [class code]"
+    examples = f"{prefixes[0]}remove Bio 1010, {prefixes[0]}remove Chemistry"
+
+    names_no_courses = ["remove", "leave", "leaverole", "drop", "droprole"]
+    description_no_courses = "Removes you from a role"
+    usage_no_courses = f"{prefixes[0]}remove [role]"
+    examples = f"{prefixes[0]}remove Chemistry"
 
     async def execute_command(self, client, msg, content):
         if not content:
@@ -297,6 +312,12 @@ class RemoveClass(Command, ReactionTrigger):
                         )
                     return
 
+                if not client.config["ENABLE_COURSES"]:
+                    await utils.delay_send(
+                        msg.channel, client.messages["remove_no_roles_match"]
+                    )
+                    return
+
         options = await fuzzy_search(client, content, 5)
 
         if msg.channel.type is not discord.ChannelType.private:
@@ -312,6 +333,9 @@ class RemoveClass(Command, ReactionTrigger):
         )
 
     async def execute_reaction(self, client, reaction, channel, msg, user):
+        if not client.config["ENABLE_COURSES"]:
+            return
+
         # user = await client.fetch_user(reaction.user_id)
         if user.bot:
             return

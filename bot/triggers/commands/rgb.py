@@ -7,10 +7,8 @@ import random
 
 
 class RGB(Command):
-
     names = ["rgb", "color", "colour"]
     description = "Returns an image of the given color"
-    needsContent = False
 
     async def execute_command(self, client, msg, content):
         args = content.split()

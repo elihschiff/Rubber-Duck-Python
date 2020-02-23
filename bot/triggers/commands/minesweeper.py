@@ -8,12 +8,8 @@ import random
 class Minesweeper(Command):
     names = ["ms", "mine", "minesweeper"]
     description = "Sends a minesweeper game"
-    description2 = """**Description:** Sends a minesweeper game
-                **Usage:** !ms [(optional) width] [(optional) height]
-                **Examples:** !ms, !ms 3, !ms 10 3
-                **Hidden Features:** If given one number, the grid is a square.
-                **Alternate names:** !mine, !minesweeper"""
-    needsContent = False
+    usage = f"{prefixes[0]}ms [(optional) width] [(optional) height] [(optional) number of mines]"
+    examples = f"{prefixes[0]}ms, {prefixes[0]}ms 10 3, {prefixes[0]}ms 5 5 2"
     causes_spam = True
 
     async def execute_command(self, client, msg, content):

@@ -7,16 +7,16 @@ import wikipediaapi
 class Wikipedia(Command):
     names = ["wiki", "wikipedia"]
     description = "Searches Wikipedia for a phrase"
-    description2 = """**Description:** Searches Wikipedia for a phrase
-                      **Usage:** !wiki [phrase]
-                      **Example:** !wiki duck
-                      **Alternate names:** !wikipedia"""
-    needsContent = True
+    usage = f"{prefixes[0]}wiki [phrase]"
+    examples = f"{prefixes[0]}wiki duck"
 
     def __init__(self):
         self.wiki = wikipediaapi.Wikipedia("en")
 
     async def execute_command(self, client, msg, content):
+        if not content:
+            utils.delay_send(msg.channel, "<https://en.wikipedia.com>")
+
         page = self.wiki.page(content.replace(" ", "_"))
         if not page.exists():
             await utils.delay_send(

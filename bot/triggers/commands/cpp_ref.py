@@ -7,13 +7,15 @@ from bs4 import BeautifulSoup
 class CppRef(Command):
     names = ["cpp"]
     description = "Sends a link to a cpp reference page, if it exists"
-    description2 = "**Description:** Sends a link to a cpp reference page, if it exists.\n\
-    **Usage:** !cpp [container/class/object] [(optional) member function]\n\
-    **Examples:** !cpp vector push_back; !cpp sort; !cpp cin"
-    needsContent = True
+    usage = f"{prefixes[0]}usage [container/class/object] [(optional) member function]"
+    examples = f"{prefixes[0]}usage vector push_back, {prefixes[0]}cpp sort"
 
     async def execute_command(self, client, msg, content):
         args = content.split(" ")
+
+        if not content:
+            await utils.delay_send(msg.channel, "Usage: " + usage)
+            return
 
         # check if link using just the first arg works
         if len(args) >= 1:
@@ -55,7 +57,7 @@ class CppRef(Command):
         if len(args) == 1:
             # only one argument, so return url found
             await utils.delay_send(msg.channel, url)
-        if len(args) >= 3:
+        elif len(args) >= 3:
             # Too many arguments. Still checking for url from first two args but
             # notifying user their other arguments won't be used.
             await utils.delay_send(
@@ -63,7 +65,7 @@ class CppRef(Command):
                 f"Too many arguments. Use format: \
 !cpp [container/class/object] [(optional) member function]",
             )
-        if len(args) >= 2:
+        elif len(args) >= 2:
             # get the second part of the url if the user entered an optional
             # member function
             second = args[1]

@@ -1,4 +1,6 @@
 {
+	"ENABLE_COURSES": true,
+
 	"SERVER_ID": 0,
 
 	"LOG_SERVER_ID": 0,
