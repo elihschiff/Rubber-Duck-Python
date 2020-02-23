@@ -36,8 +36,10 @@ class Help(Command):
                         if notes:
                             command_help += f"\n**Notes**: {notes}"
 
-                        response = discord.Embed(title=title, description=commands_help)
-                        await send_embed(msg, response, title)
+                        response = discord.Embed(
+                            title=embed_title, description=command_help
+                        )
+                        await send_embed(msg, response, embed_title)
                         return
             await utils.delay_send(
                 msg.channel, f'Could not find command "{args[0]}".\n'
