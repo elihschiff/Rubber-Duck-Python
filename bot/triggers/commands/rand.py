@@ -7,9 +7,7 @@ class Random(Command):
     names = ["random", "rand"]
     description = "Returns a random float or integer with specified parameters"
     usage = "!random [(optional) int/float] [(optional) num1] [(optional) num2]"
-    examples = (
-        f"!random, !random 1 10, !random float 1 10"
-    )
+    examples = f"!random, !random 1 10, !random float 1 10"
     notes = "By default, this returns a float in the range [0,1).  If given arguments, it'll try to match the type of the argument"
 
     async def execute_command(self, client, msg, content):
