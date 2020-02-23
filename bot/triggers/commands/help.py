@@ -29,9 +29,9 @@ class Help(Command):
                         if examples:
                             command_help += f"\n**Examples**: {examples}"
                         if len(names) > 1:
-                            alt_name_str = [
-                                f"{command.prefixes[0]}{name}" for name in names[1:]
-                            ].join(", ")
+                            alt_name_str = ", ".join(
+                                [f"{command.prefixes[0]}{name}" for name in names[1:]]
+                            )
                             command_help += f"\n**Alternative names**: {alt_name_str}"
                         if notes:
                             command_help += f"\n**Notes**: {notes}"
