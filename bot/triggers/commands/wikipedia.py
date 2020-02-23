@@ -7,8 +7,8 @@ import wikipediaapi
 class Wikipedia(Command):
     names = ["wiki", "wikipedia"]
     description = "Searches Wikipedia for a phrase"
-    usage = f"{prefixes[0]}wiki [phrase]"
-    examples = f"{prefixes[0]}wiki duck"
+    usage = "!wiki [phrase]"
+    examples = f"!wiki duck"
 
     def __init__(self):
         self.wiki = wikipediaapi.Wikipedia("en")

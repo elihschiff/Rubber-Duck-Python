@@ -11,7 +11,7 @@ import calendar
 class Dining(Command):
     names = ["dining"]
     description = "Gets currently available dining halls on campus"
-    usage = f"{prefixes[0]}dining"
+    usage = "!dining"
 
     async def execute_command(self, client, msg, content):
         DINING_HALL_LENGTH = 45

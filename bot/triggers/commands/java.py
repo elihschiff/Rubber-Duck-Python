@@ -13,8 +13,8 @@ import ast
 class Java(Command):
     names = ["java"]
     description = "Sends a link to a Java reference page if it exists (JavaSE 13)"
-    usage = f"{prefixes[0]}java [module/package/tag/type/member]"
-    examples = f"{prefixes[0]}java clear, {prefixes[0]}java java.base"
+    usage = "!java [module/package/tag/type/member]"
+    examples = f"!java clear, !java java.base"
 
     def get_file_age(self, filepath):
         return time.time() - os.path.getmtime(filepath)

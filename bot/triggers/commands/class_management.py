@@ -88,15 +88,15 @@ async def remove_role(client, msg, role_id, role_name):
 class AddClass(Command, ReactionTrigger):
     names = ["add", "join", "register"]
     description = "Adds you to roles and class specific channels"
-    usage = f"{prefixes[0]}add [class code]"
-    examples = f"{prefixes[0]}add cs1200, {prefixes[0]}add Computer Science"
-    notes = f"To see available roles, majors, and classes, use {prefixes[0]}list"
+    usage = "!add [class code]"
+    examples = f"!add cs1200, !add Computer Science"
+    notes = f"To see available roles, majors, and classes, use !list"
 
     names_no_courses = ["add", "join", "addrole", "joinrole"]
     description_no_courses = "Adds you to a role"
-    usage_no_courses = f"{prefixes[0]}add [role]"
-    examples = f"{prefixes[0]}add Computer Science"
-    notes_no_courses = f"To see available roles, use {prefixes[0]}list"
+    usage_no_courses = "!add [role]"
+    examples = f"!add Computer Science"
+    notes_no_courses = f"To see available roles, use !list"
 
     def __init__(self):
         self.alphanum_re = re.compile("[^\w ]+")
@@ -279,13 +279,13 @@ class AddClass(Command, ReactionTrigger):
 class RemoveClass(Command, ReactionTrigger):
     names = ["remove", "leave", "sub", "unregister", "drop"]
     description = "Removes you from roles and class specific channels"
-    usage = f"{prefixes[0]}remove [class code]"
-    examples = f"{prefixes[0]}remove Bio 1010, {prefixes[0]}remove Chemistry"
+    usage = "!remove [class code]"
+    examples = f"!remove Bio 1010, !remove Chemistry"
 
     names_no_courses = ["remove", "leave", "leaverole", "drop", "droprole"]
     description_no_courses = "Removes you from a role"
-    usage_no_courses = f"{prefixes[0]}remove [role]"
-    examples = f"{prefixes[0]}remove Chemistry"
+    usage_no_courses = "!remove [role]"
+    examples = f"!remove Chemistry"
 
     async def execute_command(self, client, msg, content):
         if not content:

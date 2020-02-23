@@ -6,9 +6,9 @@ import random
 class Random(Command):
     names = ["random", "rand"]
     description = "Returns a random float or integer with specified parameters"
-    usage = f"{prefixes[0]}random [(optional) int/float] [(optional) num1] [(optional) num2]"
+    usage = "!random [(optional) int/float] [(optional) num1] [(optional) num2]"
     examples = (
-        f"{prefixes[0]}random, {prefixes[0]}random 1 10, {prefixes[0]}random float 1 10"
+        f"!random, !random 1 10, !random float 1 10"
     )
     notes = "By default, this returns a float in the range [0,1).  If given arguments, it'll try to match the type of the argument"
 

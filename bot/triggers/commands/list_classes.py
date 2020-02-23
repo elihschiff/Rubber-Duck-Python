@@ -10,13 +10,13 @@ import ast
 class ListClasses(Command):
     names = ["classes", "list", "class", "roles"]
     description = "Lists all the classes and roles currently offered by the server."
-    usage = f"{prefixes[0]}classes or {prefixes[0]}classes [dept]"
-    examples = "{prefixes[0]}classes, {prefixes[0]}classes CSCI"
+    usage = "!classes or !classes [dept]"
+    examples = "!classes, !classes CSCI"
     notes = "If a class isn't offered this semester, you might not be able to add it"
 
     names_no_courses = ["list", "roles"]
     description_no_courses = "Lists all the roles addable via the bot"
-    usage = f"{prefixes[0]}list"
+    usage = "!list"
     notes_no_courses = ""
 
     async def execute_command(self, client, msg, content):

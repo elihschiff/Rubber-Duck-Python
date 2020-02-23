@@ -22,7 +22,7 @@ POSITIONS = [
 class TicTacToe(Game, ReactionTrigger):
     names = ["ttt", "tictactoe"]
     description = "Begins a game of Tic Tac Toe with a player."
-    usage = f"{prefixes[0]}ttt [@ another user]"
+    usage = "!ttt [@ another user]"
 
     class Game:
         def __init__(self, players=None, board=None):

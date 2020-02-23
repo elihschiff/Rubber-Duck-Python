@@ -12,8 +12,8 @@ import cairosvg
 class Latex(Command):
     names = ["latex", "tex"]
     description = "Renders an image of a latex command"
-    usage = f"{prefixes[0]}latex [command]"
-    examples = f"{prefixes[0]}latex \\frac{1}{2}"
+    usage = "!latex [command]"
+    examples = f"!latex \\frac{1}{2}"
 
     async def execute_command(self, client, msg, content):
         if not content:

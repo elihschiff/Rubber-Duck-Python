@@ -6,8 +6,8 @@ import wolframalpha
 class Math(Command):
     names = ["math", "calc", "calculate", "solve"]
     description = "Solves a math problem"
-    usage = f"{prefixes[0]}math [expression]"
-    examples = f"{prefixes[0]}math d/dx sin(x)^2"
+    usage = "!math [expression]"
+    examples = f"!math d/dx sin(x)^2"
 
     async def execute_command(self, client, msg, content):
         if not content:

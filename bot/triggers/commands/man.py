@@ -6,8 +6,8 @@ import requests
 class Man(Command):
     names = ["man"]
     description = "Sends a link to a man page, if it exists"
-    usage = f"{prefixes[0]}man [command]"
-    examples = f"{prefixes[0]}man grep"
+    usage = "!man [command]"
+    examples = f"!man grep"
 
     async def execute_command(self, client, msg, content):
         if not content:

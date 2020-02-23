@@ -6,7 +6,7 @@ import subprocess
 class Version(Command):
     names = ["version", "ver"]
     description = "Sends the Git commit which the bot is currently running on"
-    usage = f"{prefixes[0]}version"
+    usage = "!version"
 
     async def execute_command(self, client, msg, content):
         commit = (

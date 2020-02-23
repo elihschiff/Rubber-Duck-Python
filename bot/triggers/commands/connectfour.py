@@ -31,8 +31,8 @@ COLUMNS = [
 class ConnectFour(Game, ReactionTrigger):
     names = ["c4", "connect4", "connectfour"]
     description = "Begins a Connect Four game with another player(s)"
-    usage = f"{prefixes[0]}c4 [@ another player] [(optional) -r rows] [(optional) -c columns]"
-    examples = f"{prefixes[0]}c4 @myfriend, {prefixes[0]}c4 @myfriend -r 3 -c 4"
+    usage = "!c4 [@ another player] [(optional) -r rows] [(optional) -c columns]"
+    examples = f"!c4 @myfriend, !c4 @myfriend -r 3 -c 4"
     notes = (
         "Maximum of eight players.  Default dimensions is 6x7, but can go up to 10x15."
     )

@@ -7,8 +7,8 @@ import random
 class Choice(Command):
     names = ["choice", "choose"]
     description = "Chooses from a list of things"
-    usage = f"{prefixes[0]}choice [options]"
-    examples = f"{prefixes[0]}choice choose from these words"
+    usage = "!choice [options]"
+    examples = f"!choice choose from these words"
 
     async def execute_command(self, client, msg, content):
         if not content:

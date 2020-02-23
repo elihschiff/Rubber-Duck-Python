@@ -9,8 +9,8 @@ import discord
 class Steam(Command):
     names = ["steam", "epic"]
     description = "Looks up a game on the Steam store"
-    usage = f"{prefixes[0]}steam [game name]"
-    examples = f"{prefixes[0]}steam team fortress 2"
+    usage = "!steam [game name]"
+    examples = f"!steam team fortress 2"
 
     async def execute_command(self, client, msg, content):
         if not content:

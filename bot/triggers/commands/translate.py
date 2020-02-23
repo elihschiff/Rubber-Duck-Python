@@ -7,8 +7,8 @@ from googletrans import Translator
 class Translate(Command):
     names = ["translate"]
     description = "Translates a given phrase, or the previous message, into English"
-    usage = f"{prefixes[0]}translate [message]"
-    examples = f"{prefixes[0]}translate いんちき"
+    usage = "!translate [message]"
+    examples = f"!translate いんちき"
 
     def __init__(self):
         self.translator = Translator()
