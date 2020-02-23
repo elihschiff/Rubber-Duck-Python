@@ -136,11 +136,9 @@ class AddClass(Command, ReactionTrigger):
                         )
                     return
 
-                if not client.config["ENABLE_COURSES"]:
-                    await utils.delay_send(
-                        msg.channel, client.messages["add_no_roles_match"]
-                    )
-                    return
+        if not client.config["ENABLE_COURSES"]:
+            await utils.delay_send(msg.channel, client.messages["add_no_roles_match"])
+            return
 
         options = await fuzzy_search(client, content, 5)
 
@@ -312,11 +310,11 @@ class RemoveClass(Command, ReactionTrigger):
                         )
                     return
 
-                if not client.config["ENABLE_COURSES"]:
-                    await utils.delay_send(
-                        msg.channel, client.messages["remove_no_roles_match"]
-                    )
-                    return
+        if not client.config["ENABLE_COURSES"]:
+            await utils.delay_send(
+                msg.channel, client.messages["remove_no_roles_match"]
+            )
+            return
 
         options = await fuzzy_search(client, content, 5)
 
