@@ -10,7 +10,8 @@ class Welcome(NewMemberTrigger):
                 client.messages["welcome_public"].format(member.mention)
             )
 
-        non_all_seer = client.SERVER.get_role(client.config["non_all_seer_id"])
-        await member.add_roles(non_all_seer)
+        if client.config["ENABLE_COURSES"]:
+            non_all_seer = client.SERVER.get_role(client.config["non_all_seer_id"])
+            await member.add_roles(non_all_seer)
 
-        await member.send(client.messages["welcome_dm"])
+            await member.send(client.messages["welcome_dm"])
