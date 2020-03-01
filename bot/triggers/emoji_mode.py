@@ -12,12 +12,13 @@ import requests
 from discord import ChannelType
 
 # emotes are of the form <:emote_name:1234> where `1234` is the emote's id
-discord_emote_re = re.compile("<:[^:]+:(\d+)>")
-discord_emote_animated_re = re.compile("<a:[^:]+:(\d+)>")
+discord_emote_re = re.compile("<a?:[\w-]+?:(\d+?)>")
 discord_emote_id_re = re.compile(":(\d+)>")
 nested_emote_re = re.compile("<[^>]+<")
 
-invalid_emoji_re = re.compile("🇦|🇧|🇨|🇩|🇪|🇫|🇬|🇮|🇯|🇰|🇱|🇲|🇳|🇴|🇵|🇷|🇸|🇹|🇺|🇻|🇼|🇽|🇾|🇿|🇶")
+invalid_emoji_re = re.compile(
+    "🇦|🇧|🇨|🇩|🇪|🇫|🇬|🇮|🇯|🇰|🇱|🇲|🇳|🇴|🇵|🇷|🇸|🇹|🇺|🇻|🇼|🇽|🇾|🇿|🇶|:regional_indicator_[a-zA-Z]+?:"
+)
 
 # explains to the violator why their message was deleted
 async def send_message_to_violator(client, user):
@@ -48,7 +49,6 @@ def valid_emoji(content, msg) -> bool:
         return False
 
     content = discord_emote_re.sub(validate_discord_emote, content)
-    content = discord_emote_animated_re.sub(validate_discord_emote, content)
     content = invalid_emoji_re.sub("a", content)
     content = emoji.get_emoji_regexp().sub("", content)
 
