@@ -12,7 +12,7 @@ import requests
 from discord import ChannelType
 
 # emotes are of the form <:emote_name:1234> where `1234` is the emote's id
-discord_emote_re = re.compile("<a?:[\w-]+?:(\d+?)>")
+discord_emote_re = re.compile("<a?:[\w]+?:(\d+?)>")
 discord_emote_id_re = re.compile(":(\d+)>")
 nested_emote_re = re.compile("<[^>]+<")
 
