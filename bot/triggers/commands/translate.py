@@ -15,7 +15,7 @@ class Translate(Command):
 
     async def execute_command(self, client, msg, content):
         if len(content) == 0:
-            await utils.delay_send(msg.channel, f"Usage: {usage}")
+            await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return
 
         translation = self.translator.translate(content)

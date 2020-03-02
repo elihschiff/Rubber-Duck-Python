@@ -11,7 +11,7 @@ class Man(Command):
 
     async def execute_command(self, client, msg, content):
         if not content:
-            await utils.delay_send(msg.channel, f"Usage: {usage}")
+            await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return
 
         args = content.split(" ")
