@@ -9,7 +9,7 @@ import ast
 import re
 
 # from fuzzyfinder import fuzzyfinder
-from fuzzywuzzy import process
+from rapidfuzz import process
 
 
 async def fuzzy_search(client, query, max_results):

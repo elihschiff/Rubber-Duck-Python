@@ -1,7 +1,7 @@
 from ..message_trigger import MessageTrigger
 from .. import utils
 import re
-from fuzzywuzzy import fuzz
+from rapidfuzz import fuzz
 
 
 class Command(MessageTrigger):
@@ -20,9 +20,9 @@ class Command(MessageTrigger):
                     break
                 if msg.content.lower().startswith(prefix):
                     ratio = fuzz.ratio(
-                        msg.content.lower().split()[0], f"{prefix}{name}"
+                        msg.content.lower().split()[0], f"{prefix}{name}", score_cutoff=max_ratio
                     )
-                    max_ratio = ratio if ratio > max_ratio else max_ratio
+                    max_ratio = ratio or max_ratio
             if command:
                 break
 
