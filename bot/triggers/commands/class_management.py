@@ -193,7 +193,7 @@ class AddClass(Command, ReactionTrigger):
         course_name = msg.content[start_idx:end_idx].strip()
         async with client.lock:
             client.c.execute(
-                "SELECT * FROM classes WHERE name = ':course_name'",
+                "SELECT * FROM classes WHERE name = :course_name",
                 {"course_name": course_name},
             )
             course = client.c.fetchone()
@@ -236,7 +236,7 @@ class AddClass(Command, ReactionTrigger):
 
                 async with client.lock:
                     client.c.execute(
-                        "UPDATE classes SET channel_id = :channel_id WHERE name = ':course_name'",
+                        "UPDATE classes SET channel_id = :channel_id WHERE name = :course_name",
                         {"channel_id": channel.id, "course_name": course_name},
                     )
                     client.connection.commit()
