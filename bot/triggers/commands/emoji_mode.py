@@ -7,7 +7,7 @@ from .. import utils
 async def channel_in_emoji_state(client, channel):
     async with client.lock:
         client.c.execute(
-            f"SELECT count(*) FROM emoji_channels WHERE channel_id = {channel.id}"
+            "SELECT count(*) FROM emoji_channels WHERE channel_id = ?", (channel.id)
         )
         hits = client.c.fetchone()[0]
         return hits > 0
@@ -15,7 +15,9 @@ async def channel_in_emoji_state(client, channel):
 
 async def user_in_emoji_state(client, user):
     async with client.lock:
-        client.c.execute(f"SELECT count(*) FROM emoji_users WHERE user_id = {user.id}")
+        client.c.execute(
+            "SELECT count(*) FROM emoji_users WHERE user_id = ?", (user.id)
+        )
         hits = client.c.fetchone()[0]
         return hits > 0
 
@@ -36,7 +38,7 @@ class EmojiMode(Command):
             return
 
         async with client.lock:
-            client.c.execute(f"INSERT INTO emoji_channels VALUES ({channel.id})")
+            client.c.execute("INSERT INTO emoji_channels VALUES (?)", (channel.id))
             client.connection.commit()
 
         await utils.delay_send(
@@ -49,7 +51,7 @@ class EmojiMode(Command):
 
         async with client.lock:
             client.c.execute(
-                f"DELETE FROM emoji_channels WHERE channel_id = {channel.id}"
+                "DELETE FROM emoji_channels WHERE channel_id = ?", (channel.id)
             )
             client.connection.commit()
 
@@ -68,7 +70,7 @@ class EmojiMode(Command):
             return
 
         async with client.lock:
-            client.c.execute(f"INSERT INTO emoji_users VALUES ({user.id})")
+            client.c.execute("INSERT INTO emoji_users VALUES (?)", (user.id))
             client.connection.commit()
 
         try:
@@ -85,7 +87,7 @@ class EmojiMode(Command):
             return
 
         async with client.lock:
-            client.c.execute(f"DELETE FROM emoji_users WHERE user_id = {user.id}")
+            client.c.execute("DELETE FROM emoji_users WHERE user_id = ?", (user.id))
             client.connection.commit()
 
         try:
