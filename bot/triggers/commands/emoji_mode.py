@@ -7,7 +7,8 @@ from .. import utils
 async def channel_in_emoji_state(client, channel):
     async with client.lock:
         client.c.execute(
-            "SELECT count(*) FROM emoji_channels WHERE channel_id = ?", (channel.id)
+            "SELECT count(*) FROM emoji_channels WHERE channel_id = :channel_id",
+            {"channel_id": channel.id},
         )
         hits = client.c.fetchone()[0]
         return hits > 0
@@ -16,7 +17,8 @@ async def channel_in_emoji_state(client, channel):
 async def user_in_emoji_state(client, user):
     async with client.lock:
         client.c.execute(
-            "SELECT count(*) FROM emoji_users WHERE user_id = ?", (user.id)
+            "SELECT count(*) FROM emoji_users WHERE user_id = :user_id",
+            {"user_id": user.id},
         )
         hits = client.c.fetchone()[0]
         return hits > 0

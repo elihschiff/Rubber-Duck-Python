@@ -65,13 +65,15 @@ async def invalid_emoji_message(client, msg) -> bool:
 
     async with client.lock:
         client.c.execute(
-            "SELECT count(*) FROM emoji_channels WHERE channel_id = ?", (msg.channel.id)
+            "SELECT count(*) FROM emoji_channels WHERE channel_id = :chann_id",
+            {"chann_id": msg.channel.id},
         )
         hits += client.c.fetchone()[0]
 
     async with client.lock:
         client.c.execute(
-            "SELECT count(*) FROM emoji_users WHERE user_id = ?", (msg.author.id)
+            "SELECT count(*) FROM emoji_users WHERE user_id = :author_id",
+            {"author_id": msg.author.id},
         )
         hits += client.c.fetchone()[0]
 

@@ -65,8 +65,8 @@ async def get_log_channel(channel, client):
     else:
         async with client.log_lock:
             client.log_c.execute(
-                "SELECT dest_channel_id FROM logging WHERE source_channel_id = ?",
-                (channel.id),
+                "SELECT dest_channel_id FROM logging WHERE source_channel_id = :channel_id",
+                {"channel_id": channel.id},
             )
             dest_channel_id = client.log_c.fetchone()
 
@@ -87,8 +87,11 @@ async def get_log_channel(channel, client):
 
             async with client.log_lock:
                 client.log_c.execute(
-                    "INSERT INTO logging (source_channel_id, dest_channel_id) VALUES (?, ?)",
-                    (channel.id, destination_channel.id),
+                    "INSERT INTO logging (source_channel_id, dest_channel_id) VALUES (:channel_id, :destination_channel_id)",
+                    {
+                        "channel_id": channel.id,
+                        "destination_channel_id": destination_channel.id,
+                    },
                 )
                 client.log_connection.commit()
 

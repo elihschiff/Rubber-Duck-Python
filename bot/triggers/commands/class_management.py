@@ -192,7 +192,10 @@ class AddClass(Command, ReactionTrigger):
 
         course_name = msg.content[start_idx:end_idx].strip()
         async with client.lock:
-            client.c.execute("SELECT * FROM classes WHERE name = '?'", (course_name))
+            client.c.execute(
+                "SELECT * FROM classes WHERE name = ':course_name'",
+                {"course_name": course_name},
+            )
             course = client.c.fetchone()
             channel_id = int(course[2])
 
@@ -233,8 +236,8 @@ class AddClass(Command, ReactionTrigger):
 
                 async with client.lock:
                     client.c.execute(
-                        "UPDATE classes SET channel_id = ? WHERE name = '?'",
-                        (channel.id, course_name),
+                        "UPDATE classes SET channel_id = :channel_id WHERE name = ':course_name'",
+                        {"channel_id": channel.id, "course_name": course_name},
                     )
                     client.connection.commit()
 
@@ -368,7 +371,8 @@ class RemoveClass(Command, ReactionTrigger):
         course_name = msg.content[start_idx:end_idx].strip()
         async with client.lock:
             client.c.execute(
-                "SELECT channel_id FROM classes WHERE name = '?'", (course_name)
+                "SELECT channel_id FROM classes WHERE name = ':course_name'",
+                {"course_name": course_name},
             )
             channel_id = int(client.c.fetchone()[0])
 
