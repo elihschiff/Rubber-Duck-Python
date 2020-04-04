@@ -370,7 +370,7 @@ class RemoveClass(Command, ReactionTrigger):
 
         course_name = msg.content[start_idx:end_idx].strip()
         async with client.lock:
-            client.c.executescript(
+            client.c.execute(
                 f"SELECT channel_id FROM classes WHERE name = '{course_name}'"
             )
             channel_id = int(client.c.fetchone()[0])
