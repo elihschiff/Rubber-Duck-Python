@@ -40,7 +40,10 @@ class EmojiMode(Command):
             return
 
         async with client.lock:
-            client.c.execute("INSERT INTO emoji_channels VALUES (?)", (channel.id))
+            client.c.execute(
+                "INSERT INTO emoji_channels VALUES (:channel_id)",
+                {"channel_id": channel.id},
+            )
             client.connection.commit()
 
         await utils.delay_send(
@@ -53,7 +56,8 @@ class EmojiMode(Command):
 
         async with client.lock:
             client.c.execute(
-                "DELETE FROM emoji_channels WHERE channel_id = ?", (channel.id)
+                "DELETE FROM emoji_channels WHERE channel_id = :chann_id",
+                {"chann_id": channel.id},
             )
             client.connection.commit()
 
@@ -72,7 +76,9 @@ class EmojiMode(Command):
             return
 
         async with client.lock:
-            client.c.execute("INSERT INTO emoji_users VALUES (?)", (user.id))
+            client.c.execute(
+                "INSERT INTO emoji_users VALUES (:user_id)", {"user_id": user.id}
+            )
             client.connection.commit()
 
         try:
@@ -89,7 +95,9 @@ class EmojiMode(Command):
             return
 
         async with client.lock:
-            client.c.execute("DELETE FROM emoji_users WHERE user_id = ?", (user.id))
+            client.c.execute(
+                "DELETE FROM emoji_users WHERE user_id = :usr_id", {"usr_id": user.id}
+            )
             client.connection.commit()
 
         try:
