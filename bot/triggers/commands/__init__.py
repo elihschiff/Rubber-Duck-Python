@@ -61,7 +61,9 @@ class Command(MessageTrigger):
                         return
             except:
                 pass
-            await self.execute_command(client, msg, msg.clean_content[idx:].strip())
+            await self.execute_command(
+                client, msg, utils.sanitized(msg.clean_content[idx:].strip())
+            )
 
     async def execute_command(self, client, msg, content: str):
         raise NotImplementedError("'execute_command' not implemented for this command")
