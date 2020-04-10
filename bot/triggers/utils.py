@@ -16,7 +16,7 @@ async def delay_send(sendable, msg, delay_factor=1.0, embed=None):
     # async with sendable.typing():
     await asyncio.sleep(delay)
 
-    return await sendable.send(msg, embed=embed)
+    return await sendable.send(sanitized(msg), embed=embed)
 
 
 emoji_numbers = [
