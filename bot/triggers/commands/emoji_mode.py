@@ -115,7 +115,7 @@ class EmojiMode(Command):
             return
 
         content = content.split(" ")
-        users = [user for user in msg.mentions if !user.bot]
+        users = [user for user in msg.mentions if not user.bot]
         channels = msg.channel_mentions
 
         if content[0] == "on":
