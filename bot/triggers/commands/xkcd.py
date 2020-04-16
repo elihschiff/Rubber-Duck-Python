@@ -23,6 +23,17 @@ class Xkcd(Command):
             image_url = comic.getImageLink()
             title = comic.getTitle()
             alt_text = comic.getAltText()
+        elif content.isnumeric():
+            try:
+                comic = xkcd.getComic(int(content), silent=False)
+                image_url = comic.getImageLink()
+                title = comic.getTitle()
+                alt_text = comic.getAltText()
+            except:
+                await utils.delay_send(
+                    msg.channel, client.messages["no_xkcd_found"].format(content)
+                )
+                return
         else:
 
             response = json.loads(
