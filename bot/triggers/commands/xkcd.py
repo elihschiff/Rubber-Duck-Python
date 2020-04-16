@@ -10,9 +10,9 @@ import xkcd
 
 class Xkcd(Command):
     names = ["xkcd"]
-    description = "Finds a relevant xkcd"
-    usage = "!xkcd [(optional) message]"
-    examples = f"!xkcd, !xkcd duck"
+    description = "Finds a relevant xkcd using a keyword or comic number"
+    usage = "!xkcd [(optional) search]"
+    examples = f"!xkcd, !xkcd duck, !xkcd 435"
 
     async def execute_command(self, client, msg, content):
         image_url = ""
