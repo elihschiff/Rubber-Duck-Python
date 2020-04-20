@@ -3,6 +3,8 @@ from .. import utils
 import re
 from fuzzywuzzy import fuzz
 
+from discord import ChannelType
+
 
 class Command(MessageTrigger):
     prefixes = ["!"]
@@ -47,7 +49,7 @@ class Command(MessageTrigger):
         async with msg.channel.typing():
             # checks if a trigger causes spam and then if that trigger should run given the channel it was sent in
             try:  # any command without self.causes_spam will cause an exception and skip this to run like normal
-                if self.causes_spam:
+                if self.causes_spam and self.channel.type is not ChannelType.private:
                     if msg.channel.id not in client.config["spam_channel_ids"]:
                         channel_tags = ""
                         for id in client.config["spam_channel_ids"]:
