@@ -30,7 +30,7 @@ class Delete(Command, ReactionTrigger):
         await msg.add_reaction(client.get_emoji(client.config["thumb_id"]))
 
     async def execute_command(self, client, msg, content):
-        if not client.config["ENABLE_MESSAGES"]:
+        if not client.config["ENABLE_COURSES"]:
             await utils.delay_send(
                 "ERROR: I have been configured to not support courses.  Aborting..."
             )
