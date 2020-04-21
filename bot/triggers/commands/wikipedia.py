@@ -1,5 +1,7 @@
 from . import Command
 from .. import utils
+from bs4 import BeautifulSoup
+import requests
 import discord
 import wikipediaapi
 
@@ -15,7 +17,10 @@ class Wikipedia(Command):
 
     async def execute_command(self, client, msg, content):
         if not content:
-            utils.delay_send(msg.channel, "<https://en.wikipedia.com>")
+            page_link = "https://en.wikipedia.org/wiki/Special:Random"
+            page_response = requests.get(page_link, timeout=30)
+            page_content = BeautifulSoup(page_response.content, "html.parser")
+            content = page_content.find(id="firstHeading").text
 
         page = self.wiki.page(content.replace(" ", "_"))
         if not page.exists():
