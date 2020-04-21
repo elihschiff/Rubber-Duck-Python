@@ -17,27 +17,29 @@ class Random(Command):
 
         args = content.split()
 
+        if len(args) == 2:
+            arg1_idx = 0
+        else:
+            arg1_idx = 1
+
         try:
-            if len(args) == 2:
-                try:
-                    arg1 = int(args[0])
-                    arg2 = int(args[1])
-                    random_val = random.randint(min(arg1, arg2), max(arg1, arg2))
-                    await utils.delay_send(msg.channel, str(random_val))
-                except ValueError:
-                    arg1 = float(args[0])
-                    arg2 = float(args[1])
-                    random_val = random.uniform(min(arg1, arg2), max(arg1, arg2))
-                    await utils.delay_send(msg.channel, str(random_val))
-            elif args[0].lower() == "int":
-                arg1 = int(args[1])
-                arg2 = int(args[2])
-                random_val = random.randint(min(arg1, arg2), max(arg1, arg2))
-                await utils.delay_send(msg.channel, str(random_val))
-            else:
-                arg1 = float(args[1])
-                arg2 = float(args[2])
-                random_val = random.uniform(min(arg1, arg2), max(arg1, arg2))
-                await utils.delay_send(msg.channel, str(random_val))
-        except (ValueError, IndexError):
-            await msg.channel.send("USAGE: `!random (int/float) num1 num2`")
+            try:
+                arg1 = int(args[arg1_idx])
+                arg2 = int(args[arg1_idx + 1])
+            except ValueError:
+                arg1 = float(args[arg1_idx])
+                arg2 = float(args[arg1_idx + 1])
+        except IndexError:
+            await utils.delay_send(msg.channel, f"Usage: {usage}")
+            return
+
+        min_val = min(arg1, arg2)
+        max_val = max(arg1, arg2)
+
+        # Only generate an integer if we're given integers or the user wants it
+        if args[0] == "int" or type(arg1) is int:
+            random_val = random.randint(int(min_val), int(max_val))
+        else:
+            random_val = random.uniform(min_val, max_val)
+
+        await utils.delay_send(msg.channel, str(random_val))
