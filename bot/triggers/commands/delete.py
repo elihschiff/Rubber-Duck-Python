@@ -32,7 +32,8 @@ class Delete(Command, ReactionTrigger):
     async def execute_command(self, client, msg, content):
         if not client.config["ENABLE_COURSES"]:
             await utils.delay_send(
-                "ERROR: I have been configured to not support courses.  Aborting..."
+                msg.channel,
+                "ERROR: I have been configured to not support courses.  Aborting...",
             )
             return
 
