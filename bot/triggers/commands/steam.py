@@ -23,9 +23,7 @@ class Steam(Command):
                 "https://store.steampowered.com/search/?term=" + filtered_content
             )
             page_response = requests.get(page_link, timeout=30)
-            page_content = page_content = BeautifulSoup(
-                page_response.content, "html.parser"
-            )
+            page_content = BeautifulSoup(page_response.content, "html.parser")
             rows = page_content.find(id="search_resultsRows")
             if rows == None:
                 await msg.channel.send(

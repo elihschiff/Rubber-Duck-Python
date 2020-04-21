@@ -21,9 +21,7 @@ class Dining(Command):
             minute = time.hour * 60 + time.minute
             page_link = "https://rensselaerdining.com/dining-near-me/open-now"
             page_response = requests.get(page_link, timeout=30)
-            page_content = page_content = BeautifulSoup(
-                page_response.content, "html.parser"
-            )
+            page_content = BeautifulSoup(page_response.content, "html.parser")
             locs = page_content.findAll("div", {"class": "dining-halls-container"})
             message = ""
             embed = discord.Embed(
