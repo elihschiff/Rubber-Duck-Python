@@ -25,12 +25,16 @@ class ListClasses(Command):
             return
 
         if len(content) != 4:
-            await msg.channel.send(client.messages["invalid_class_list_format"])
+            await utils.delay_send(
+                msg.channel, client.messages["invalid_class_list_format"]
+            )
             return
 
         for letter in content[:4]:
             if letter not in string.ascii_letters:
-                await msg.channel.send(client.messages["invalid_class_list_format"])
+                await utils.delay_send(
+                    msg.channel, client.messages["invalid_class_list_format"]
+                )
                 return
 
         class_list = []
@@ -61,7 +65,7 @@ class ListClasses(Command):
             )
         else:
             if msg.channel.type is not discord.ChannelType.private:
-                await msg.channel.send("DMed!")
+                await utils.delay_send(msg.channel, "DMed!")
 
             class_str = ""
             prelude = client.messages["class_list_prelude"].format(
@@ -121,7 +125,7 @@ class ListClasses(Command):
             )
 
         if msg.channel.type is not discord.ChannelType.private:
-            await msg.channel.send("DMed!")
+            await utils.delay_send(msg.channel, "DMed!")
 
         await utils.delay_send(
             msg.author, client.messages["general_class_list_prelude"], embed=embed

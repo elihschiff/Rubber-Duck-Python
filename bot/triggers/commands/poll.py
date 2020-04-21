@@ -7,6 +7,8 @@ class Poll(Command):
     usage = "!poll [(optional) message]"
     examples = f"!poll, !poll ELi is better than Ben"
 
+    should_type = False
+
     async def execute_command(self, client, msg, content):
         await msg.add_reaction("👍")
         await msg.add_reaction("👎")

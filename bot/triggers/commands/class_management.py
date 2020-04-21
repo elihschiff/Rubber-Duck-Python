@@ -244,8 +244,9 @@ class AddClass(Command, ReactionTrigger):
                 break
 
             if not added:
-                msg.channel.send(
-                    "Error: Unable to add course.  Please message an admin about this."
+                await utils.delay_send.send(
+                    msg.channel,
+                    "Error: Unable to add course.  Please message an admin about this.",
                 )
                 return
 
@@ -274,7 +275,9 @@ class AddClass(Command, ReactionTrigger):
             )
 
         except Exception as e:
-            await msg.channel.send(client.messages["err_adding_class"].format(e))
+            await utils.delay_send(
+                msg.channel, client.messages["err_adding_class"].format(e)
+            )
             await utils.sendTraceback(client, msg.content)
 
 
@@ -381,9 +384,12 @@ class RemoveClass(Command, ReactionTrigger):
 
                 await channel.set_permissions(user, overwrite=None)
 
-            await msg.channel.send(
-                client.messages["class_remove_confirmation"].format(course_name)
+            await utils.delay_send(
+                msg.channel,
+                client.messages["class_remove_confirmation"].format(course_name),
             )
         except Exception as e:
-            await msg.channel.send(client.messages["err_removing_class"].format(e))
+            await utils.delay_send(
+                msg.channel, client.messages["err_removing_class"].format(e)
+            )
             await utils.sendTraceback(client, msg.content)

@@ -5,18 +5,19 @@ import re
 import traceback
 
 
-async def delay_send(sendable, msg, delay_factor=1.0, embed=None):
-    delay = (0.5 + 0.003 * len(msg)) * delay_factor
+async def delay_send(sendable, msg, delay_factor=1.0, embed=None, file=None):
+    async with sendable.typing():
+        delay = (0.5 + 0.003 * len(msg)) * delay_factor
 
-    # delay will never take more than 2 seconds to respond
-    delay = min(2, delay)
-    # delay will never take less than .25 seconds to respond
-    delay = max(0.25, delay)
-    # delay = 0
-    # async with sendable.typing():
-    await asyncio.sleep(delay)
+        # delay will never take more than 2 seconds to respond
+        delay = min(2, delay)
+        # delay will never take less than .25 seconds to respond
+        delay = max(0.25, delay)
+        # delay = 0
+        # async with sendable.typing():
+        await asyncio.sleep(delay)
 
-    return await sendable.send(msg, embed=embed)
+        return await sendable.send(msg, embed=embed, file=file)
 
 
 emoji_numbers = [
