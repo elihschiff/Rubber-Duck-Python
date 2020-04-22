@@ -1,5 +1,3 @@
-import re
-
 from . import Command
 from .. import utils
 
@@ -28,9 +26,6 @@ class EmojiMode(Command):
     names = ["emoji"]
     description = "Modifies the state of emoji-mode on an entity"
     requires_mod = True
-
-    user_ping_re = re.compile("<@!?(\d+?)>")
-    channel_ping_re = re.compile("<#!?(\d+?)>")
 
     async def channel_emoji_mode_toggle(self, client, channel):
         if await channel_in_emoji_state(client, channel):
@@ -118,13 +113,9 @@ class EmojiMode(Command):
             return
 
         content = content.split(" ")
-        user_ids = [
-            client.SERVER.get_member(int(user_id))
-            for user_id in user_ping_re.match(content).groups()
-        ]
-        channel_ids = [
-            client.get_channel(int(channel_id))
-            for channel_id in channel_ping_re.match(content).groups()
+        users = [client.get_user(user_id) for user_id in msg.raw_mentions]
+        channels = [
+            client.get_channel(channel_id) for channel_id in msg.raw_channel_mentions
         ]
 
         if content[0] == "on":
