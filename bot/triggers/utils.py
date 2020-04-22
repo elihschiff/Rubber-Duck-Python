@@ -52,6 +52,9 @@ async def generate_react_menu(
 
 
 def user_is_mod(client, user) -> bool:
+    if not hasattr(user, "roles"):
+        user = client.SERVER.get_member(user.id)
+
     for role in user.roles:
         if role.id == client.config["mod_role_id"]:
             return True
