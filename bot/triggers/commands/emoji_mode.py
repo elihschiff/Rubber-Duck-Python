@@ -1,5 +1,3 @@
-import json
-
 from . import Command
 from .. import utils
 
@@ -115,8 +113,10 @@ class EmojiMode(Command):
             return
 
         content = content.split(" ")
-        users = [user for user in msg.mentions if not user.bot]
-        channels = msg.channel_mentions
+        users = [client.get_user(user_id) for user_id in msg.raw_mentions]
+        channels = [
+            client.get_channel(channel_id) for channel_id in msg.raw_channel_mentions
+        ]
 
         if content[0] == "on":
             for user in users:
