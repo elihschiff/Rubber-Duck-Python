@@ -91,13 +91,17 @@ class RockPaperScissors(Game, ReactionTrigger):
 
         players = list(set([*msg.mentions, msg.author]))
         if len(players) != 2:
-            await msg.channel.send(client.messages["rockpaperscissors_num_players"])
+            await utils.delay_send(
+                msg.channel, client.messages["rockpaperscissors_num_players"]
+            )
             return
 
         # make sure the tagged player is not a bot
         for player in players:
             if player.bot:
-                await msg.channel.send(client.messages["rockpaperscissors_bot_player"])
+                await utils.delay_send(
+                    msg.channel, client.messages["rockpaperscissors_bot_player"]
+                )
                 return
 
         # collect the players to hash for game management
@@ -112,10 +116,11 @@ class RockPaperScissors(Game, ReactionTrigger):
         for game in games:
             if isinstance(game, RPSGame):
                 print("Error: There is already an active RPS game between", player_set)
-                await msg.channel.send(
+                await utils.delay_send(
+                    msg.channel,
                     client.messages["rockpaperscissors_existing_game"].format(
                         players[0].mention, players[1].mention
-                    )
+                    ),
                 )
                 return
 
@@ -133,7 +138,7 @@ class RockPaperScissors(Game, ReactionTrigger):
         # initialize the game in the game manager
         games.append(RPSGame(msg, [player.id for player in players], msg_ids))
 
-        msg.channel.send(client.messages["rockpaperscissors_game_init"])
+        utils.delay_send(msg.channel, client.messages["rockpaperscissors_game_init"])
 
     async def execute_reaction(self, client, reaction, channel, msg, user):
         if client.user.id == reaction.user_id:
@@ -159,7 +164,7 @@ class RockPaperScissors(Game, ReactionTrigger):
 
         # find the game in the global game dict
         if frozenset(players) not in GLOBAL_GAMES.keys():
-            await channel.send(content="Sorry, this RPS game is out of date!")
+            await utils.delay_send(channel, "Sorry, this RPS game is out of date!")
             return
         games = GLOBAL_GAMES[frozenset(players)]
         this_game = None
@@ -201,7 +206,7 @@ class RockPaperScissors(Game, ReactionTrigger):
 
             # grab the original channel and send who won
             orig_channel = await client.fetch_channel(game.orig_channel)
-            notif = await orig_channel.send(content=content, embed=embed)
+            notif = await utils.delay_send(orig_channel, content, embed=embed)
 
             # edit the private messages and shortly after, delete them
             for user_id, message_id in zip(game.players, game.msg_ids):

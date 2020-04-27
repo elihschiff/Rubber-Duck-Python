@@ -55,10 +55,12 @@ class Latex(Command):
                 cairosvg.svg2png(
                     file_obj=open(tmpLocationSVG, "rb"), write_to=tmpLocationPNG
                 )
+                # don't use utils.delay_send() here since the above HTTP
+                # likely took a while
                 await msg.channel.send(file=discord.File(tmpLocationPNG))
             finally:
                 os.remove(tmpLocationSVG)
                 os.remove(tmpLocationPNG)
 
         except:
-            await msg.channel.send("Error rending LaTeX")
+            await utils.delay_send(msg.channel, "Error rending LaTeX")

@@ -9,6 +9,7 @@ from discord import ChannelType
 class Command(MessageTrigger):
     prefixes = ["!"]
     requires_mod = False
+    should_type = True
 
     async def is_valid(self, client, msg) -> (int, bool):
         command = ""
@@ -43,29 +44,35 @@ class Command(MessageTrigger):
 
     async def execute_message(self, client, msg, idx):
         if self.requires_mod and not utils.user_is_mod(client, msg.author):
-            await msg.channel.send(client.messages["invalid_permissions"])
+            await utils.delay_send(msg.channel, client.messages["invalid_permissions"])
             return
 
-        async with msg.channel.typing():
-            # checks if a trigger causes spam and then if that trigger should run given the channel it was sent in
-            try:  # any command without self.causes_spam will cause an exception and skip this to run like normal
-                if self.causes_spam and self.channel.type is not ChannelType.private:
-                    if msg.channel.id not in client.config["spam_channel_ids"]:
-                        channel_tags = ""
-                        for id in client.config["spam_channel_ids"]:
-                            channel_tags += f" <#{id}>"
-                        await utils.delay_send(
-                            msg.channel,
-                            client.messages["send_to_spam_channel"].format(
-                                channel_tags
-                            ),
-                        )
-                        return
-            except:
-                pass
+        # checks if a trigger causes spam and then if that trigger should run given the channel it was sent in
+        try:  # any command without self.causes_spam will cause an exception and skip this to run like normal
+            if self.causes_spam and self.channel.type is not ChannelType.private:
+                if msg.channel.id not in client.config["spam_channel_ids"]:
+                    channel_tags = ""
+                    for id in client.config["spam_channel_ids"]:
+                        channel_tags += f" <#{id}>"
+                    await utils.delay_send(
+                        msg.channel,
+                        client.messages["send_to_spam_channel"].format(channel_tags),
+                    )
+                    return
+        except:
+            pass
+
+        # The execute command is defined here to decrease code reuse below
+        async def _execute():
             await self.execute_command(
                 client, msg, utils.sanitized(msg.clean_content[idx:].strip())
             )
+
+        if self.should_type:
+            async with msg.channel.typing():
+                await _execute()
+        else:
+            await _execute()
 
     async def execute_command(self, client, msg, content: str):
         raise NotImplementedError("'execute_command' not implemented for this command")
@@ -141,7 +148,8 @@ async def invalid_command(client, msg):
     if msg.author.bot or len(msg.content) < 2 or msg.content[0] != "!":
         return False
 
-    await msg.channel.send(
-        client.messages["invalid_command"].format(utils.sanitized(msg.content.strip()))
+    await utils.delay_send(
+        msg.channel,
+        client.messages["invalid_command"].format(utils.sanitized(msg.content.strip())),
     )
     return True

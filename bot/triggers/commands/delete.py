@@ -19,13 +19,15 @@ class Delete(Command, ReactionTrigger):
                 {"channel_id": channel_to_delete.id},
             )
             if not client.c.fetchall():
-                await command_channel.send(
-                    f"ERROR: <#{channel_to_delete.id}> is not a class channel"
+                await utils.delay_send(
+                    command_channel,
+                    f"ERROR: <#{channel_to_delete.id}> is not a class channel",
                 )
                 return
 
-        msg = await command_channel.send(
-            f"WARNING: You are about to delete <#{channel_to_delete.id}>.  <@{author.id}> can confirm this action by reacting :+1: to this message."
+        msg = await utils.delay_send(
+            command_channel,
+            f"WARNING: You are about to delete <#{channel_to_delete.id}>.  <@{author.id}> can confirm this action by reacting :+1: to this message.",
         )
         await msg.add_reaction(client.get_emoji(client.config["thumb_id"]))
 
@@ -38,7 +40,7 @@ class Delete(Command, ReactionTrigger):
             return
 
         if not msg.author.guild_permissions.administrator:
-            msg.channel.send(client.messages["invalid_permissions"])
+            utils.delay_send(msg.channel, client.messages["invalid_permissions"])
             return
 
         if not msg.channel_mentions:
@@ -98,4 +100,4 @@ class Delete(Command, ReactionTrigger):
         await log_equivalent.send(f"CHANNEL WAS: {deleted_name}")
 
         if channel_to_delete.id != msg.channel.id:
-            await msg.channel.send("DELETED {deleted_name}")
+            await utils.delay_send(msg.channel, "DELETED {deleted_name}")
