@@ -113,9 +113,15 @@ class EmojiMode(Command):
             return
 
         content = content.split(" ")
-        users = [client.get_user(user_id) for user_id in msg.raw_mentions]
+        users = [
+            client.SERVER.get_member(user_id)
+            for user_id in msg.raw_mentions
+            if client.SERVER.get_member(user_id) is not None
+        ]
         channels = [
-            client.get_channel(channel_id) for channel_id in msg.raw_channel_mentions
+            client.SERVER.get_channel(channel_id)
+            for channel_id in msg.raw_channel_mentions
+            if client.SERVER.get_channel(channel_id) is not None
         ]
 
         if content[0] == "on":
