@@ -200,15 +200,18 @@ class ConnectFour(Game, ReactionTrigger):
             return
         max_players = min(client.config["connectfour"]["max_players"], len(pieces))
         if len(players) > max_players:
-            await msg.channel.send(
-                client.messages["connectfour_err_players"].format(max_players)
+            await utils.delay_send(
+                msg.channel,
+                client.messages["connectfour_err_players"].format(max_players),
             )
             return
 
         # make sure the tagged player is not a bot
         for player in players:
             if player.bot:
-                await msg.channel.send(client.messages["connectfour_err_bot_player"])
+                await utils.delay_send(
+                    msg.channel, client.messages["connectfour_err_bot_player"]
+                )
                 return
         random.shuffle(players)
         players = [
@@ -217,33 +220,37 @@ class ConnectFour(Game, ReactionTrigger):
 
         rows = utils.get_flag("r", content, "6")
         if not rows.isdigit() or int(rows) < 1:
-            await msg.channel.send(client.messages["connectfour_err_num"])
+            await utils.delay_send(msg.channel, client.messages["connectfour_err_num"])
             return
         rows = int(rows)
         max_rows = client.config["connectfour"]["max_rows"]
         if rows > max_rows:
-            await msg.channel.send(
-                client.messages["connectfour_err_max_rows"].format(max_rows)
+            await utils.delay_send(
+                msg.channel,
+                client.messages["connectfour_err_max_rows"].format(max_rows),
             )
             return
 
         cols = utils.get_flag("c", content, "7")
         if not cols.isdigit() or int(cols) < 1:
-            await msg.channel.send(client.messages["connectfour_err_num"])
+            await utils.delay_send(msg.channel, client.messages["connectfour_err_num"])
             return
         cols = int(cols)
         max_cols = min(client.config["connectfour"]["max_cols"], len(COLUMNS))
         if cols > max_cols:
-            await msg.channel.send(
-                client.messages["connectfour_err_max_cols"].format(max_cols)
+            await utils.delay_send(
+                msg.channel,
+                client.messages["connectfour_err_max_cols"].format(max_cols),
             )
             return
 
         game = ConnectFour.Game(
             players, [[-1 for c in range(cols)] for r in range(rows)]
         )
-        msg = await msg.channel.send(
-            game.get_content(), embed=game.get_embed(self.get_game_footer(client))
+        msg = await utils.delay_send(
+            msg.channel,
+            game.get_content(),
+            embed=game.get_embed(self.get_game_footer(client)),
         )
         for col in COLUMNS[:cols]:
             await msg.add_reaction(col["emoji"])
@@ -276,8 +283,10 @@ class ConnectFour(Game, ReactionTrigger):
         reactions_to_add = [reaction for reaction in msg.reactions if reaction.me]
         await msg.delete()
 
-        new_msg = await channel.send(
-            game.get_content(), embed=game.get_embed(self.get_game_footer(client))
+        new_msg = await utils.delay_send(
+            channel,
+            game.get_content(),
+            embed=game.get_embed(self.get_game_footer(client)),
         )
 
         for reaction in reactions_to_add:

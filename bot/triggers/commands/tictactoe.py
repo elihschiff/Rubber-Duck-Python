@@ -214,13 +214,17 @@ class TicTacToe(Game, ReactionTrigger):
 
         players = list(set([*msg.mentions, msg.author]))
         if len(players) != 2:
-            await msg.channel.send(client.messages["tictactoe_err_num_players"])
+            await utils.delay_send(
+                msg.channel, client.messages["tictactoe_err_num_players"]
+            )
             return
 
         # make sure the tagged player is not a bot
         for player in players:
             if player.bot:
-                await msg.channel.send(client.messages["tictactoe_err_bot_player"])
+                await utils.delay_send(
+                    msg.channel, client.messages["tictactoe_err_bot_player"]
+                )
                 return
 
         random.shuffle(players)
@@ -235,8 +239,10 @@ class TicTacToe(Game, ReactionTrigger):
             [[-1 - c - 3 * r for c in range(3)] for r in range(3)],
         )
 
-        msg = await msg.channel.send(
-            game.get_content(), embed=game.get_embed(self.get_game_footer(client))
+        msg = await utils.delay_send(
+            msg.channel,
+            game.get_content(),
+            embed=game.get_embed(self.get_game_footer(client)),
         )
 
         for spot in POSITIONS[:9]:
@@ -274,8 +280,10 @@ class TicTacToe(Game, ReactionTrigger):
         if game.winner != -1 or game.is_draw():
             reactions_to_add = []
 
-        new_msg = await channel.send(
-            game.get_content(), embed=game.get_embed(self.get_game_footer(client))
+        new_msg = await utils.delay_send(
+            channel,
+            game.get_content(),
+            embed=game.get_embed(self.get_game_footer(client)),
         )
 
         for reaction in reactions_to_add:
