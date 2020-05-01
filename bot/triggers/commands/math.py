@@ -35,6 +35,8 @@ class Math(Command):
                         f"The answer for `{content}` is: {list(list(pod.subpod)[0].img)[0]['@src']}"
                     )
                     return
-        except KeyError, AttributeError:
+        except (KeyError, AttributeError):
             pass
-        await msg.channel.send(f"I could not find an answer for `{utils.sanitized(content)}`")
+        await msg.channel.send(
+            f"I could not find an answer for `{utils.sanitized(content)}`"
+        )
