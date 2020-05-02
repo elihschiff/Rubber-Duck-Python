@@ -1,5 +1,5 @@
 #!/bin/sh
 
-git pull
+git pull --force
 
 ./deploy.sh
