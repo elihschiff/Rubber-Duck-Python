@@ -45,9 +45,12 @@ class Help(Command):
                 msg.channel, f'Could not find command "{args[0]}".\n'
             )
 
+        if msg.channel.type is not discord.ChannelType.private:
+            await utils.delay_send(msg.channel, "DMed!")
+
         # otherwise, list all commands and their descriptions
         await utils.delay_send(
-            msg.channel,
+            msg.author,
             'Here are all general commands. To get help for a specific command,\
  write "!help [command name]" (ex: !help add).\n',
         )
@@ -80,6 +83,6 @@ class Help(Command):
 async def send_embed(msg, embed, title):
     # only delay send if it's the first message
     if title:
-        await utils.delay_send(msg.channel, "", embed=embed)
+        await utils.delay_send(msg.author, "", embed=embed)
     else:
-        await msg.channel.send("", embed=embed)
+        await msg.author.send("", embed=embed)
