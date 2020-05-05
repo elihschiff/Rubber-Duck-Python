@@ -72,6 +72,6 @@ class RGB(Command):
                 f.close()
                 await utils.delay_send(msg.channel, file=discord.File(file_name))
             except:
-                utils.sendTraceback(client, msg.content)
+                await utils.sendTraceback(client, msg.content)
             finally:
                 os.remove(file_name)

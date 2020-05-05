@@ -5,7 +5,7 @@ import re
 import traceback
 
 
-async def delay_send(sendable, msg, delay_factor=1.0, embed=None, file=None):
+async def delay_send(sendable, msg="", delay_factor=1.0, embed=None, file=None):
     async with sendable.typing():
         delay = (0.5 + 0.003 * len(msg)) * delay_factor
 
