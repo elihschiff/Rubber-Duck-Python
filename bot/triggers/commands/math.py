@@ -1,6 +1,7 @@
+import wolframalpha
+
 from . import Command
 from .. import utils
-import wolframalpha
 
 
 class Math(Command):

@@ -1,13 +1,14 @@
-from bs4 import BeautifulSoup
-
-from . import Command
-from .. import utils
-import requests
+import ast
 import re
 import os.path
 import time
 import urllib.request
-import ast
+
+from bs4 import BeautifulSoup
+import requests
+
+from . import Command
+from .. import utils
 
 
 class Java(Command):

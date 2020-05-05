@@ -3,13 +3,14 @@
 #
 # PLEASE SEE `commands/emoji_mode.py` FOR MODIFYING THE EMOJI-MODE STATE
 
-from . import utils
-import emoji
-import random
 import re
-import requests
 
 from discord import ChannelType
+import emoji
+import requests
+
+from . import utils
+
 
 # emotes are of the form <:emote_name:1234> where `1234` is the emote's id
 discord_emote_re = re.compile("<a?:[\w]+?:(\d+?)>")

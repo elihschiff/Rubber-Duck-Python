@@ -1,6 +1,7 @@
+import discord
+
 from . import Command, all_commands
 from .. import utils
-import discord
 
 
 class Help(Command):

@@ -1,7 +1,8 @@
+import random
+
 from . import Command
 from .. import utils
 from ..utils import sanitized
-import random
 
 
 class Choice(Command):

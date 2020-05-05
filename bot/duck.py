@@ -1,21 +1,17 @@
-import sys
-import discord
-from discord import ChannelType
+import asyncio
 import json
 import subprocess
-import asyncio
 import sqlite3
+import sys
 
-from .triggers import msg_triggers, new_member_triggers, reaction_triggers
-
-from .triggers.commands import invalid_command
-
-from .triggers.quack import quack
-from .triggers.emoji_mode import invalid_emoji_message
+import discord
 
 from . import logging
-
 from .triggers import utils
+from .triggers import msg_triggers, new_member_triggers, reaction_triggers
+from .triggers.commands import invalid_command
+from .triggers.quack import quack
+from .triggers.emoji_mode import invalid_emoji_message
 
 
 class DuckClient(discord.Client):

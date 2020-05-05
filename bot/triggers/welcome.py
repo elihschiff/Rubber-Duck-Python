@@ -1,4 +1,3 @@
-from . import utils
 from .new_member_trigger import NewMemberTrigger
 
 

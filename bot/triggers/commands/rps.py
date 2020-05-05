@@ -1,9 +1,10 @@
-from .games import Game, GLOBAL_GAMES
-from ..reaction_trigger import ReactionTrigger
-from .. import utils
+import re
 
 import discord
-import re
+
+from .games import Game, GLOBAL_GAMES
+from .. import utils
+from ..reaction_trigger import ReactionTrigger
 
 reaccs = [
     {"emoji": "\U0001f311", "name": ":new_moon:"},

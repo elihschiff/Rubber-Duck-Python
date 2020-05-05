@@ -1,7 +1,7 @@
+from googletrans import Translator
+
 from . import Command
 from .. import utils
-from ..utils import sanitized
-from googletrans import Translator
 
 
 class Translate(Command):
@@ -20,5 +20,5 @@ class Translate(Command):
 
         translation = self.translator.translate(content)
 
-        response = f"`{sanitized(content)}` translates from {translation.src.upper()} to: `{sanitized(translation.text)}`"
+        response = f"`{utils.sanitized(content)}` translates from {translation.src.upper()} to: `{utils.sanitized(translation.text)}`"
         await utils.delay_send(msg.channel, response, 1)

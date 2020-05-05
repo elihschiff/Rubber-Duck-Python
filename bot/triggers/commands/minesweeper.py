@@ -1,8 +1,8 @@
-from . import Command
-from .. import utils
-
 import math
 import random
+
+from . import Command
+from .. import utils
 
 
 class Minesweeper(Command):

@@ -1,6 +1,7 @@
+import random
+
 from . import Command
 from .. import utils
-import random
 
 
 class Random(Command):

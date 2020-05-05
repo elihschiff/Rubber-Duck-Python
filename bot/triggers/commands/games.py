@@ -1,7 +1,6 @@
-from . import Command
-
 import random
-import discord
+
+from . import Command
 
 # Global game dictionary used amongst all games to keep track of memory usage
 GLOBAL_GAMES = dict()

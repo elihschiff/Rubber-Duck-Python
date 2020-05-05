@@ -1,9 +1,11 @@
-from . import Command
-from .. import utils
 import os
+import random
+
 import discord
 import png
-import random
+
+from . import Command
+from .. import utils
 
 
 class RGB(Command):

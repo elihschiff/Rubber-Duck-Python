@@ -1,9 +1,10 @@
-from ..message_trigger import MessageTrigger
-from .. import utils
 import re
-from fuzzywuzzy import fuzz
 
+from fuzzywuzzy import fuzz
 from discord import ChannelType
+
+from .. import utils
+from ..message_trigger import MessageTrigger
 
 
 class Command(MessageTrigger):

@@ -1,15 +1,12 @@
+import json
+import re
+
+import discord
+from fuzzywuzzy import process
+
 from . import Command
 from .. import utils
 from ..reaction_trigger import ReactionTrigger
-
-import discord
-import string
-import json
-import ast
-import re
-
-# from fuzzyfinder import fuzzyfinder
-from fuzzywuzzy import process
 
 
 async def fuzzy_search(client, query, max_results):

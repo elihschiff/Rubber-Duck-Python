@@ -1,6 +1,7 @@
+import subprocess
+
 from . import Command
 from .. import utils
-import subprocess
 
 
 class Version(Command):

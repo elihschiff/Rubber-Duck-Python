@@ -1,10 +1,11 @@
+import random
+import re
+
+import discord
+
 from .games import Game
 from .. import utils
 from ..reaction_trigger import ReactionTrigger
-
-import discord
-import random
-import re
 
 COLUMNS = [
     {"emoji": "0\u20E3", "name": ":zero:"},

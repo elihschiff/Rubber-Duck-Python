@@ -1,11 +1,13 @@
-from . import Command
-from .. import utils
+import json
+import os
+import urllib.request
+
 import discord
 import requests
-import urllib.request
-import os
-import json
 import xkcd
+
+from . import Command
+from .. import utils
 
 
 class Xkcd(Command):

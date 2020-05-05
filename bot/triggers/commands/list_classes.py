@@ -1,10 +1,10 @@
-from . import Command
-from .. import utils
+import json
+import string
 
 import discord
-import string
-import json
-import ast
+
+from . import Command
+from .. import utils
 
 
 class ListClasses(Command):

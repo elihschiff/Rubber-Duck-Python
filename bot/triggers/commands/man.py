@@ -1,6 +1,7 @@
+import requests
+
 from . import Command
 from .. import utils
-import requests
 
 
 class Man(Command):

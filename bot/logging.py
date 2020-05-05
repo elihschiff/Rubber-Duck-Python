@@ -1,7 +1,7 @@
+import os
 import discord
 from discord import ChannelType
 import requests
-import os
 
 # action_taken gets put in front of the log message
 # an example might be "(EDITED)" to show this message was edited

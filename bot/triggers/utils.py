@@ -1,6 +1,4 @@
-import time
 import asyncio
-import discord
 import re
 import traceback
 

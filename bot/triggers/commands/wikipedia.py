@@ -1,9 +1,10 @@
+from bs4 import BeautifulSoup
+import discord
+import requests
+import wikipediaapi
+
 from . import Command
 from .. import utils
-from bs4 import BeautifulSoup
-import requests
-import discord
-import wikipediaapi
 
 
 class Wikipedia(Command):

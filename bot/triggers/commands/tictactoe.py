@@ -1,10 +1,11 @@
+import random
+import re
+
+import discord
+
 from .games import Game
 from .. import utils
 from ..reaction_trigger import ReactionTrigger
-
-import discord
-import re
-import random
 
 POSITIONS = [
     {"emoji": "1\u20E3", "name": ":one:"},

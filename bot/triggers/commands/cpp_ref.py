@@ -1,7 +1,8 @@
+from bs4 import BeautifulSoup
+import requests
+
 from . import Command
 from .. import utils
-import requests
-from bs4 import BeautifulSoup
 
 
 class CppRef(Command):

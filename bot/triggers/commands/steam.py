@@ -1,9 +1,11 @@
+import urllib
+
+from bs4 import BeautifulSoup
+import discord
+import requests
+
 from . import Command
 from .. import utils
-import urllib
-from bs4 import BeautifulSoup
-import requests
-import discord
 
 
 class Steam(Command):

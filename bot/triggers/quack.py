@@ -1,7 +1,6 @@
-from . import utils
 import random
-
 from discord import ChannelType
+from . import utils
 
 
 def should_quack(client, msg) -> bool:

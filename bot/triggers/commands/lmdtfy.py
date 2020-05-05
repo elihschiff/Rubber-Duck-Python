@@ -1,6 +1,7 @@
+from urllib.parse import urlencode
+
 from . import Command
 from .. import utils
-from urllib.parse import urlencode
 
 
 class Lmdtfy(Command):

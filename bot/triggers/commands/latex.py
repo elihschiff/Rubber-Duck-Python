@@ -1,12 +1,13 @@
+import json
+import os
+import urllib.request
+
+import cairosvg
+import discord
+import requests
+
 from . import Command
 from .. import utils
-import discord
-import os
-import requests
-import json
-import urllib.request
-import math
-import cairosvg
 
 
 class Latex(Command):
