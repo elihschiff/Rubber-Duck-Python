@@ -1,5 +1,5 @@
 from .commands.help import Help
-from .commands import all_commands
+from .commands import ALL_COMMANDS
 from .commands.delete import Delete
 from .welcome import Welcome
 from .commands.class_management import AddClass, RemoveClass
@@ -7,12 +7,12 @@ from .commands.connectfour import ConnectFour
 from .commands.tictactoe import TicTacToe
 from .commands.rps import RockPaperScissors
 
-msg_triggers = [Help()]
-msg_triggers.extend(all_commands)
+MSG_TRIGGERS = [Help()]
+MSG_TRIGGERS.extend(ALL_COMMANDS)
 
-new_member_triggers = [Welcome()]
+NEW_MEMBER_TRIGGERS = [Welcome()]
 
-reaction_triggers = [
+REACTION_TRIGGERS = [
     AddClass(),
     ConnectFour(),
     Delete(),

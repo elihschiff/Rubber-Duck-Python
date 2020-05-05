@@ -81,11 +81,11 @@ class TicTacToe(Game, ReactionTrigger):
 
             self.board = embed.description.split("\n")
 
-            for r in range(3):
-                row = self.board[r]
+            for row_idx in range(3):
+                row = self.board[row_idx]
                 for (i, piece) in pieces.items():
                     row = row.replace(piece, chr(i + 9))
-                self.board[r] = [ord(c) - 9 for c in row]
+                self.board[row_idx] = [ord(c) - 9 for c in row]
 
             if msg.content == "Draw!":
                 return
@@ -128,9 +128,9 @@ class TicTacToe(Game, ReactionTrigger):
 
         def get_embed(self, footer):
             board = self.board
-            for r in range(3):
-                for c in range(3):
-                    board[r][c] = self.get_piece(board[r][c])
+            for row_idx in range(3):
+                for col_idx in range(3):
+                    board[row_idx][col_idx] = self.get_piece(board[row_idx][col_idx])
 
             embed = discord.Embed(
                 title="Tic Tac Toe",

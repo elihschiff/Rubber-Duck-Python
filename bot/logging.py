@@ -42,14 +42,14 @@ async def log_message_delete(client, msg):
 
 
 def not_valid_channel(channel, guild, client):
-    if channel.type is not ChannelType.private and guild != client.SERVER:
+    if channel.type is not ChannelType.private and guild != client.server:
         return True
     return False
 
 
 def log_server_missing(client):
-    if client.LOG_SERVER is None:
-        # check does not need to be here (client.LOG_SERVER is only necessary in the case
+    if client.log_server is None:
+        # check does not need to be here (client.log_server is only necessary in the case
         # that no corresponding logging channel exists) since the client can receive
         # a channel by its id alone, but putting the check here helps ensuring a sane
         # config file
@@ -59,7 +59,7 @@ def log_server_missing(client):
 
 async def get_log_channel(channel, client):
     if channel.type is ChannelType.private:
-        destination_channel = client.LOG_SERVER.get_channel(
+        destination_channel = client.log_server.get_channel(
             client.config["DM_LOG_CHANNEL_ID"]
         )
     else:
@@ -72,7 +72,7 @@ async def get_log_channel(channel, client):
 
         if dest_channel_id is None:
             try:
-                destination_channel = await client.LOG_SERVER.create_text_channel(
+                destination_channel = await client.log_server.create_text_channel(
                     channel.name
                 )
             except discord.HTTPException:
@@ -81,7 +81,7 @@ async def get_log_channel(channel, client):
                 dest_channel_id = client.log_c.fetchone()[0]
                 client.log_lock.release()
 
-                destination_channel = client.LOG_SERVER.get_channel(dest_channel_id[0])
+                destination_channel = client.log_server.get_channel(dest_channel_id[0])
                 await destination_channel.edit(name=channel.name)
                 await destination_channel.send(f"CHANNEL NOW LOGGING: {channel.name}")
 
@@ -96,7 +96,7 @@ async def get_log_channel(channel, client):
                 client.log_connection.commit()
 
         else:
-            destination_channel = client.LOG_SERVER.get_channel(dest_channel_id[0])
+            destination_channel = client.log_server.get_channel(dest_channel_id[0])
 
     return destination_channel
 
@@ -133,8 +133,8 @@ def get_files(msg):
     attached_file_locations = []
     for attachment in msg.attachments:
         tmp_location = f"/tmp/{msg.id}-{attachment.filename}"
-        r = requests.get(attachment.url, allow_redirects=True)
-        open(tmp_location, "wb").write(r.content)
+        file_contents = requests.get(attachment.url, allow_redirects=True)
+        open(tmp_location, "wb").write(file_contents.content)
 
         attached_file_locations.append(tmp_location)
 

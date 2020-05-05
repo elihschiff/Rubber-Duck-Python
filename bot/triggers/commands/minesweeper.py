@@ -24,33 +24,33 @@ class Minesweeper(Command):
         height = max(1, min(20, height))
         width = max(1, min(20, width))
 
-        mineCount = math.ceil((width * height / 64) * 10)
+        mine_count = math.ceil((width * height / 64) * 10)
         if len(args) >= 3 and args[2].isdigit():
-            mineCount = max(0, min(width * height, int(args[2])))
+            mine_count = max(0, min(width * height, int(args[2])))
         cells = [[0 for i in range(width)] for j in range(height)]
 
         i = 0
-        while i < mineCount:
+        while i < mine_count:
             x = random.randint(0, height - 1)
             y = random.randint(0, width - 1)
             if cells[x][y] == -1:
                 continue
             cells[x][y] = -1
 
-            for a in range(-1, 2):
-                for b in range(-1, 2):
+            for x_off in range(-1, 2):
+                for y_off in range(-1, 2):
                     if not (
-                        y + b > width - 1
-                        or y + b < 0
-                        or x + a > height - 1
-                        or x + a < 0
+                        y + y_off > width - 1
+                        or y + y_off < 0
+                        or x + x_off > height - 1
+                        or x + x_off < 0
                     ):
-                        if cells[x + a][y + b] != -1:
-                            cells[x + a][y + b] += 1
+                        if cells[x + x_off][y + y_off] != -1:
+                            cells[x + x_off][y + y_off] += 1
             i += 1
 
         num = ["0⃣", "1⃣", "2⃣", "3⃣", "4⃣", "5⃣", "6⃣", "7⃣", "8⃣", "9⃣"]
-        output = f"There are ||{mineCount}|| mines\n"
+        output = f"There are ||{mine_count}|| mines\n"
         output_head_len = len(output)
         for i in range(height):
             for j in range(width):

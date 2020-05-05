@@ -56,8 +56,8 @@ class Xkcd(Command):
             alt_text = response["results"][0]["titletext"]
 
         msg_to_send = "**" + title + ":** " + alt_text
-        tmpLocation = f"/tmp/xkcd_image.png"
-        urllib.request.urlretrieve(image_url, tmpLocation)
+        tmp_location = f"/tmp/xkcd_image.png"
+        urllib.request.urlretrieve(image_url, tmp_location)
 
-        await msg.channel.send(msg_to_send, file=discord.File(tmpLocation))
-        os.remove(tmpLocation)
+        await msg.channel.send(msg_to_send, file=discord.File(tmp_location))
+        os.remove(tmp_location)

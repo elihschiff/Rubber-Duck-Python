@@ -68,11 +68,10 @@ class ConnectFour(Game, ReactionTrigger):
                 pieces[player["piece"]] = i
 
             self.board = embed.description.split("\n")[1:-1]
-            for r in range(len(self.board)):
-                row = self.board[r]
+            for row in self.board:
                 for (piece, i) in pieces.items():
                     row = row.replace(piece, chr(i + 1))
-                self.board[r] = [ord(c) - 1 for c in row]
+                row = [ord(c) - 1 for c in row]
 
             if msg.content == "Draw!":
                 return
@@ -111,9 +110,9 @@ class ConnectFour(Game, ReactionTrigger):
 
         def get_embed(self, footer):
             board = self.board
-            for r in range(len(board)):
-                for c in range(len(board[r])):
-                    board[r][c] = self.get_piece(board[r][c])
+            for row in board:
+                for cell in row:
+                    cell = self.get_piece(cell)
 
             embed = discord.Embed(
                 title="Connect Four",

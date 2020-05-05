@@ -53,8 +53,8 @@ class Command(MessageTrigger):
             if self.causes_spam and self.channel.type is not ChannelType.private:
                 if msg.channel.id not in client.config["spam_channel_ids"]:
                     channel_tags = ""
-                    for id in client.config["spam_channel_ids"]:
-                        channel_tags += f" <#{id}>"
+                    for chann_id in client.config["spam_channel_ids"]:
+                        channel_tags += f" <#{chann_id}>"
                     await utils.delay_send(
                         msg.channel,
                         client.messages["send_to_spam_channel"].format(channel_tags),
@@ -111,7 +111,7 @@ from .wikipedia import Wikipedia
 from .xkcd import Xkcd
 
 # Commands will auto alphabetize
-all_commands = [
+ALL_COMMANDS = [
     AddClass(),
     AI(),
     Choice(),
@@ -142,7 +142,7 @@ all_commands = [
     Wikipedia(),
     Xkcd(),
 ]
-all_commands.sort()
+ALL_COMMANDS.sort()
 
 
 async def invalid_command(client, msg):

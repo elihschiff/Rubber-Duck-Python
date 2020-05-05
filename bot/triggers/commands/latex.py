@@ -33,13 +33,13 @@ class Latex(Command):
             response = requests.request("POST", url, data=payload, headers=headers)
             dict = json.loads(response.text)
             url = r"https://latex2image.joeraut.com/" + dict["imageURL"]
-            tmpLocationSVG = f"/tmp/" + dict["imageURL"][7:]
-            tmpLocationPNG = dict["imageURL"][7:-3] + "png"
-            urllib.request.urlretrieve(url, tmpLocationSVG)
+            tmp_location_svg = f"/tmp/" + dict["imageURL"][7:]
+            tmp_location_png = dict["imageURL"][7:-3] + "png"
+            urllib.request.urlretrieve(url, tmp_location_svg)
             try:
-                with open(tmpLocationSVG, "r") as in_file:
+                with open(tmp_location_svg, "r") as in_file:
                     buf = in_file.readlines()
-                with open(tmpLocationSVG, "w") as out_file:
+                with open(tmp_location_svg, "w") as out_file:
                     for line in buf:
                         if line.startswith("<svg"):
                             line += """
@@ -54,14 +54,14 @@ class Latex(Command):
                                     """
                         out_file.write(line)
                 cairosvg.svg2png(
-                    file_obj=open(tmpLocationSVG, "rb"), write_to=tmpLocationPNG
+                    file_obj=open(tmp_location_svg, "rb"), write_to=tmp_location_png
                 )
                 # don't use utils.delay_send() here since the above HTTP
                 # likely took a while
-                await msg.channel.send(file=discord.File(tmpLocationPNG))
+                await msg.channel.send(file=discord.File(tmp_location_png))
             finally:
-                os.remove(tmpLocationSVG)
-                os.remove(tmpLocationPNG)
+                os.remove(tmp_location_svg)
+                os.remove(tmp_location_png)
 
         except:
             await utils.delay_send(msg.channel, "Error rending LaTeX")

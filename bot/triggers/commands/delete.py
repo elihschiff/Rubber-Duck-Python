@@ -14,11 +14,11 @@ class Delete(Command, ReactionTrigger):
         self, client, command_channel, channel_to_delete, author
     ):
         async with client.log_lock:
-            client.c.execute(
+            client.cursor.execute(
                 "SELECT * FROM classes WHERE channel_id = :channel_id",
                 {"channel_id": channel_to_delete.id},
             )
-            if not client.c.fetchall():
+            if not client.cursor.fetchall():
                 await utils.delay_send(
                     command_channel,
                     f"ERROR: <#{channel_to_delete.id}> is not a class channel",
@@ -80,7 +80,7 @@ class Delete(Command, ReactionTrigger):
         async with client.lock:
             await channel_to_delete.delete()
 
-            client.c.execute(
+            client.cursor.execute(
                 "UPDATE classes SET channel_id = 0 WHERE channel_id = :channel_id;",
                 {"channel_id": deleted_id},
             )

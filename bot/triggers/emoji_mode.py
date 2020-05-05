@@ -13,11 +13,11 @@ from . import utils
 
 
 # emotes are of the form <:emote_name:1234> where `1234` is the emote's id
-discord_emote_re = re.compile("<a?:[\w]+?:(\d+?)>")
-discord_emote_id_re = re.compile(":(\d+)>")
-nested_emote_re = re.compile("<[^>]+<")
+DISCORD_EMOTE_RE = re.compile("<a?:[\w]+?:(\d+?)>")
+DISCORD_EMOTE_ID_RE = re.compile(":(\d+)>")
+NESTED_EMOTE_RE = re.compile("<[^>]+<")
 
-invalid_emoji_re = re.compile(
+INVALID_EMOJI_RE = re.compile(
     "🇦|🇧|🇨|🇩|🇪|🇫|🇬|🇮|🇯|🇰|🇱|🇲|🇳|🇴|🇵|🇷|🇸|🇹|🇺|🇻|🇼|🇽|🇾|🇿|🇶|:regional_indicator_[a-zA-Z]+?:"
 )
 
@@ -34,7 +34,7 @@ async def send_message_to_violator(client, user):
 # emote from the message content.  If the emote is invalid, the content string
 # will be unmodified.
 def validate_discord_emote(emote) -> str:
-    emote_id = discord_emote_id_re.search(str(emote)).group(1)
+    emote_id = DISCORD_EMOTE_ID_RE.search(str(emote)).group(1)
     if requests.get(f"https://cdn.discordapp.com/emojis/{emote_id}").status_code == 200:
         # valid emote
         return ""
@@ -46,11 +46,11 @@ def validate_discord_emote(emote) -> str:
 # returns true if the message only contains emoji and whitespace.  It will
 # validate discord emotes as well.
 def valid_emoji(content, msg) -> bool:
-    if len(msg.embeds) or len(msg.attachments) or nested_emote_re.match(content):
+    if len(msg.embeds) or len(msg.attachments) or NESTED_EMOTE_RE.match(content):
         return False
 
-    content = discord_emote_re.sub(validate_discord_emote, content)
-    content = invalid_emoji_re.sub("a", content)
+    content = DISCORD_EMOTE_RE.sub(validate_discord_emote, content)
+    content = INVALID_EMOJI_RE.sub("a", content)
     content = emoji.get_emoji_regexp().sub("", content)
 
     return len(content.split()) == 0  # calling split() discounts whitepace
@@ -65,18 +65,18 @@ async def invalid_emoji_message(client, msg) -> bool:
     hits = 0
 
     async with client.lock:
-        client.c.execute(
+        client.cursor.execute(
             "SELECT count(*) FROM emoji_channels WHERE channel_id = :chann_id",
             {"chann_id": msg.channel.id},
         )
-        hits += client.c.fetchone()[0]
+        hits += client.cursor.fetchone()[0]
 
     async with client.lock:
-        client.c.execute(
+        client.cursor.execute(
             "SELECT count(*) FROM emoji_users WHERE user_id = :author_id",
             {"author_id": msg.author.id},
         )
-        hits += client.c.fetchone()[0]
+        hits += client.cursor.fetchone()[0]
 
     if hits > 0:
         if utils.user_is_mod(client, msg.author):

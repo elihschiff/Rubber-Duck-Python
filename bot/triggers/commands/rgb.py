@@ -21,59 +21,52 @@ class RGB(Command):
             )
             return
         if len(args) == 0:
-            r = random.randint(0, 255)
-            g = random.randint(0, 255)
-            b = random.randint(0, 255)
+            red = random.randint(0, 255)
+            green = random.randint(0, 255)
+            blue = random.randint(0, 255)
         elif len(args) == 1:
             if args[0][0] == "#":
                 args[0] = args[0][1:]
             if len(args[0]) != 6:
                 try:
-                    c = int(args[0])
-                    if c < 0 or c > 255:
+                    color = int(args[0])
+                    if color < 0 or color > 255:
                         await utils.delay_send(
                             msg.channel, msg="Arguments must be in range [0,255]"
                         )
                         return
-                    r = g = b = c
+                    red = green = blue = color
                 except:
                     await utils.delay_send(msg.channel, msg="Invalid hex or color")
                     return
             else:
                 try:
-                    r = int(args[0][0:2], 16)
-                    g = int(args[0][2:4], 16)
-                    b = int(args[0][4:6], 16)
+                    red = int(args[0][0:2], 16)
+                    green = int(args[0][2:4], 16)
+                    blue = int(args[0][4:6], 16)
                 except:
                     await utils.delay_send(msg.channel, msg="Invalid hex color")
                     return
         else:
             try:
-                r = int(args[0])
-                g = int(args[1])
-                b = int(args[2])
+                red = int(args[0])
+                green = int(args[1])
+                blue = int(args[2])
             except:
                 await utils.delay_send(msg.channel, msg="All arguments must be ints")
                 return
-        if r < 0 or r > 255 or g < 0 or g > 255 or b < 0 or b > 255:
+        if red < 0 or red > 255 or green < 0 or green > 255 or blue < 0 or blue > 255:
             await utils.delay_send(
                 msg.channel, msg="Arguments must be in range [0,255]"
             )
             return
-        row = ()
-        for i in range(0, 128):
-            row = row + (r, g, b)
-        p = []
-        for i in range(0, 128):
-            p.append(row)
+        row = (red, green, blue) * 128
+        png_content = [row] * 128
         file_name = "/tmp/temp_" + str(msg.id) + ".png"
-        with open(file_name, "wb") as f:
-            try:
-                w = png.Writer(128, 128, greyscale=False)
-                w.write(f, p)
-                f.close()
-                await utils.delay_send(msg.channel, file=discord.File(file_name))
-            except:
-                await utils.sendTraceback(client, msg.content)
-            finally:
-                os.remove(file_name)
+        try:
+            with open(file_name, "wb") as png_f:
+                writer = png.Writer(128, 128, greyscale=False)
+                writer.write(png_f, png_content)
+            await utils.delay_send(msg.channel, file=discord.File(file_name))
+        finally:
+            os.remove(file_name)

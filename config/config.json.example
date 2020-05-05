@@ -1,13 +1,13 @@
 {
 	"ENABLE_COURSES": true,
 
-	"SERVER_ID": 0,
+	"server_ID": 0,
 
-	"LOG_SERVER_ID": 0,
+	"log_server_ID": 0,
 	"DM_LOG_CHANNEL_ID": 0,
 
-	"TRACEBACK_SERVER_ID": 0,
-	"TRACEBACK_CHANNEL_ID": 0,
+	"TRACEBACK_server_ID": 0,
+	"traceback_channel_ID": 0,
 
 	"disabled_triggers": {
 		"msg": [],

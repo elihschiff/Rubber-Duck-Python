@@ -17,8 +17,8 @@ async def fuzzy_search(client, query, max_results):
     class_list = []  # a list of ever class and every course_code etc
 
     async with client.lock:
-        client.c.execute("SELECT * FROM classes WHERE active != 0")
-        records = client.c.fetchall()
+        client.cursor.execute("SELECT * FROM classes WHERE active != 0")
+        records = client.cursor.fetchall()
 
     for i in records:
         real_name = "**" + ", ".join(json.loads(i[3].replace("'", '"'))) + "**: " + i[1]
@@ -49,8 +49,8 @@ async def fuzzy_search(client, query, max_results):
 
 
 async def add_role(client, msg, role_id, role_name):
-    role = client.SERVER.get_role(role_id)
-    server_member = client.SERVER.get_member(msg.author.id)
+    role = client.server.get_role(role_id)
+    server_member = client.server.get_member(msg.author.id)
     await server_member.add_roles(role)
 
     if role_name == "-------":
@@ -66,8 +66,8 @@ async def add_role(client, msg, role_id, role_name):
 
 
 async def remove_role(client, msg, role_id, role_name):
-    role = client.SERVER.get_role(role_id)
-    server_member = client.SERVER.get_member(msg.author.id)
+    role = client.server.get_role(role_id)
+    server_member = client.server.get_member(msg.author.id)
     await server_member.remove_roles(role)
 
     if role_name == "-------":
@@ -177,10 +177,10 @@ class AddClass(Command, ReactionTrigger):
         if " add " not in msg.content:
             return
 
-        if reaction.emoji.name == utils.no_matching_results_emote:
+        if reaction.emoji.name == utils.NO_MATCHING_RESULTS_EMOTE:
             await utils.delay_send(msg.channel, client.messages["add_no_roles_match"])
 
-        if reaction.emoji.name not in utils.emoji_numbers:
+        if reaction.emoji.name not in utils.EMOJI_NUMBERS:
             return
 
         line_start_idx = msg.content.index(reaction.emoji.name)
@@ -189,11 +189,11 @@ class AddClass(Command, ReactionTrigger):
 
         course_name = msg.content[start_idx:end_idx].strip()
         async with client.lock:
-            client.c.execute(
+            client.cursor.execute(
                 "SELECT * FROM classes WHERE name = :course_name",
                 {"course_name": course_name},
             )
-            course = client.c.fetchone()
+            course = client.cursor.fetchone()
             channel_id = int(course[2])
 
         channel = None
@@ -208,8 +208,8 @@ class AddClass(Command, ReactionTrigger):
             for category_id in client.config["class_category_ids"]:
                 class_category_channel = client.get_channel(category_id)
 
-                all_seer = client.SERVER.get_role(client.config["all_seer_id"])
-                time_out = client.SERVER.get_role(client.config["time_out_id"])
+                all_seer = client.server.get_role(client.config["all_seer_id"])
+                time_out = client.server.get_role(client.config["time_out_id"])
 
                 try:
                     channel = await class_category_channel.create_text_channel(
@@ -218,7 +218,7 @@ class AddClass(Command, ReactionTrigger):
                         + ": "
                         + course[1],
                         overwrites={
-                            client.SERVER.default_role: discord.PermissionOverwrite(
+                            client.server.default_role: discord.PermissionOverwrite(
                                 read_messages=False
                             ),
                             all_seer: discord.PermissionOverwrite(read_messages=True),
@@ -228,11 +228,11 @@ class AddClass(Command, ReactionTrigger):
                         },
                     )
                     added = True
-                except discord.HTTPException as e:
+                except discord.HTTPException:
                     continue
 
                 async with client.lock:
-                    client.c.execute(
+                    client.cursor.execute(
                         "UPDATE classes SET channel_id = :channel_id WHERE name = :course_name",
                         {"channel_id": channel.id, "course_name": course_name},
                     )
@@ -275,7 +275,7 @@ class AddClass(Command, ReactionTrigger):
             await utils.delay_send(
                 msg.channel, client.messages["err_adding_class"].format(e)
             )
-            await utils.sendTraceback(client, msg.content)
+            await utils.send_traceback(client, msg.content)
 
 
 class RemoveClass(Command, ReactionTrigger):
@@ -356,12 +356,12 @@ class RemoveClass(Command, ReactionTrigger):
         if " remove " not in msg.content:
             return
 
-        if reaction.emoji.name == utils.no_matching_results_emote:
+        if reaction.emoji.name == utils.NO_MATCHING_RESULTS_EMOTE:
             await utils.delay_send(
                 msg.channel, client.messages["remove_no_roles_match"]
             )
 
-        if reaction.emoji.name not in utils.emoji_numbers:
+        if reaction.emoji.name not in utils.EMOJI_NUMBERS:
             return
 
         line_start_idx = msg.content.index(reaction.emoji.name)
@@ -370,10 +370,10 @@ class RemoveClass(Command, ReactionTrigger):
 
         course_name = msg.content[start_idx:end_idx].strip()
         async with client.lock:
-            client.c.execute(
+            client.cursor.execute(
                 f"SELECT channel_id FROM classes WHERE name = '{course_name}'"
             )
-            channel_id = int(client.c.fetchone()[0])
+            channel_id = int(client.cursor.fetchone()[0])
 
         try:
             if channel_id != 0:
@@ -389,4 +389,4 @@ class RemoveClass(Command, ReactionTrigger):
             await utils.delay_send(
                 msg.channel, client.messages["err_removing_class"].format(e)
             )
-            await utils.sendTraceback(client, msg.content)
+            await utils.send_traceback(client, msg.content)

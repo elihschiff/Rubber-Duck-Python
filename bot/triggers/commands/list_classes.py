@@ -40,11 +40,11 @@ class ListClasses(Command):
         class_list = []
 
         async with client.lock:
-            client.c.execute(
+            client.cursor.execute(
                 "SELECT * FROM classes WHERE departments LIKE ?",
                 ("%" + str(content[:4]).upper() + "%",),
             )
-            records = client.c.fetchall()
+            records = client.cursor.fetchall()
 
         for i in records:
             class_list.append(

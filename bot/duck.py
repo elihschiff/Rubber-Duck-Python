@@ -8,7 +8,7 @@ import discord
 
 from . import logging
 from .triggers import utils
-from .triggers import msg_triggers, new_member_triggers, reaction_triggers
+from .triggers import MSG_TRIGGERS, NEW_MEMBER_TRIGGERS, REACTION_TRIGGERS
 from .triggers.commands import invalid_command
 from .triggers.quack import quack
 from .triggers.emoji_mode import invalid_emoji_message
@@ -54,7 +54,7 @@ class DuckClient(discord.Client):
 
         self.lock = asyncio.Lock()
         self.connection = sqlite3.connect(path + "database.db")
-        self.c = self.connection.cursor()
+        self.cursor = self.connection.cursor()
 
         self.log_lock = asyncio.Lock()
         self.log_connection = sqlite3.connect(path + "logging.db")
@@ -66,16 +66,16 @@ class DuckClient(discord.Client):
             args.extend(sys.argv[1:])
             subprocess.call(args)
 
-        self.LOG_SERVER = self.get_guild(self.config["LOG_SERVER_ID"])
-        self.SERVER = self.get_guild(self.config["SERVER_ID"])
+        self.log_server = self.get_guild(self.config["log_server_ID"])
+        self.server = self.get_guild(self.config["server_ID"])
 
         try:
-            traceback_server = self.get_guild(self.config["TRACEBACK_SERVER_ID"])
-            self.TRACEBACK_CHANNEL = traceback_server.get_channel(
-                self.config["TRACEBACK_CHANNEL_ID"]
+            traceback_server = self.get_guild(self.config["TRACEBACK_server_ID"])
+            self.traceback_channel = traceback_server.get_channel(
+                self.config["traceback_channel_ID"]
             )
         except:
-            self.TRACEBACK_CHANNEL = None
+            self.traceback_channel = None
 
         print(f"Connected as {self.user}!")
 
@@ -84,8 +84,8 @@ class DuckClient(discord.Client):
             await logging.log_message(self, msg)
         except AttributeError:
             pass
-        except Exception as e:
-            await utils.sendTraceback(self, msg.content)
+        except Exception:
+            await utils.send_traceback(self, msg.content)
 
         if msg.author.bot or utils.user_in_timeout(self, msg.author):
             return
@@ -97,7 +97,7 @@ class DuckClient(discord.Client):
         best_trigger = None
         best_trigger_idx = 0
         best_trigger_score = self.config["min_trigger_fuzzy_score"]
-        for trigger in msg_triggers:
+        for trigger in MSG_TRIGGERS:
             if type(trigger).__name__ in self.config["disabled_triggers"]["msg"]:
                 continue
             try:
@@ -109,8 +109,8 @@ class DuckClient(discord.Client):
                 if trigger_score == 1:
                     await trigger.execute_message(self, msg, idx)
                     replied = True
-            except Exception as e:
-                await utils.sendTraceback(self, msg.content)
+            except Exception:
+                await utils.send_traceback(self, msg.content)
                 replied = True
 
         if best_trigger and replied == False:
@@ -141,17 +141,17 @@ class DuckClient(discord.Client):
             pass
 
     async def on_member_join(self, member):
-        for trigger in new_member_triggers:
+        for trigger in NEW_MEMBER_TRIGGERS:
             if type(trigger).__name__ in self.config["disabled_triggers"]["new_member"]:
                 continue
 
             try:
                 await trigger.execute_new_member(self, member)
-            except Exception as e:
-                await utils.sendTraceback(self)
+            except Exception:
+                await utils.send_traceback(self)
 
     async def on_raw_reaction_add(self, reaction):
-        user = self.SERVER.get_member(reaction.user_id)
+        user = self.server.get_member(reaction.user_id)
         if not user:  # user is not in the cache
             user = await self.fetch_user(reaction.user_id)
 
@@ -167,7 +167,7 @@ class DuckClient(discord.Client):
         # as far as I know there is not get_message command that checks the cache
         msg = await channel.fetch_message(reaction.message_id)
 
-        for trigger in reaction_triggers:
+        for trigger in REACTION_TRIGGERS:
             if type(trigger).__name__ in self.config["disabled_triggers"]["reaction"]:
                 continue
 
@@ -178,5 +178,5 @@ class DuckClient(discord.Client):
                 # if you delete the message reacted to, return False
                 if result is False:
                     break
-            except Exception as e:
-                await utils.sendTraceback(self)
+            except Exception:
+                await utils.send_traceback(self)

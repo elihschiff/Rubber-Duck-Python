@@ -1,6 +1,6 @@
 import discord
 
-from . import Command, all_commands
+from . import Command, ALL_COMMANDS
 from .. import utils
 
 
@@ -12,7 +12,7 @@ class Help(Command):
         args = content.split(" ")
         # if a specific command for help was entered
         if args[0].strip() != "":
-            for command in all_commands:
+            for command in ALL_COMMANDS:
                 for name in utils.get_correct_attr(command, "names", client):
                     if name == args[0]:
                         names = utils.get_correct_attr(command, "names", client)
@@ -57,7 +57,7 @@ class Help(Command):
         )
 
         commands_arr = []
-        for command in all_commands:
+        for command in ALL_COMMANDS:
             command_names = utils.get_correct_attr(command, "names", client)
             command_desc = utils.get_correct_attr(command, "description", client)
             if command.description:

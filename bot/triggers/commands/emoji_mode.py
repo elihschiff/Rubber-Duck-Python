@@ -4,21 +4,21 @@ from .. import utils
 
 async def channel_in_emoji_state(client, channel):
     async with client.lock:
-        client.c.execute(
+        client.cursor.execute(
             "SELECT count(*) FROM emoji_channels WHERE channel_id = :channel_id",
             {"channel_id": channel.id},
         )
-        hits = client.c.fetchone()[0]
+        hits = client.cursor.fetchone()[0]
         return hits > 0
 
 
 async def user_in_emoji_state(client, user):
     async with client.lock:
-        client.c.execute(
+        client.cursor.execute(
             "SELECT count(*) FROM emoji_users WHERE user_id = :user_id",
             {"user_id": user.id},
         )
-        hits = client.c.fetchone()[0]
+        hits = client.cursor.fetchone()[0]
         return hits > 0
 
 
@@ -38,7 +38,7 @@ class EmojiMode(Command):
             return
 
         async with client.lock:
-            client.c.execute(
+            client.cursor.execute(
                 "INSERT INTO emoji_channels VALUES (:channel_id)",
                 {"channel_id": channel.id},
             )
@@ -53,7 +53,7 @@ class EmojiMode(Command):
             return
 
         async with client.lock:
-            client.c.execute(
+            client.cursor.execute(
                 "DELETE FROM emoji_channels WHERE channel_id = :chann_id",
                 {"chann_id": channel.id},
             )
@@ -74,7 +74,7 @@ class EmojiMode(Command):
             return
 
         async with client.lock:
-            client.c.execute(
+            client.cursor.execute(
                 "INSERT INTO emoji_users VALUES (:user_id)", {"user_id": user.id}
             )
             client.connection.commit()
@@ -93,7 +93,7 @@ class EmojiMode(Command):
             return
 
         async with client.lock:
-            client.c.execute(
+            client.cursor.execute(
                 "DELETE FROM emoji_users WHERE user_id = :usr_id", {"usr_id": user.id}
             )
             client.connection.commit()
@@ -114,14 +114,14 @@ class EmojiMode(Command):
 
         content = content.split(" ")
         users = [
-            client.SERVER.get_member(user_id)
+            client.server.get_member(user_id)
             for user_id in msg.raw_mentions
-            if client.SERVER.get_member(user_id) is not None
+            if client.server.get_member(user_id) is not None
         ]
         channels = [
-            client.SERVER.get_channel(channel_id)
+            client.server.get_channel(channel_id)
             for channel_id in msg.raw_channel_mentions
-            if client.SERVER.get_channel(channel_id) is not None
+            if client.server.get_channel(channel_id) is not None
         ]
 
         if content[0] == "on":

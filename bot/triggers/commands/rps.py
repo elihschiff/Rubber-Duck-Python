@@ -6,7 +6,7 @@ from .games import Game, GLOBAL_GAMES
 from .. import utils
 from ..reaction_trigger import ReactionTrigger
 
-reaccs = [
+REACCS = [
     {"emoji": "\U0001f311", "name": ":new_moon:"},
     {"emoji": "\U0001f4f0", "name": ":newspaper:"},
     {"emoji": "\u2702", "name": ":scissors:"},
@@ -30,13 +30,13 @@ class RPSGame:
             return False
 
         for i in range(len(answers)):
-            if answers[i] == reaccs[0]["emoji"]:
+            if answers[i] == REACCS[0]["emoji"]:
                 # rock
                 answers[i] = 0
-            elif answers[i] == reaccs[1]["emoji"]:
+            elif answers[i] == REACCS[1]["emoji"]:
                 # paper
                 answers[i] = 1
-            elif answers[i] == reaccs[2]["emoji"]:
+            elif answers[i] == REACCS[2]["emoji"]:
                 # scissors
                 answers[i] = 2
 
@@ -133,7 +133,7 @@ class RockPaperScissors(Game, ReactionTrigger):
             tmp = await player.send(
                 content=self.get_content(), embed=self.get_pm_embed(players, client)
             )
-            for spot in reaccs:
+            for spot in REACCS:
                 await tmp.add_reaction(spot["emoji"])
             msg_ids.append(tmp.id)
 
@@ -152,7 +152,7 @@ class RockPaperScissors(Game, ReactionTrigger):
         if len(msg.embeds) == 0 or msg.embeds[0].title != "Rock Paper Scissors":
             return
 
-        options = [spot["emoji"] for spot in reaccs]
+        options = [spot["emoji"] for spot in REACCS]
 
         if reaction.emoji.name not in options:
             return
@@ -214,8 +214,8 @@ class RockPaperScissors(Game, ReactionTrigger):
             for user_id, message_id in zip(game.players, game.msg_ids):
                 usr = await client.fetch_user(user_id)
                 dm_channel = usr.dm_channel
-                dm = await dm_channel.fetch_message(message_id)
-                await dm.delete()
+                sent_message = await dm_channel.fetch_message(message_id)
+                await sent_message.delete()
 
             # delete the game so people can play again
             GLOBAL_GAMES[frozenset(players)].remove(game)
