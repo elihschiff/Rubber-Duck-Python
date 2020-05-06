@@ -13,9 +13,9 @@ from . import utils
 
 
 # emotes are of the form <:emote_name:1234> where `1234` is the emote's id
-DISCORD_EMOTE_RE = re.compile("<a?:[\w]+?:(\d+?)>")
-DISCORD_EMOTE_ID_RE = re.compile(":(\d+)>")
-NESTED_EMOTE_RE = re.compile("<[^>]+<")
+DISCORD_EMOTE_RE = re.compile(r"<a?:[\w]+?:(\d+?)>")
+DISCORD_EMOTE_ID_RE = re.compile(f":(\d+)>")
+NESTED_EMOTE_RE = re.compile(r"<[^>]+<")
 
 INVALID_EMOJI_RE = re.compile(
     "🇦|🇧|🇨|🇩|🇪|🇫|🇬|🇮|🇯|🇰|🇱|🇲|🇳|🇴|🇵|🇷|🇸|🇹|🇺|🇻|🇼|🇽|🇾|🇿|🇶|:regional_indicator_[a-zA-Z]+?:"

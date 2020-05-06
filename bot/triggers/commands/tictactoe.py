@@ -90,7 +90,7 @@ class TicTacToe(Game, ReactionTrigger):
             if msg.content == "Draw!":
                 return
 
-            mention = re.search("<@!?(\d+)>", msg.content)
+            mention = re.search(r"<@!?(\d+)>", msg.content)
 
             user = []
             for (i, player) in enumerate(self.players):

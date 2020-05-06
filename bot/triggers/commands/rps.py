@@ -226,7 +226,7 @@ class RockPaperScissors(Game, ReactionTrigger):
             waiting_for = None
 
             for player in players:
-                player_id = re.search("<@!?(\d+)>", player)
+                player_id = re.search(r"<@!?(\d+)>", player)
                 if int(player_id.group(1)) != author.id:
                     waiting_for = player
                     break

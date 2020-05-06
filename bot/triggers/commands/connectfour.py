@@ -75,7 +75,7 @@ class ConnectFour(Game, ReactionTrigger):
 
             if msg.content == "Draw!":
                 return
-            mention = re.search("<@!?(\d+)>", msg.content)
+            mention = re.search(r"<@!?(\d+)>", msg.content)
 
             user = [
                 i

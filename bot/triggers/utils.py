@@ -105,7 +105,7 @@ def get_flag(flag, content, default=None):
 
 
 def user_from_mention(client, mention):
-    match = re.match("<@!?(\d+)>", mention)
+    match = re.match(r"<@!?(\d+)>", mention)
     if match is None:
         return None
     else:
