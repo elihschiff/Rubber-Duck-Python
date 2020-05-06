@@ -180,15 +180,15 @@ class RockPaperScissors(Game, ReactionTrigger):
             return
 
         # store the answer (in Unicode form)
-        if game.answer_dict[reaction.user_id] != "":
+        if this_game.answer_dict[reaction.user_id] != "":
             return
-        game.answer_dict[reaction.user_id] = reaction.emoji.name
+        this_game.answer_dict[reaction.user_id] = reaction.emoji.name
 
         # check if there is a winner
-        result = game.check_winner()
+        result = this_game.check_winner()
         if result is not False:
             player1, player2 = players
-            answer1, answer2 = [ans for ans in game.answer_dict.values()]
+            answer1, answer2 = [ans for ans in this_game.answer_dict.values()]
 
             content = f"{player1} and {player2}:\nThe results are in!\n"
 
@@ -207,18 +207,18 @@ class RockPaperScissors(Game, ReactionTrigger):
                 embed.add_field(name="Result", value=f"{player2} wins!")
 
             # grab the original channel and send who won
-            orig_channel = await client.fetch_channel(game.orig_channel)
+            orig_channel = await client.fetch_channel(this_game.orig_channel)
             notif = await utils.delay_send(orig_channel, content, embed=embed)
 
             # edit the private messages and shortly after, delete them
-            for user_id, message_id in zip(game.players, game.msg_ids):
+            for user_id, message_id in zip(this_game.players, this_game.msg_ids):
                 usr = await client.fetch_user(user_id)
                 dm_channel = usr.dm_channel
                 sent_message = await dm_channel.fetch_message(message_id)
                 await sent_message.delete()
 
             # delete the game so people can play again
-            GLOBAL_GAMES[frozenset(players)].remove(game)
+            GLOBAL_GAMES[frozenset(players)].remove(this_game)
         else:
             # still waiting so tell the player that they're waiting
 
