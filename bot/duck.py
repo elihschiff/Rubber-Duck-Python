@@ -103,7 +103,7 @@ class DuckClient(discord.Client):
                     await trigger.execute_message(self, msg, idx)
                     replied = True
 
-            if best_trigger and replied == False:
+            if best_trigger and not replied:
                 await best_trigger.execute_message(self, msg, best_trigger_idx)
                 replied = True
 

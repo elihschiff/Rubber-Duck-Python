@@ -27,7 +27,7 @@ class Steam(Command):
             page_response = requests.get(page_link, timeout=30)
             page_content = BeautifulSoup(page_response.content, "html.parser")
             rows = page_content.find(id="search_resultsRows")
-            if rows == None:
+            if rows is None:
                 await msg.channel.send(
                     f'Unable to find any games matching "' + content + '"'
                 )
@@ -43,29 +43,29 @@ class Steam(Command):
             game_page_content = BeautifulSoup(game_page_response.content, "html.parser")
             desc = game_page_content.find("div", {"class": "game_description_snippet"})
             img = None
-            if desc == None:
+            if desc is None:
                 desc = "No snippet available for this game"
             else:
                 desc = desc.text
             price_block = game_page_content.find(
                 "div", {"class": "game_purchase_price"}
             )
-            if price_block == None:
+            if price_block is None:
                 price_block = game_page_content.find(
                     "div", {"class": "discount_final_price"}
                 )
-            if price_block != None:
+            if price_block is not None:
                 price = price_block.text
                 desc += "\n\nPrice: " + price
             else:
                 desc += "\n\nPrice: TBA"
             img = game_page_content.find("img", {"class": "game_header_image_full"})
-            if img != None:
+            if img is not None:
                 img = img["src"]
             embed = discord.Embed(
                 title=title.text, description=desc, color=0x00FF00, url=link
             )
-            if img != None:
+            if img is not None:
                 embed.set_thumbnail(url=img)
             await utils.delay_send(msg.channel, "", 0, embed=embed)
         except Exception as ex:
