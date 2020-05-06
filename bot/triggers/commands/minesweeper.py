@@ -65,7 +65,7 @@ class Minesweeper(Command):
         # 11 is the max number of chars per cell
         # times every cell
         # plus a \n for each line
-        if (11 * width * height) + (1 * height) + output_head_len >= 2000:
+        if len(output) >= 2000:
             await utils.delay_send(msg.channel, client.messages["ms_too_large"])
         else:
             await utils.delay_send(msg.channel, output)

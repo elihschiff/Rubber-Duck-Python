@@ -7,6 +7,42 @@ from . import Command
 from .. import utils
 
 
+def get_classes(client, subj):
+    client.cursor.execute(
+        "SELECT * FROM classes WHERE departments LIKE ?", ("%" + subj.upper() + "%",),
+    )
+    records = client.cursor.fetchall()
+
+    return [
+        ", ".join(
+            [
+                "**" + course_code + "**"
+                for course_code in json.loads(record[3].replace("'", '"'))
+                if subj.upper() in course_code
+            ]
+        )
+        + ": "
+        + record[1]
+        for record in records
+    ]
+
+
+def generate_embeds(prelude, classes):
+    embeds = []
+    class_str = ""
+
+    for class_name in sorted(classes):
+        class_str += class_name + "\n"
+        if len(class_str) + len(prelude) >= 2000:
+            embeds.append(discord.Embed(description=class_str, color=0xDCC308))
+            class_str = ""
+
+    if class_str:
+        embeds.append(discord.Embed(description=class_str, color=0xDCC308))
+
+    return embeds
+
+
 class ListClasses(Command):
     names = ["classes", "list", "class", "roles"]
     description = "Lists all the classes and roles currently offered by the server."
@@ -37,70 +73,28 @@ class ListClasses(Command):
                 )
                 return
 
-        class_list = []
+        await self.send_list(client, msg, content)
 
-        async with client.lock:
-            client.cursor.execute(
-                "SELECT * FROM classes WHERE departments LIKE ?",
-                ("%" + str(content[:4]).upper() + "%",),
-            )
-            records = client.cursor.fetchall()
+    async def send_list(self, client, msg, subj):
+        classes = get_classes(client, subj)
 
-        for i in records:
-            class_list.append(
-                ", ".join(
-                    [
-                        "**" + course_code + "**"
-                        for course_code in json.loads(i[3].replace("'", '"'))
-                        if str(content[:4]).upper() in course_code
-                    ]
-                )
-                + ": "
-                + i[1]
-            )
-        if len(class_list) == 0:
+        if not classes:
             await utils.delay_send(
-                msg.channel,
-                client.messages["dept_not_found"].format(str(content[:4]).upper()),
+                msg.channel, client.messages["dept_not_found"].format(subj.upper()),
             )
-        else:
-            if msg.channel.type is not discord.ChannelType.private:
-                await utils.delay_send(msg.channel, "DMed!")
+            return
 
-            class_str = ""
-            prelude = client.messages["class_list_prelude"].format(
-                str(content[:4]).upper()
-            )
+        if msg.channel.type is not discord.ChannelType.private:
+            await utils.delay_send(msg.channel, "DMed!")
 
-            delay_msg_sent = False
-            for class_name in sorted(class_list):
-                class_str += class_name + "\n"
-                if len(class_str) + len(prelude) >= 2000:
-                    embed = discord.Embed(description=class_str, color=0xDCC308)
+        prelude = client.messages["class_list_prelude"].format(subj.upper())
 
-                    await utils.delay_send(msg.author, prelude, embed=embed)
-                    class_str = ""
-                    delay_msg_sent = True
+        embeds = generate_embeds(prelude, classes)
 
-            if len(class_str) != 0:
-                embed = discord.Embed(description=class_str, color=0xDCC308)
+        utils.delay_send(msg.author, prelude, embed=embeds[0])
 
-                if delay_msg_sent:
-                    await msg.author.send(
-                        client.messages["class_list_prelude"].format(
-                            str(content[:4]).upper()
-                        ),
-                        embed=embed,
-                    )
-                else:
-                    await utils.delay_send(
-                        msg.author,
-                        client.messages["class_list_prelude"].format(
-                            str(content[:4]).upper()
-                        ),
-                        embed=embed,
-                    )
-                class_str = ""
+        for embed in embeds[1:]:
+            msg.author.send(prelude, embed=embed)
 
     async def general_listing(self, client, msg):
         embed = discord.Embed(color=0xDCC308)
@@ -118,7 +112,6 @@ class ListClasses(Command):
             dept_list = ""
             for dept in school["departments"]:
                 dept_list += dept + "\n"
-            school_name = school["school_name"]
             help_name = school["help_name"]
             embed.add_field(
                 name=f"{category_name}: `!list {help_name}", value=dept_list

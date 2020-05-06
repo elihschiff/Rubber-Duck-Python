@@ -1,3 +1,5 @@
+import discord
+
 from . import Command
 from .. import utils
 
@@ -26,6 +28,41 @@ class EmojiMode(Command):
     names = ["emoji"]
     description = "Modifies the state of emoji-mode on an entity"
     requires_mod = True
+
+    async def execute_command(self, client, msg, content):
+        if content == "":
+            await self.channel_emoji_mode_toggle(client, msg.channel)
+            return
+
+        content = content.split(" ")
+        users = [
+            client.server.get_member(user_id)
+            for user_id in msg.raw_mentions
+            if client.server.get_member(user_id) is not None
+        ]
+        channels = [
+            client.server.get_channel(channel_id)
+            for channel_id in msg.raw_channel_mentions
+            if client.server.get_channel(channel_id) is not None
+        ]
+
+        if content[0] == "on":
+            user_action = self.user_emoji_mode_on
+            channel_action = self.channel_emoji_mode_on
+        elif content[0] == "off":
+            user_action = self.user_emoji_mode_off
+            channel_action = self.channel_emoji_mode_off
+        else:
+            user_action = self.user_emoji_mode_toggle
+            channel_action = self.channel_emoji_mode_toggle
+
+        for user in users:
+            await user_action(client, user, msg.channel)
+        for channel in channels:
+            await channel_action(client, channel)
+
+        if len(users) == 0 and len(channels) == 0:
+            await channel_action(client, msg.channel)
 
     async def channel_emoji_mode_toggle(self, client, channel):
         if await channel_in_emoji_state(client, channel):
@@ -100,53 +137,9 @@ class EmojiMode(Command):
 
         try:
             await user.send(client.messages["emoji_mode_user_deactivate"])
-        except HTTPException:
+        except discord.HTTPException:
             pass
 
         await sending_channel.send(
             client.messages["emoji_mode_user_deactivate_public"].format(user.mention)
         )
-
-    async def execute_command(self, client, msg, content):
-        if content == "":
-            await self.channel_emoji_mode_toggle(client, msg.channel)
-            return
-
-        content = content.split(" ")
-        users = [
-            client.server.get_member(user_id)
-            for user_id in msg.raw_mentions
-            if client.server.get_member(user_id) is not None
-        ]
-        channels = [
-            client.server.get_channel(channel_id)
-            for channel_id in msg.raw_channel_mentions
-            if client.server.get_channel(channel_id) is not None
-        ]
-
-        if content[0] == "on":
-            for user in users:
-                await self.user_emoji_mode_on(client, user, msg.channel)
-            for channel in channels:
-                await self.channel_emoji_mode_on(client, channel)
-
-            if len(users) == 0 and len(channels) == 0:
-                await self.channel_emoji_mode_on(client, msg.channel)
-
-        elif content[0] == "off":
-            for user in users:
-                await self.user_emoji_mode_off(client, user, msg.channel)
-            for channel in channels:
-                await self.channel_emoji_mode_off(client, channel)
-
-            if len(users) == 0 and len(channels) == 0:
-                await self.channel_emoji_mode_off(client, msg.channel)
-
-        else:
-            for user in users:
-                await self.user_emoji_mode_toggle(client, user, msg.channel)
-            for channel in channels:
-                await self.channel_emoji_mode_toggle(client, channel)
-
-            if len(users) == 0 and len(channels) == 0:
-                await self.channel_emoji_mode_toggle(client, msg.channel)
