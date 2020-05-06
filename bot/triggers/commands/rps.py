@@ -89,8 +89,6 @@ class RockPaperScissors(Game, ReactionTrigger):
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return
 
-        pieces = [":new_moon:", ":newspaper:", ":scissors:"]
-
         players = list(set([*msg.mentions, msg.author]))
         if len(players) != 2:
             await utils.delay_send(
@@ -208,7 +206,7 @@ class RockPaperScissors(Game, ReactionTrigger):
 
             # grab the original channel and send who won
             orig_channel = await client.fetch_channel(this_game.orig_channel)
-            notif = await utils.delay_send(orig_channel, content, embed=embed)
+            await utils.delay_send(orig_channel, content, embed=embed)
 
             # edit the private messages and shortly after, delete them
             for user_id, message_id in zip(this_game.players, this_game.msg_ids):

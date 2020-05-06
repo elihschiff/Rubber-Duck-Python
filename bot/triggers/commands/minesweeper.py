@@ -51,7 +51,6 @@ class Minesweeper(Command):
 
         num = ["0⃣", "1⃣", "2⃣", "3⃣", "4⃣", "5⃣", "6⃣", "7⃣", "8⃣", "9⃣"]
         output = f"There are ||{mine_count}|| mines\n"
-        output_head_len = len(output)
         for i in range(height):
             for j in range(width):
                 output += "||"

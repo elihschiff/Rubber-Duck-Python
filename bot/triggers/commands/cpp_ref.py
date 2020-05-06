@@ -15,7 +15,7 @@ class CppRef(Command):
         args = content.split(" ")
 
         if not content:
-            await utils.delay_send(msg.channel, "Usage: " + usage)
+            await utils.delay_send(msg.channel, "Usage: " + self.usage)
             return
 
         # check if link using just the first arg works

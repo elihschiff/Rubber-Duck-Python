@@ -5,7 +5,7 @@
 
 import re
 
-from discord import ChannelType
+from discord import ChannelType, HTTPException
 import emoji
 import requests
 

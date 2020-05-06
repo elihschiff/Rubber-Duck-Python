@@ -68,6 +68,7 @@ class Steam(Command):
             if img is not None:
                 embed.set_thumbnail(url=img)
             await utils.delay_send(msg.channel, "", 0, embed=embed)
-        except Exception as ex:
+        # pylint: disable=bare-except
+        except:
             await msg.channel.send("An error occured when finding the game")
             await utils.send_traceback(client, msg.content)
