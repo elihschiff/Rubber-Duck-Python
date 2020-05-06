@@ -68,6 +68,9 @@ disable=missing-module-docstring,
         eq-without-hash,
 	line-too-long,
 	no-else-return,
+	fixme,
+	no-self-use,
+	consider-using-in,
 	bad-continuation
 
 # Enable the message, report, category or checker with the given id(s). You can
@@ -463,7 +466,7 @@ max-returns=6
 max-statements=50
 
 # Minimum number of public methods for a class (see R0903).
-min-public-methods=2
+min-public-methods=1
 
 
 [IMPORTS]

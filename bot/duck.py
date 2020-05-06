@@ -14,6 +14,7 @@ from .triggers.quack import quack
 from .triggers.emoji_mode import invalid_emoji_message
 
 
+# pylint: disable=too-many-instance-attributes
 class DuckClient(discord.Client):
     def __init__(self, root_path=sys.path[0] + "/"):
         super().__init__()
@@ -140,7 +141,8 @@ class DuckClient(discord.Client):
 
             try:
                 await trigger.execute_new_member(self, member)
-            except Exception:
+            # pylint: disable=bare-except
+            except:
                 await utils.send_traceback(self)
 
     async def on_raw_reaction_add(self, reaction):
@@ -171,5 +173,6 @@ class DuckClient(discord.Client):
                 # if you delete the message reacted to, return False
                 if result is False:
                     break
-            except Exception:
+            # pylint: disable=bare-except
+            except:
                 await utils.send_traceback(self)

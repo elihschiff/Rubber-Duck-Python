@@ -2,7 +2,7 @@ import re
 
 import discord
 
-from .games import Game, GLOBAL_GAMES
+from .games import Game, GLOBAL_GAMES, get_game_footer
 from .. import utils
 from ..reaction_trigger import ReactionTrigger
 
@@ -29,16 +29,16 @@ class RPSGame:
         if answers[0] == "" or answers[1] == "":
             return False
 
-        for i in range(len(answers)):
-            if answers[i] == REACCS[0]["emoji"]:
+        for answer in answers:
+            if answer == REACCS[0]["emoji"]:
                 # rock
-                answers[i] = 0
-            elif answers[i] == REACCS[1]["emoji"]:
+                answer = 0
+            elif answer == REACCS[1]["emoji"]:
                 # paper
-                answers[i] = 1
-            elif answers[i] == REACCS[2]["emoji"]:
+                answer = 1
+            elif answer == REACCS[2]["emoji"]:
                 # scissors
-                answers[i] = 2
+                answer = 2
 
         result = answers[0] - answers[1]
         # result == 0 iff they are the same
@@ -58,8 +58,7 @@ class RockPaperScissors(Game, ReactionTrigger):
     description = "Begins a game of Rock Paper Scissors with a player."
     usage = "!rps [@ another user]"
 
-    def get_content(self):
-        return "You have been challenged to RPS!"
+    challenge_msg = "You have been challenged to RPS!"
 
     def get_pm_embed(self, players, client):
         embed = discord.Embed(
@@ -70,17 +69,16 @@ class RockPaperScissors(Game, ReactionTrigger):
             name="Players", value=" vs. ".join([player.mention for player in players])
         )
 
-        embed.set_footer(text=self.get_game_footer(client))
+        embed.set_footer(text=get_game_footer(client))
         return embed
 
-    def get_wait_embed(self, waiting_for, players, client):
-
+    def get_wait_embed(self, waiting_for, client):
         embed = discord.Embed(
             title="Rock Paper Scissors",
             description=f"Nice pick!\nWaiting for {waiting_for}",
         )
 
-        embed.set_footer(text=self.get_game_footer(client))
+        embed.set_footer(text=get_game_footer(client))
         return embed
 
     # this is called when a message starting with "!commandname" is run
@@ -129,7 +127,7 @@ class RockPaperScissors(Game, ReactionTrigger):
         # send players RPS messages
         for player in players:
             tmp = await player.send(
-                content=self.get_content(), embed=self.get_pm_embed(players, client)
+                content=self.challenge_msg, embed=self.get_pm_embed(players, client)
             )
             for spot in REACCS:
                 await tmp.add_reaction(spot["emoji"])
@@ -140,6 +138,8 @@ class RockPaperScissors(Game, ReactionTrigger):
 
         utils.delay_send(msg.channel, client.messages["rockpaperscissors_game_init"])
 
+    # TODO: rewrite this to not need linter disabling
+    # pylint: disable=too-many-branches,too-many-locals,too-many-return-statements
     async def execute_reaction(self, client, reaction, channel, msg, user):
         if client.user.id == reaction.user_id:
             return
@@ -186,7 +186,7 @@ class RockPaperScissors(Game, ReactionTrigger):
         result = this_game.check_winner()
         if result is not False:
             player1, player2 = players
-            answer1, answer2 = [ans for ans in this_game.answer_dict.values()]
+            answer1, answer2 = this_game.answer_dict.values()
 
             content = f"{player1} and {player2}:\nThe results are in!\n"
 
@@ -195,7 +195,7 @@ class RockPaperScissors(Game, ReactionTrigger):
                 description=f"{player1}: {answer1}\n{player2}: {answer2}\n\n",
             )
 
-            embed.set_footer(text=self.get_game_footer(client))
+            embed.set_footer(text=get_game_footer(client))
 
             if result == 0:
                 embed.add_field(name="Result", value="Draw!")
@@ -232,6 +232,4 @@ class RockPaperScissors(Game, ReactionTrigger):
                 print("ERROR\tRPS: can't find opponent!")
                 return
 
-            await msg.edit(
-                content="", embed=self.get_wait_embed(waiting_for, players, client)
-            )
+            await msg.edit(content="", embed=self.get_wait_embed(waiting_for, client))

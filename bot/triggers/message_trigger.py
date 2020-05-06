@@ -1,5 +1,5 @@
 class MessageTrigger:
-    async def execute_message(self, client, msg):
+    async def execute_message(self, client, msg, idx):
         raise NotImplementedError(
             "'execute_message' is not implemented for this message trigger"
         )

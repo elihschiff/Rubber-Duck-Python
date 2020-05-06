@@ -3,7 +3,7 @@ import re
 
 import discord
 
-from .games import Game
+from .games import Game, get_game_footer
 from .. import utils
 from ..reaction_trigger import ReactionTrigger
 
@@ -180,6 +180,8 @@ class ConnectFour(Game, ReactionTrigger):
 
             return (row, col)
 
+    # TODO: rewrite this to not need linter disabling
+    # pylint: disable=too-many-return-statements
     async def execute_command(self, client, msg, content):
         if not content:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
@@ -250,7 +252,7 @@ class ConnectFour(Game, ReactionTrigger):
         msg = await utils.delay_send(
             msg.channel,
             game.get_content(),
-            embed=game.get_embed(self.get_game_footer(client)),
+            embed=game.get_embed(get_game_footer(client)),
         )
         for col in COLUMNS[:cols]:
             await msg.add_reaction(col["emoji"])
@@ -284,10 +286,8 @@ class ConnectFour(Game, ReactionTrigger):
         await msg.delete()
 
         new_msg = await utils.delay_send(
-            channel,
-            game.get_content(),
-            embed=game.get_embed(self.get_game_footer(client)),
+            channel, game.get_content(), embed=game.get_embed(get_game_footer(client)),
         )
 
-        for reaction in reactions_to_add:
-            await new_msg.add_reaction(reaction)
+        for add_reaction in reactions_to_add:
+            await new_msg.add_reaction(add_reaction)

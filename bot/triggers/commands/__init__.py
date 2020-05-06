@@ -71,11 +71,13 @@ ALL_COMMANDS = [
 
 
 class Command(MessageTrigger):
+    names = []
     prefixes = ["!"]
     requires_mod = False
     should_type = True
+    causes_spam = False
 
-    async def is_valid(self, client, msg) -> (int, bool):
+    async def is_valid(self, msg) -> (int, bool):
         command = ""
 
         max_ratio = 0
@@ -102,7 +104,7 @@ class Command(MessageTrigger):
         return (len(command), True)
 
     async def get_trigger_score(self, client, msg):
-        (idx, recognized) = await self.is_valid(client, msg)
+        (idx, recognized) = await self.is_valid(msg)
 
         return recognized, idx
 
@@ -115,7 +117,7 @@ class Command(MessageTrigger):
         # any command without self.causes_spam will cause an exception and skip this to run like normal
         if (
             self.causes_spam
-            and self.channel.type is not ChannelType.private
+            and msg.channel.type is not ChannelType.private
             and msg.channel.id not in client.config["spam_channel_ids"]
         ):
             channel_tags = ""

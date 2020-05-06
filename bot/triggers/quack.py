@@ -15,5 +15,5 @@ def should_quack(client, msg) -> bool:
 
 async def quack(client, msg):
     if should_quack(client, msg):
-        quack = random.choice(client.quacks)
-        await utils.delay_send(msg.channel, quack)
+        quack_msg = random.choice(client.quacks)
+        await utils.delay_send(msg.channel, quack_msg)

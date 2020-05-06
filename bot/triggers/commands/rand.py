@@ -38,7 +38,7 @@ class Random(Command):
         max_val = max(arg1, arg2)
 
         # Only generate an integer if we're given integers or the user wants it
-        if args[0] == "int" or type(arg1) is int:
+        if args[0] == "int" or isinstance(arg1, int):
             random_val = random.randint(int(min_val), int(max_val))
         else:
             random_val = random.uniform(min_val, max_val)

@@ -55,7 +55,7 @@ class Delete(Command, ReactionTrigger):
             )
 
     async def execute_reaction(self, client, reaction, channel, msg, user):
-        if (
+        if (  # pylint: disable=too-many-boolean-expressions
             reaction.emoji.id != client.config["thumb_id"]  # reaction must be a :+1:
             or not msg.author.bot  # must be reacting to a bot message
             or user not in msg.mentions  # prevent misclicks

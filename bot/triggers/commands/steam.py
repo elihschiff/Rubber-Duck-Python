@@ -14,6 +14,8 @@ class Steam(Command):
     usage = "!steam [game name]"
     examples = f"!steam team fortress 2"
 
+    # TODO: rewrite this to not need linter disabling
+    # pylint: disable=too-many-locals
     async def execute_command(self, client, msg, content):
         if not content:
             await utils.delay_send(msg.channel, "<https://store.steampowered.com>")

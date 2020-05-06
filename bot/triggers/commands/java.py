@@ -11,17 +11,18 @@ from . import Command
 from .. import utils
 
 
+def get_file_age(filepath):
+    return time.time() - os.path.getmtime(filepath)
+
+
 class Java(Command):
     names = ["java"]
     description = "Sends a link to a Java reference page if it exists (JavaSE 13)"
     usage = "!java [module/package/tag/type/member]"
     examples = f"!java clear, !java java.base"
 
-    def get_file_age(self, filepath):
-        return time.time() - os.path.getmtime(filepath)
-
     def search_dict(self, search, file):
-        if not os.path.exists(file[0]) or self.get_file_age(file[0]) > 2678400:
+        if not os.path.exists(file[0]) or get_file_age(file[0]) > 2678400:
             urllib.request.urlretrieve(file[1], file[0])
         if os.path.exists(file[0]):
             with open(file[0], "r") as read_file:
@@ -42,6 +43,8 @@ class Java(Command):
                         return ast.literal_eval(data[left_index:right_index])
         return None
 
+    # TODO: rewrite this to not need linter disabling
+    # pylint: disable=too-many-return-statements
     def search_index(self, search):
         save_location = "/tmp/"
         baseapi = "http://docs.oracle.com/en/java/javase/13/docs/api/"
@@ -122,6 +125,7 @@ class Java(Command):
                 return base_url + dictionary["url"]
             else:
                 return base_url + dictionary["l"]
+        return "ERROR"
 
     async def execute_command(self, client, msg, content):
         if not content:

@@ -3,7 +3,7 @@ import re
 
 import discord
 
-from .games import Game
+from .games import Game, get_game_footer
 from .. import utils
 from ..reaction_trigger import ReactionTrigger
 
@@ -18,6 +18,10 @@ POSITIONS = [
     {"emoji": "8\u20E3", "name": ":eight:"},
     {"emoji": "9\u20E3", "name": ":nine:"},
 ]
+
+
+def in_board(pos):
+    return 0 <= pos[0] < 3 and 0 <= pos[1] < 3
 
 
 class TicTacToe(Game, ReactionTrigger):
@@ -149,10 +153,9 @@ class TicTacToe(Game, ReactionTrigger):
 
             return embed
 
-        def in_board(self, pos):
-            return pos[0] >= 0 and pos[1] >= 0 and pos[0] < 3 and pos[1] < 3
-
-        def check_for_winner(self, pos):
+        # TODO: rewrite this to not need linter disabling
+        # pylint: disable=too-many-branches
+        def check_for_winner(self):
             # check horizontals
             for i in range(3):
                 end = True
@@ -200,7 +203,7 @@ class TicTacToe(Game, ReactionTrigger):
 
             self.board[pos // 3][pos % 3] = self.turn
 
-            self.check_for_winner(pos)
+            self.check_for_winner()
             self.turn = (self.turn + 1) % 2
 
             return pos
@@ -243,7 +246,7 @@ class TicTacToe(Game, ReactionTrigger):
         msg = await utils.delay_send(
             msg.channel,
             game.get_content(),
-            embed=game.get_embed(self.get_game_footer(client)),
+            embed=game.get_embed(get_game_footer(client)),
         )
 
         for spot in POSITIONS[:9]:
@@ -282,10 +285,8 @@ class TicTacToe(Game, ReactionTrigger):
             reactions_to_add = []
 
         new_msg = await utils.delay_send(
-            channel,
-            game.get_content(),
-            embed=game.get_embed(self.get_game_footer(client)),
+            channel, game.get_content(), embed=game.get_embed(get_game_footer(client)),
         )
 
-        for reaction in reactions_to_add:
-            await new_msg.add_reaction(reaction)
+        for add_reaction in reactions_to_add:
+            await new_msg.add_reaction(add_reaction)

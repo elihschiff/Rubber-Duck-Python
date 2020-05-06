@@ -12,6 +12,8 @@ class RGB(Command):
     names = ["rgb", "color", "colour"]
     description = "Returns an image of the given color"
 
+    # TODO: rewrite this to not need linter disabling
+    # pylint: disable=too-many-branches
     async def execute_command(self, client, msg, content):
         args = content.split()
         if len(args) not in [0, 1, 3]:
@@ -55,7 +57,7 @@ class RGB(Command):
             except ValueError:
                 await utils.delay_send(msg.channel, msg="All arguments must be ints")
                 return
-        if red < 0 or red > 255 or green < 0 or green > 255 or blue < 0 or blue > 255:
+        if not (0 <= red <= 255 and 0 <= green <= 255 and 0 <= blue <= 255):
             await utils.delay_send(
                 msg.channel, msg="Arguments must be in range [0,255]"
             )

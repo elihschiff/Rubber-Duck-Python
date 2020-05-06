@@ -14,7 +14,7 @@ from . import utils
 
 # emotes are of the form <:emote_name:1234> where `1234` is the emote's id
 DISCORD_EMOTE_RE = re.compile(r"<a?:[\w]+?:(\d+?)>")
-DISCORD_EMOTE_ID_RE = re.compile(f":(\d+)>")
+DISCORD_EMOTE_ID_RE = re.compile(r":(\d+)>")
 NESTED_EMOTE_RE = re.compile(r"<[^>]+<")
 
 INVALID_EMOJI_RE = re.compile(
@@ -46,7 +46,7 @@ def validate_discord_emote(emote) -> str:
 # returns true if the message only contains emoji and whitespace.  It will
 # validate discord emotes as well.
 def valid_emoji(content, msg) -> bool:
-    if len(msg.embeds) or len(msg.attachments) or NESTED_EMOTE_RE.match(content):
+    if msg.embeds or msg.attachments or NESTED_EMOTE_RE.match(content):
         return False
 
     content = DISCORD_EMOTE_RE.sub(validate_discord_emote, content)

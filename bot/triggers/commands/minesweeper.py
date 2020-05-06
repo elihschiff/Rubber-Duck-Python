@@ -12,6 +12,8 @@ class Minesweeper(Command):
     examples = f"!ms, !ms 10 3, !ms 5 5 2"
     causes_spam = True
 
+    # TODO: rewrite this to not need linter disabling
+    # pylint: disable=too-many-locals,too-many-branches
     async def execute_command(self, client, msg, content):
         height = 8
         width = 8
