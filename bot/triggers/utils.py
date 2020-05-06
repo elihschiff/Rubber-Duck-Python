@@ -2,6 +2,8 @@ import asyncio
 import re
 import traceback
 
+import discord
+
 
 async def delay_send(sendable, msg="", delay_factor=1.0, embed=None, file=None):
     async with sendable.typing():
@@ -137,7 +139,7 @@ async def send_traceback(client, content=""):
         if content:
             msg_to_send = f"`{content}`\n" + msg_to_send
         await client.traceback_channel.send(msg_to_send)
-    except:
-        print(
-            "\nNote: traceback was not sent to Discord, if you want this double check your config.json"
-        )
+    except discord.HTTPException as e:
+        print(f"Error sending traceback: {e.text}")
+    except discord.InvalidArgument:
+        print("Invalid argument when sending traceback")

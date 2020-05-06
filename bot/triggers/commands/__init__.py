@@ -112,19 +112,20 @@ class Command(MessageTrigger):
             return
 
         # checks if a trigger causes spam and then if that trigger should run given the channel it was sent in
-        try:  # any command without self.causes_spam will cause an exception and skip this to run like normal
-            if self.causes_spam and self.channel.type is not ChannelType.private:
-                if msg.channel.id not in client.config["spam_channel_ids"]:
-                    channel_tags = ""
-                    for chann_id in client.config["spam_channel_ids"]:
-                        channel_tags += f" <#{chann_id}>"
-                    await utils.delay_send(
-                        msg.channel,
-                        client.messages["send_to_spam_channel"].format(channel_tags),
-                    )
-                    return
-        except:
-            pass
+        # any command without self.causes_spam will cause an exception and skip this to run like normal
+        if (
+            self.causes_spam
+            and self.channel.type is not ChannelType.private
+            and msg.channel.id not in client.config["spam_channel_ids"]
+        ):
+            channel_tags = ""
+            for chann_id in client.config["spam_channel_ids"]:
+                channel_tags += f" <#{chann_id}>"
+            await utils.delay_send(
+                msg.channel,
+                client.messages["send_to_spam_channel"].format(channel_tags),
+            )
+            return
 
         # The execute command is defined here to decrease code reuse below
         async def _execute():

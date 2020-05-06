@@ -58,7 +58,7 @@ def log_server_missing(client):
 
 
 async def get_log_channel(channel, client):
-    if channel.type is ChannelType.private:
+    if channel.type is ChannelType.private and "DM_LOG_CHANNEL_ID" in client.config:
         destination_channel = client.log_server.get_channel(
             client.config["DM_LOG_CHANNEL_ID"]
         )

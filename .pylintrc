@@ -67,6 +67,7 @@ disable=missing-module-docstring,
         round-builtin,
         eq-without-hash,
 	line-too-long,
+	no-else-return,
 	bad-continuation
 
 # Enable the message, report, category or checker with the given id(s). You can

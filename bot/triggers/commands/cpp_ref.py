@@ -81,9 +81,7 @@ class CppRef(Command):
 , but found the general page with {first}.",
                 )
                 await utils.delay_send(msg.channel, url)
-                return
             else:
                 # only other condition: both second and first argument work
                 # send link to user and exit function
                 await utils.delay_send(msg.channel, url2)
-                return

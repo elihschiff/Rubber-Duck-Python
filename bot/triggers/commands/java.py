@@ -108,30 +108,20 @@ class Java(Command):
                 )
         dictionary = self.search_dict(search, files[4])
         if dictionary:
+            base_url = (
+                baseapi
+                + self.search_dict(dictionary["p"], files[1])["m"]
+                + "/"
+                + dictionary["p"].replace(".", "/")
+                + "/"
+                + dictionary["c"]
+                + ".html"
+                + "#"
+            )
             if "url" in dictionary:
-                return (
-                    baseapi
-                    + self.search_dict(dictionary["p"], files[1])["m"]
-                    + "/"
-                    + dictionary["p"].replace(".", "/")
-                    + "/"
-                    + dictionary["c"]
-                    + ".html"
-                    + "#"
-                    + dictionary["url"]
-                )
+                return base_url + dictionary["url"]
             else:
-                return (
-                    baseapi
-                    + self.search_dict(dictionary["p"], files[1])["m"]
-                    + "/"
-                    + dictionary["p"].replace(".", "/")
-                    + "/"
-                    + dictionary["c"]
-                    + ".html"
-                    + "#"
-                    + dictionary["l"]
-                )
+                return base_url + dictionary["l"]
 
     async def execute_command(self, client, msg, content):
         if not content:

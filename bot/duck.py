@@ -54,6 +54,10 @@ class DuckClient(discord.Client):
         self.log_connection = sqlite3.connect(root_path + "logging.db")
         self.log_c = self.log_connection.cursor()
 
+        self.log_server = None
+        self.server = None
+        self.traceback_channel = None
+
     async def on_ready(self):
         if len(sys.argv) > 1:
             args = ["kill", "-9"]
@@ -64,11 +68,11 @@ class DuckClient(discord.Client):
         self.server = self.get_guild(self.config["server_ID"])
 
         try:
-            traceback_server = self.get_guild(self.config["TRACEBACK_server_ID"])
+            traceback_server = self.get_guild(self.config["TRACEBACK_SERVER_ID"])
             self.traceback_channel = traceback_server.get_channel(
-                self.config["traceback_channel_ID"]
+                self.config["TRACEBACK_CHANNEL_ID"]
             )
-        except:
+        except KeyError:
             self.traceback_channel = None
 
         print(f"Connected as {self.user}!")
@@ -76,25 +80,20 @@ class DuckClient(discord.Client):
     async def on_message(self, msg):
         try:
             await logging.log_message(self, msg)
-        except AttributeError:
-            pass
-        except Exception:
-            await utils.send_traceback(self, msg.content)
 
-        if msg.author.bot or utils.user_in_timeout(self, msg.author):
-            return
+            if msg.author.bot or utils.user_in_timeout(self, msg.author):
+                return
 
-        if await invalid_emoji_message(self, msg):
-            return
+            if await invalid_emoji_message(self, msg):
+                return
 
-        replied = False
-        best_trigger = None
-        best_trigger_idx = 0
-        best_trigger_score = self.config["min_trigger_fuzzy_score"]
-        for trigger in MSG_TRIGGERS:
-            if type(trigger).__name__ in self.config["disabled_triggers"]["msg"]:
-                continue
-            try:
+            replied = False
+            best_trigger = None
+            best_trigger_idx = 0
+            best_trigger_score = self.config["min_trigger_fuzzy_score"]
+            for trigger in MSG_TRIGGERS:
+                if type(trigger).__name__ in self.config["disabled_triggers"]["msg"]:
+                    continue
                 trigger_score, idx = await trigger.get_trigger_score(self, msg)
                 if trigger_score > best_trigger_score:
                     best_trigger = trigger
@@ -103,17 +102,17 @@ class DuckClient(discord.Client):
                 if trigger_score == 1:
                     await trigger.execute_message(self, msg, idx)
                     replied = True
-            except Exception:
-                await utils.send_traceback(self, msg.content)
+
+            if best_trigger and replied == False:
+                await best_trigger.execute_message(self, msg, best_trigger_idx)
                 replied = True
 
-        if best_trigger and replied == False:
-            await best_trigger.execute_message(self, msg, best_trigger_idx)
-            replied = True
-
-        if not replied:
-            if not await invalid_command(self, msg):
-                await quack(self, msg)
+            if not replied:
+                if not await invalid_command(self, msg):
+                    await quack(self, msg)
+        # pylint: disable=bare-except
+        except:
+            await utils.send_traceback(self, msg.content)
 
     async def on_raw_message_edit(self, msg):
         channel = await self.fetch_channel(msg.data["channel_id"])

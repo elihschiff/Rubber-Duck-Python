@@ -36,7 +36,7 @@ class RGB(Command):
                         )
                         return
                     red = green = blue = color
-                except:
+                except ValueError:
                     await utils.delay_send(msg.channel, msg="Invalid hex or color")
                     return
             else:
@@ -44,7 +44,7 @@ class RGB(Command):
                     red = int(args[0][0:2], 16)
                     green = int(args[0][2:4], 16)
                     blue = int(args[0][4:6], 16)
-                except:
+                except (ValueError, IndexError):
                     await utils.delay_send(msg.channel, msg="Invalid hex color")
                     return
         else:
@@ -52,7 +52,7 @@ class RGB(Command):
                 red = int(args[0])
                 green = int(args[1])
                 blue = int(args[2])
-            except:
+            except ValueError:
                 await utils.delay_send(msg.channel, msg="All arguments must be ints")
                 return
         if red < 0 or red > 255 or green < 0 or green > 255 or blue < 0 or blue > 255:

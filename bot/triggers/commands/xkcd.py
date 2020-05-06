@@ -31,6 +31,7 @@ class Xkcd(Command):
                 image_url = comic.getImageLink()
                 title = comic.getTitle()
                 alt_text = comic.getAltText()
+            # pylint: disable=bare-except
             except:
                 await utils.delay_send(
                     msg.channel, client.messages["no_xkcd_found"].format(content)

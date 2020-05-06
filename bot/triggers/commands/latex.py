@@ -31,10 +31,10 @@ class Latex(Command):
                 "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
             }
             response = requests.request("POST", url, data=payload, headers=headers)
-            dict = json.loads(response.text)
-            url = r"https://latex2image.joeraut.com/" + dict["imageURL"]
-            tmp_location_svg = f"/tmp/" + dict["imageURL"][7:]
-            tmp_location_png = dict["imageURL"][7:-3] + "png"
+            resp_dict = json.loads(response.text)
+            url = r"https://latex2image.joeraut.com/" + resp_dict["imageURL"]
+            tmp_location_svg = f"/tmp/" + resp_dict["imageURL"][7:]
+            tmp_location_png = resp_dict["imageURL"][7:-3] + "png"
             urllib.request.urlretrieve(url, tmp_location_svg)
             try:
                 with open(tmp_location_svg, "r") as in_file:
@@ -62,6 +62,6 @@ class Latex(Command):
             finally:
                 os.remove(tmp_location_svg)
                 os.remove(tmp_location_png)
-
+        # pylint: disable=bare-except
         except:
             await utils.delay_send(msg.channel, "Error rending LaTeX")

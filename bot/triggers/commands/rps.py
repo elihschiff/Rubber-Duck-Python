@@ -219,7 +219,6 @@ class RockPaperScissors(Game, ReactionTrigger):
 
             # delete the game so people can play again
             GLOBAL_GAMES[frozenset(players)].remove(game)
-            return False
         else:
             # still waiting so tell the player that they're waiting
 
