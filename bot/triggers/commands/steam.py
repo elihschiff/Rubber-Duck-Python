@@ -12,7 +12,7 @@ class Steam(Command):
     names = ["steam", "epic"]
     description = "Looks up a game on the Steam store"
     usage = "!steam [game name]"
-    examples = f"!steam team fortress 2"
+    examples = "!steam team fortress 2"
 
     # TODO: rewrite this to not need linter disabling
     # pylint: disable=too-many-locals
@@ -31,7 +31,7 @@ class Steam(Command):
             rows = page_content.find(id="search_resultsRows")
             if rows is None:
                 await msg.channel.send(
-                    f'Unable to find any games matching "' + content + '"'
+                    'Unable to find any games matching "' + content + '"'
                 )
                 return
             title = rows.find("span", {"class": "title"})

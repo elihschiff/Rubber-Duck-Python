@@ -163,14 +163,14 @@ class AddClass(Command, ReactionTrigger):
     names = ["add", "join", "register"]
     description = "Adds you to roles and class specific channels"
     usage = "!add [class code]"
-    examples = f"!add cs1200, !add Computer Science"
-    notes = f"To see available roles, majors, and classes, use !list"
+    examples = "!add cs1200, !add Computer Science"
+    notes = "To see available roles, majors, and classes, use !list"
 
     names_no_courses = ["add", "join", "addrole", "joinrole"]
     description_no_courses = "Adds you to a role"
     usage_no_courses = "!add [role]"
-    examples = f"!add Computer Science"
-    notes_no_courses = f"To see available roles, use !list"
+    examples = "!add Computer Science"
+    notes_no_courses = "To see available roles, use !list"
 
     async def execute_command(self, client, msg, content):
         if not content:
@@ -288,12 +288,12 @@ class RemoveClass(Command, ReactionTrigger):
     names = ["remove", "leave", "sub", "unregister", "drop"]
     description = "Removes you from roles and class specific channels"
     usage = "!remove [class code]"
-    examples = f"!remove Bio 1010, !remove Chemistry"
+    examples = "!remove Bio 1010, !remove Chemistry"
 
     names_no_courses = ["remove", "leave", "leaverole", "drop", "droprole"]
     description_no_courses = "Removes you from a role"
     usage_no_courses = "!remove [role]"
-    examples = f"!remove Chemistry"
+    examples_no_courses = "!remove Chemistry"
 
     async def execute_command(self, client, msg, content):
         if not content:

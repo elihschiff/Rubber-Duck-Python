@@ -35,7 +35,7 @@ class Latex(Command):
             response = requests.request("POST", url, data=payload, headers=headers)
             resp_dict = json.loads(response.text)
             url = r"https://latex2image.joeraut.com/" + resp_dict["imageURL"]
-            tmp_location_svg = f"/tmp/" + resp_dict["imageURL"][7:]
+            tmp_location_svg = "/tmp/" + resp_dict["imageURL"][7:]
             tmp_location_png = resp_dict["imageURL"][7:-3] + "png"
             urllib.request.urlretrieve(url, tmp_location_svg)
             try:

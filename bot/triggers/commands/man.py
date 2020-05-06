@@ -8,7 +8,7 @@ class Man(Command):
     names = ["man"]
     description = "Sends a link to a man page, if it exists"
     usage = "!man [(optional) page number] [command]"
-    examples = f"!man grep"
+    examples = "!man grep"
 
     valid_man_pages = [range(1, 9)].extend(["l", "n"])
 

@@ -14,7 +14,7 @@ class Xkcd(Command):
     names = ["xkcd"]
     description = "Finds a relevant xkcd using a keyword or comic number"
     usage = "!xkcd [(optional) search term]"
-    examples = f"!xkcd, !xkcd duck, !xkcd 537"
+    examples = "!xkcd, !xkcd duck, !xkcd 537"
 
     async def execute_command(self, client, msg, content):
         image_url = ""
@@ -57,7 +57,7 @@ class Xkcd(Command):
             alt_text = response["results"][0]["titletext"]
 
         msg_to_send = "**" + title + ":** " + alt_text
-        tmp_location = f"/tmp/xkcd_image.png"
+        tmp_location = "/tmp/xkcd_image.png"
         urllib.request.urlretrieve(image_url, tmp_location)
 
         await msg.channel.send(msg_to_send, file=discord.File(tmp_location))

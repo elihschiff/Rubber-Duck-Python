@@ -9,20 +9,20 @@ class CppRef(Command):
     names = ["cpp"]
     description = "Sends a link to a cpp reference page, if it exists"
     usage = "!usage [container/class/object] [(optional) member function]"
-    examples = f"!usage vector push_back, !cpp sort"
+    examples = "!usage vector push_back, !cpp sort"
 
     async def execute_command(self, client, msg, content):
         args = content.split(" ")
 
         if not content:
-            await utils.delay_send(msg.channel, "Usage: " + self.usage)
+            await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return
 
         # check if link using just the first arg works
         if len(args) >= 1:
             first = args[0]
             # getting all sub_links from the main page
-            main_page = f"http://www.cplusplus.com/reference/"
+            main_page = "http://www.cplusplus.com/reference/"
             page_content = requests.get(main_page)
             soup = BeautifulSoup(page_content.text, "html.parser")
             links = soup.find_all("a")
@@ -61,11 +61,7 @@ class CppRef(Command):
         elif len(args) >= 3:
             # Too many arguments. Still checking for url from first two args but
             # notifying user their other arguments won't be used.
-            await utils.delay_send(
-                msg.channel,
-                f"Too many arguments. Use format: \
-!cpp [container/class/object] [(optional) member function]",
-            )
+            await utils.delay_send(msg.channel, f"Usage: {self.usage}")
         elif len(args) >= 2:
             # get the second part of the url if the user entered an optional
             # member function

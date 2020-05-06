@@ -9,7 +9,7 @@ class Choice(Command):
     names = ["choice", "choose"]
     description = "Chooses from a list of things"
     usage = "!choice [options]"
-    examples = f"!choice choose from these words"
+    examples = "!choice choose from these words"
 
     async def execute_command(self, client, msg, content):
         if not content:
