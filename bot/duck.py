@@ -15,21 +15,15 @@ from .triggers.emoji_mode import invalid_emoji_message
 
 
 class DuckClient(discord.Client):
-    def __init__(
-        self,
-        config_filename="config/config.json",
-        roles_filename="config/roles.json",
-        messages_filename="config/messages.json",
-        quacks_filename="config/quacks.txt",
-        games_filename="config/games.txt",
-        path=sys.path[0] + "/",
-    ):
+    def __init__(self, root_path=sys.path[0] + "/"):
         super().__init__()
-        config_filename = path + config_filename
-        roles_filename = path + roles_filename
-        messages_filename = path + messages_filename
-        quacks_filename = path + quacks_filename
-        games_filename = path + games_filename
+
+        config_filename = root_path + "config/config.json"
+        roles_filename = root_path + "config/roles.json"
+        messages_filename = root_path + "config/messages.json"
+        quacks_filename = root_path + "config/quacks.txt"
+        games_filename = root_path + "config/games.txt"
+
         with open(config_filename, "r") as config_file:
             self.config = json.load(config_file)
         with open(roles_filename, "r") as roles_file:
@@ -53,11 +47,11 @@ class DuckClient(discord.Client):
             ]
 
         self.lock = asyncio.Lock()
-        self.connection = sqlite3.connect(path + "database.db")
+        self.connection = sqlite3.connect(root_path + "database.db")
         self.cursor = self.connection.cursor()
 
         self.log_lock = asyncio.Lock()
-        self.log_connection = sqlite3.connect(path + "logging.db")
+        self.log_connection = sqlite3.connect(root_path + "logging.db")
         self.log_c = self.log_connection.cursor()
 
     async def on_ready(self):
