@@ -18,7 +18,8 @@ pylint:
                 - pip install pylint pylint_junit
                 - pip install -r requirements.txt # required for checking imports
         script:
-                - pylint --rcfile .pylintrc bot --output-format=pylint_junit.JUnitReporter > report.xml
+                - pylint --version
+                - pylint --rcfile .pylintrc bot --output-format=pylint_junit.JUnitReporter | tee report.xml
         artifacts:
                 reports:
                         junit:
