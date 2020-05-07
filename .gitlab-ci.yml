@@ -19,11 +19,23 @@ pylint:
                 - pip install -r requirements.txt # required for checking imports
         script:
                 - pylint --version
-                - pylint --rcfile .pylintrc bot --output-format=pylint_junit.JUnitReporter | tee report.xml
+                - pylint --rcfile .pylintrc bot --output-format=pylint_junit.JUnitReporter | tee pylint.xml
         artifacts:
                 reports:
                         junit:
-                                report.xml
+                                pylint.xml
+
+mypy:
+        stage: test
+        before_script:
+                - pip install mypy
+                - pip install -r requirements.txt
+        script:
+                - mpypy main.y --strict --junit-xml mypy.xml
+        artifacts:
+                reports:
+                        junit:
+                                mypy.xml
 
 deploy-to-server:
         stage: deploy
