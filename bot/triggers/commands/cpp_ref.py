@@ -7,14 +7,14 @@ from bs4 import BeautifulSoup
 class CppRef(Command):
     names = ["cpp"]
     description = "Sends a link to a cpp reference page, if it exists"
-    usage = "!usage [container/class/object] [(optional) member function]"
-    examples = f"!usage vector push_back, !cpp sort"
+    usage = "!cpp [container/class/object] [(optional) member function]"
+    examples = f"!cpp vector push_back, !cpp sort"
 
     async def execute_command(self, client, msg, content):
         args = content.split(" ")
 
         if not content:
-            await utils.delay_send(msg.channel, "Usage: " + usage)
+            await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return
 
         # check if link using just the first arg works
