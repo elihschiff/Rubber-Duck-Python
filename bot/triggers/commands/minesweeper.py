@@ -1,8 +1,11 @@
 import math
 import random
 
+import discord
+
 from . import Command
 from .. import utils
+from ...duck import DuckClient
 
 
 class Minesweeper(Command):
@@ -14,7 +17,9 @@ class Minesweeper(Command):
 
     # TODO: rewrite this to not need linter disabling
     # pylint: disable=too-many-locals,too-many-branches
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         height = 8
         width = 8
         args = content.split()

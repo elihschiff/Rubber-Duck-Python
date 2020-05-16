@@ -1,10 +1,12 @@
 import re
+from typing import cast, Iterable, List, Optional, Union
 
 import discord
 
 from .games import Game, GLOBAL_GAMES, get_game_footer
 from .. import utils
 from ..reaction_trigger import ReactionTrigger
+from ...duck import DuckClient
 
 REACCS = [
     {"emoji": "\U0001f311", "name": ":new_moon:"},
@@ -14,7 +16,9 @@ REACCS = [
 
 
 class RPSGame:
-    def __init__(self, orig_msg, players, message_ids):
+    def __init__(
+        self, orig_msg: discord.Message, players: List[int], message_ids: List[int]
+    ):
         # initialize answers
         self.orig_channel = orig_msg.channel.id
         self.msg_ids = message_ids
@@ -23,24 +27,24 @@ class RPSGame:
         for player in players:
             self.answer_dict[player] = ""
 
-    def check_winner(self):
+    def check_winner(self) -> Optional[int]:
         answers = [self.answer_dict[player] for player in self.players]
         # somebody didn't answer yet >:(
         if answers[0] == "" or answers[1] == "":
-            return False
+            return None
 
         for answer in answers:
             if answer == REACCS[0]["emoji"]:
                 # rock
-                answer = 0
+                answer = "0"
             elif answer == REACCS[1]["emoji"]:
                 # paper
-                answer = 1
+                answer = "1"
             elif answer == REACCS[2]["emoji"]:
                 # scissors
-                answer = 2
+                answer = "2"
 
-        result = answers[0] - answers[1]
+        result = int(answers[0]) - int(answers[1])
         # result == 0 iff they are the same
         if result == 0:
             return 0
@@ -50,7 +54,7 @@ class RPSGame:
             return 2
 
         print("RPS: We shouldn't get here!")
-        return False
+        return None
 
 
 class RockPaperScissors(Game, ReactionTrigger):
@@ -60,7 +64,9 @@ class RockPaperScissors(Game, ReactionTrigger):
 
     challenge_msg = "You have been challenged to RPS!"
 
-    def get_pm_embed(self, players, client):
+    def get_pm_embed(
+        self, players: Iterable[Union[discord.User, discord.Member]], client: DuckClient
+    ) -> discord.Embed:
         embed = discord.Embed(
             title="Rock Paper Scissors", description="Please react your move!"
         )
@@ -72,7 +78,7 @@ class RockPaperScissors(Game, ReactionTrigger):
         embed.set_footer(text=get_game_footer(client))
         return embed
 
-    def get_wait_embed(self, waiting_for, client):
+    def get_wait_embed(self, waiting_for: str, client: DuckClient) -> discord.Embed:
         embed = discord.Embed(
             title="Rock Paper Scissors",
             description=f"Nice pick!\nWaiting for {waiting_for}",
@@ -82,7 +88,9 @@ class RockPaperScissors(Game, ReactionTrigger):
         return embed
 
     # this is called when a message starting with "!commandname" is run
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         if not content:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return
@@ -140,32 +148,39 @@ class RockPaperScissors(Game, ReactionTrigger):
 
     # TODO: rewrite this to not need linter disabling
     # pylint: disable=too-many-branches,too-many-locals,too-many-return-statements
-    async def execute_reaction(self, client, reaction, channel, msg, user):
+    async def execute_reaction(
+        self,
+        client: DuckClient,
+        reaction: discord.RawReactionActionEvent,
+        channel: discord.TextChannel,
+        msg: discord.Message,
+        user: discord.User,
+    ) -> bool:
         if client.user.id == reaction.user_id:
-            return
+            return False
 
         # channel = await client.fetch_channel(reaction.channel_id)
         # msg = await channel.fetch_message(reaction.message_id)
 
         if len(msg.embeds) == 0 or msg.embeds[0].title != "Rock Paper Scissors":
-            return
+            return False
 
         options = [spot["emoji"] for spot in REACCS]
 
         if reaction.emoji.name not in options:
-            return
+            return False
 
         # grab the players
         players = []
         for field in msg.embeds[0].fields:
-            if field.name == "Players":
-                players = field.value.split(" vs. ")
+            if field.name == "Players":  # type: ignore
+                players = field.value.split(" vs. ")  # type: ignore
                 break
 
         # find the game in the global game dict
         if frozenset(players) not in GLOBAL_GAMES.keys():
             await utils.delay_send(channel, "Sorry, this RPS game is out of date!")
-            return
+            return False
         games = GLOBAL_GAMES[frozenset(players)]
         this_game = None
 
@@ -175,11 +190,11 @@ class RockPaperScissors(Game, ReactionTrigger):
                 break
         if this_game is None:
             print("Couldn't find RPS game between", players[0], "and", players[1])
-            return
+            return False
 
         # store the answer (in Unicode form)
         if this_game.answer_dict[reaction.user_id] != "":
-            return
+            return False
         this_game.answer_dict[reaction.user_id] = reaction.emoji.name
 
         # check if there is a winner
@@ -206,12 +221,14 @@ class RockPaperScissors(Game, ReactionTrigger):
 
             # grab the original channel and send who won
             orig_channel = await client.fetch_channel(this_game.orig_channel)
+            orig_channel = cast(discord.TextChannel, orig_channel)
             await utils.delay_send(orig_channel, content, embed=embed)
 
             # edit the private messages and shortly after, delete them
             for user_id, message_id in zip(this_game.players, this_game.msg_ids):
                 usr = await client.fetch_user(user_id)
                 dm_channel = usr.dm_channel
+                dm_channel = cast(discord.DMChannel, dm_channel)
                 sent_message = await dm_channel.fetch_message(message_id)
                 await sent_message.delete()
 
@@ -225,11 +242,12 @@ class RockPaperScissors(Game, ReactionTrigger):
 
             for player in players:
                 player_id = re.search(r"<@!?(\d+)>", player)
-                if int(player_id.group(1)) != author.id:
+                if int(player_id.group(1)) != author.id:  # type: ignore
                     waiting_for = player
                     break
             if waiting_for is None:
                 print("ERROR\tRPS: can't find opponent!")
-                return
+                return False
 
             await msg.edit(content="", embed=self.get_wait_embed(waiting_for, client))
+        return False

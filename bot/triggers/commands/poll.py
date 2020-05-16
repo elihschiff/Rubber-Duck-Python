@@ -1,4 +1,7 @@
+import discord
+
 from bot.triggers.commands import Command
+from ...duck import DuckClient
 
 
 class Poll(Command):
@@ -9,6 +12,8 @@ class Poll(Command):
 
     should_type = False
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         await msg.add_reaction("👍")
         await msg.add_reaction("👎")

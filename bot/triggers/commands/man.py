@@ -1,7 +1,10 @@
 import requests
 
+import discord
+
 from . import Command
 from .. import utils
+from ...duck import DuckClient
 
 
 class Man(Command):
@@ -10,9 +13,11 @@ class Man(Command):
     usage = "!man [(optional) page number] [command]"
     examples = "!man grep"
 
-    valid_man_pages = [range(1, 9)].extend(["l", "n"])
+    valid_man_pages = ["1", "2", "3", "4", "5", "6", "7", "8", "l", "n"]
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         if not content:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return
@@ -38,7 +43,13 @@ class Man(Command):
 
         await utils.delay_send(msg.channel, f"Could not find man page for `{content}`")
 
-    async def check_man_page(self, channel, page, program, send_when_not_found):
+    async def check_man_page(
+        self,
+        channel: utils.Sendable,
+        page: str,
+        program: str,
+        send_when_not_found: bool,
+    ) -> bool:
         url = f"https://linux.die.net/man/{page}/{program}"
         man_page = requests.get(url)
         if "<h1>Not Found</h1>" in man_page.text or "<h1>Section " in man_page.text:

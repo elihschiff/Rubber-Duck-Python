@@ -1,7 +1,12 @@
 import random
+from typing import Union
+
+import discord
 
 from . import Command
 from .. import utils
+
+from ...duck import DuckClient
 
 
 class Random(Command):
@@ -11,7 +16,9 @@ class Random(Command):
     examples = "!random, !random 1 10, !random float 1 10"
     notes = "By default, this returns a float in the range [0,1).  If given arguments, it'll try to match the type of the argument"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         if len(content) == 0:
             await utils.delay_send(msg.channel, str(random.random()))
             return
@@ -25,8 +32,8 @@ class Random(Command):
 
         try:
             try:
-                arg1 = int(args[arg1_idx])
-                arg2 = int(args[arg1_idx + 1])
+                arg1: Union[int, float] = int(args[arg1_idx])
+                arg2: Union[int, float] = int(args[arg1_idx + 1])
             except ValueError:
                 arg1 = float(args[arg1_idx])
                 arg2 = float(args[arg1_idx + 1])
@@ -39,7 +46,7 @@ class Random(Command):
 
         # Only generate an integer if we're given integers or the user wants it
         if args[0] == "int" or isinstance(arg1, int):
-            random_val = random.randint(int(min_val), int(max_val))
+            random_val: Union[int, float] = random.randint(int(min_val), int(max_val))
         else:
             random_val = random.uniform(min_val, max_val)
 

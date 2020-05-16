@@ -1,30 +1,49 @@
+from typing import cast, List, Optional
+
 import discord
 
 from . import Command, ALL_COMMANDS
 from .. import utils
+from ...duck import DuckClient
 
 
 class Help(Command):
     names = ["help"]
     description = "Lists commands and their description"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         if content:
-            await self.send_single_help(content, client, msg.channel)
+            await self.send_single_help(client, content, msg.channel)
         else:
             if msg.channel.type is not discord.ChannelType.private:
                 await utils.delay_send(msg.channel, "DMed!")
             await self.send_all_help(client, msg.author)
 
-    async def send_single_help(self, client, cmd_name, channel):
+    async def send_single_help(
+        self, client: DuckClient, cmd_name: str, channel: utils.Sendable
+    ) -> None:
         for command in ALL_COMMANDS:
-            for name in utils.get_correct_attr(command, "names", client):
+            for name in cast(
+                List[str], utils.get_correct_attr(command, "names", client)
+            ):
                 if name == cmd_name:
-                    names = utils.get_correct_attr(command, "names", client)
-                    desc = utils.get_correct_attr(command, "description", client)
-                    usage = utils.get_correct_attr(command, "usage", client)
-                    examples = utils.get_correct_attr(command, "examples", client)
-                    notes = utils.get_correct_attr(command, "notes", client)
+                    names = cast(
+                        List[str], utils.get_correct_attr(command, "names", client)
+                    )
+                    desc: Optional[str] = utils.get_correct_attr(
+                        command, "description", client
+                    )
+                    usage: Optional[str] = utils.get_correct_attr(
+                        command, "usage", client
+                    )
+                    examples: Optional[str] = utils.get_correct_attr(
+                        command, "examples", client
+                    )
+                    notes: Optional[str] = utils.get_correct_attr(
+                        command, "notes", client
+                    )
 
                     embed_title = f"{names[0]} command:"
                     command_help = ""
@@ -49,7 +68,7 @@ class Help(Command):
                     return
         await utils.delay_send(channel, f'Could not find command "{cmd_name}".\n')
 
-    async def send_all_help(self, client, channel):
+    async def send_all_help(self, client: DuckClient, channel: utils.Sendable) -> None:
         await utils.delay_send(
             channel,
             'Here are all general commands. To get help for a specific command, write "!help [command name]" (ex: !help add).\n',
@@ -57,8 +76,12 @@ class Help(Command):
 
         commands_arr = []
         for command in ALL_COMMANDS:
-            command_names = utils.get_correct_attr(command, "names", client)
-            command_desc = utils.get_correct_attr(command, "description", client)
+            command_names = cast(
+                List[str], utils.get_correct_attr(command, "names", client)
+            )
+            command_desc: Optional[str] = utils.get_correct_attr(
+                command, "description", client
+            )
             if command.description:
                 commands_arr.append(
                     f"**{command.prefixes[0]}{command_names[0]}:** {command_desc}\n"
@@ -80,7 +103,9 @@ class Help(Command):
         await send_embed(channel, response, title)
 
 
-async def send_embed(channel, embed, title):
+async def send_embed(
+    channel: utils.Sendable, embed: discord.Embed, title: Optional[str]
+) -> None:
     # only delay send if it's the first message
     if title:
         await utils.delay_send(channel, "", embed=embed)

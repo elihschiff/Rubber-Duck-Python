@@ -1,5 +1,6 @@
 import json
 import re
+from typing import Any, cast, List, Tuple, Optional
 
 import discord
 from fuzzywuzzy import process
@@ -7,27 +8,30 @@ from fuzzywuzzy import process
 from . import Command
 from .. import utils
 from ..reaction_trigger import ReactionTrigger
+from ...duck import DuckClient
 
 ALPHANUM_RE = re.compile(r"[^\w ]+")
 
 # Cache of users who recently added a class.  Used to avoid spamming class
 # channels with add messages if they re-add the class repeatedly.
 # This will be reset when the bot reboots, but that's not too bad.
-RECENTLY_ADDED_CACHE = []
+RECENTLY_ADDED_CACHE: List[Tuple[int, int]] = []
 
 
-async def get_course_channel(client, msg_content, emoji):
+async def get_course_channel(
+    client: DuckClient, msg_content: str, emoji: str
+) -> Tuple[str, Optional[discord.TextChannel]]:
     course, course_name, channel_id = get_course(client, msg_content, emoji)
 
     if channel_id != 0:
-        return client.get_channel(channel_id)
+        return course_name, cast(discord.TextChannel, client.get_channel(channel_id))
 
     course_name = " ".join(course_name.replace("/", " ").split())
     new_channel_name = ALPHANUM_RE.sub(" ", course_name.lower())
     new_channel_name = " ".join(new_channel_name.split()).replace(" ", "-")
 
     for category_id in client.config["class_category_ids"]:
-        channel = try_generate_course_channel(
+        channel = await try_generate_course_channel(
             client, category_id, course, course_name, new_channel_name
         )
         if channel:
@@ -36,9 +40,14 @@ async def get_course_channel(client, msg_content, emoji):
 
 
 async def try_generate_course_channel(
-    client, category_id, course, course_name, channel_name
-):
+    client: DuckClient,
+    category_id: int,
+    course: List[str],
+    course_name: str,
+    channel_name: str,
+) -> Optional[discord.TextChannel]:
     class_category_channel = client.get_channel(category_id)
+    class_category_channel = cast(discord.CategoryChannel, class_category_channel)
 
     all_seer = client.server.get_role(client.config["all_seer_id"])
     time_out = client.server.get_role(client.config["time_out_id"])
@@ -51,8 +60,8 @@ async def try_generate_course_channel(
                 client.server.default_role: discord.PermissionOverwrite(
                     read_messages=False
                 ),
-                all_seer: discord.PermissionOverwrite(read_messages=True),
-                time_out: discord.PermissionOverwrite(
+                all_seer: discord.PermissionOverwrite(read_messages=True),  # type: ignore
+                time_out: discord.PermissionOverwrite(  # type: ignore
                     send_messages=False, add_reactions=False
                 ),
             },
@@ -66,8 +75,12 @@ async def try_generate_course_channel(
     )
     client.connection.commit()
 
+    return channel
 
-def get_course(client, msg_content, emoji):
+
+def get_course(
+    client: DuckClient, msg_content: str, emoji: str
+) -> Tuple[Any, str, int]:
     line_start_idx = msg_content.index(emoji)
     start_idx = msg_content.index(":", line_start_idx) + 1
     end_idx = msg_content.index("\n", line_start_idx)
@@ -80,7 +93,7 @@ def get_course(client, msg_content, emoji):
     return course, course_name, int(course[2])
 
 
-def get_class_list(client):
+def get_class_list(client: DuckClient) -> Tuple[List[str], List[str]]:
     real_name_list = []
     class_list = []  # a list of ever class and every course_code etc
 
@@ -106,7 +119,7 @@ def get_class_list(client):
     return real_name_list, class_list
 
 
-async def fuzzy_search(client, query, max_results):
+async def fuzzy_search(client: DuckClient, query: str, max_results: int) -> List[str]:
     # this matches the length of class_list but always has the name of a class corresponding
     # with the item in class_list. So if class_list has the item "DS" in slot 12 this will
     # have "Data Structures" in slot 12
@@ -125,9 +138,15 @@ async def fuzzy_search(client, query, max_results):
     return results
 
 
-async def add_role(client, msg, role_id, role_name):
+async def add_role(
+    client: DuckClient, msg: discord.Message, role_id: int, role_name: str
+) -> None:
     role = client.server.get_role(role_id)
+    role = cast(discord.Role, role)
+
     server_member = client.server.get_member(msg.author.id)
+    server_member = cast(discord.Member, server_member)
+
     await server_member.add_roles(role)
 
     if role_name == "-------":
@@ -142,9 +161,15 @@ async def add_role(client, msg, role_id, role_name):
         )
 
 
-async def remove_role(client, msg, role_id, role_name):
+async def remove_role(
+    client: DuckClient, msg: discord.Message, role_id: int, role_name: str
+) -> None:
     role = client.server.get_role(role_id)
+    role = cast(discord.Role, role)
+
     server_member = client.server.get_member(msg.author.id)
+    server_member = cast(discord.Member, server_member)
+
     await server_member.remove_roles(role)
 
     if role_name == "-------":
@@ -172,7 +197,9 @@ class AddClass(Command, ReactionTrigger):
     examples = "!add Computer Science"
     notes_no_courses = "To see available roles, use !list"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         if not content:
             await utils.delay_send(msg.channel, client.messages["add_no_content"])
             return
@@ -203,7 +230,7 @@ class AddClass(Command, ReactionTrigger):
                     await add_role(client, msg, role["id"], role["name"])
                     if role["id"] == client.config["all_seer_id"]:
                         await remove_role(
-                            client, msg, client.config["non_all_seer_id"], None
+                            client, msg, client.config["non_all_seer_id"], ""
                         )
                     return
 
@@ -225,7 +252,14 @@ class AddClass(Command, ReactionTrigger):
             "No results match",
         )
 
-    async def execute_reaction(self, client, reaction, channel, msg, user):
+    async def execute_reaction(
+        self,
+        client: DuckClient,
+        reaction: discord.RawReactionActionEvent,
+        channel: discord.TextChannel,
+        msg: discord.Message,
+        user: discord.User,
+    ) -> bool:
         if (  # pylint: disable=too-many-boolean-expressions
             not client.config["ENABLE_COURSES"]
             or user.bot
@@ -235,27 +269,27 @@ class AddClass(Command, ReactionTrigger):
             or " add " not in msg.content
             or reaction.emoji.name not in utils.EMOJI_NUMBERS
         ):
-            return
+            return False
 
         if reaction.emoji.name == utils.NO_MATCHING_RESULTS_EMOTE:
             await utils.delay_send(msg.channel, client.messages["add_no_roles_match"])
-            return
+            return False
 
-        course_name, channel = get_course_channel(
-            client, msg.content, reaction.emoji_name
+        course_name, course_channel = await get_course_channel(
+            client, msg.content, reaction.emoji.name
         )
 
-        if not channel:
+        if not course_channel:
             await utils.delay_send(
                 msg.channel,
                 "Error: Unable to add course.  Please message an admin about this.",
             )
-            return
+            return False
 
         try:
             overwrite = discord.PermissionOverwrite()
             overwrite.update(read_messages=True)
-            await channel.set_permissions(user, overwrite=overwrite)
+            await course_channel.set_permissions(user, overwrite=overwrite)  # type: ignore
 
             await utils.delay_send(
                 msg.channel,
@@ -265,7 +299,7 @@ class AddClass(Command, ReactionTrigger):
             # check if this user and channel is in the cache
             for past_user, past_channel in RECENTLY_ADDED_CACHE:
                 if past_user == user.id and past_channel == channel.id:
-                    return
+                    return False
 
             RECENTLY_ADDED_CACHE.append((user.id, channel.id))
             if len(RECENTLY_ADDED_CACHE) > client.config["recent_class_cache_size"]:
@@ -283,6 +317,8 @@ class AddClass(Command, ReactionTrigger):
             )
             await utils.send_traceback(client, msg.content)
 
+        return False
+
 
 class RemoveClass(Command, ReactionTrigger):
     names = ["remove", "leave", "sub", "unregister", "drop"]
@@ -295,7 +331,9 @@ class RemoveClass(Command, ReactionTrigger):
     usage_no_courses = "!remove [role]"
     examples_no_courses = "!remove Chemistry"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         if not content:
             await utils.delay_send(msg.channel, client.messages["remove_no_content"])
             return
@@ -316,7 +354,7 @@ class RemoveClass(Command, ReactionTrigger):
                     await remove_role(client, msg, role["id"], role["name"])
                     if role["id"] == client.config["all_seer_id"]:
                         await add_role(
-                            client, msg, client.config["non_all_seer_id"], None
+                            client, msg, client.config["non_all_seer_id"], ""
                         )
                     return
 
@@ -340,7 +378,14 @@ class RemoveClass(Command, ReactionTrigger):
             "No results match",
         )
 
-    async def execute_reaction(self, client, reaction, channel, msg, user):
+    async def execute_reaction(
+        self,
+        client: DuckClient,
+        reaction: discord.RawReactionActionEvent,
+        channel: discord.TextChannel,
+        msg: discord.Message,
+        user: discord.User,
+    ) -> bool:
         if (  # pylint: disable=too-many-boolean-expressions
             not client.config["ENABLE_COURSES"]
             or user.bot
@@ -349,7 +394,7 @@ class RemoveClass(Command, ReactionTrigger):
             or user not in msg.mentions
             or " remove " not in msg.content
         ):
-            return
+            return False
 
         if reaction.emoji.name == utils.NO_MATCHING_RESULTS_EMOTE:
             await utils.delay_send(
@@ -357,7 +402,7 @@ class RemoveClass(Command, ReactionTrigger):
             )
 
         if reaction.emoji.name not in utils.EMOJI_NUMBERS:
-            return
+            return False
 
         line_start_idx = msg.content.index(reaction.emoji.name)
         start_idx = msg.content.index(":", line_start_idx) + 1
@@ -372,9 +417,9 @@ class RemoveClass(Command, ReactionTrigger):
 
         try:
             if channel_id != 0:
-                channel = client.get_channel(channel_id)
+                course_channel = client.get_channel(channel_id)
 
-                await channel.set_permissions(user, overwrite=None)
+                await course_channel.set_permissions(user, overwrite=None)  # type: ignore
 
             await utils.delay_send(
                 msg.channel,
@@ -386,3 +431,5 @@ class RemoveClass(Command, ReactionTrigger):
                 msg.channel, client.messages["err_removing_class"].format(e)
             )
             await utils.send_traceback(client, msg.content)
+
+        return False

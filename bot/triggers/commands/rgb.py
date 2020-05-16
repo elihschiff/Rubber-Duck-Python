@@ -6,6 +6,7 @@ import png
 
 from . import Command
 from .. import utils
+from ...duck import DuckClient
 
 
 class RGB(Command):
@@ -14,7 +15,9 @@ class RGB(Command):
 
     # TODO: rewrite this to not need linter disabling
     # pylint: disable=too-many-branches
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         args = content.split()
         if len(args) not in [0, 1, 3]:
             await utils.delay_send(

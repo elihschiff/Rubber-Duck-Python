@@ -1,3 +1,6 @@
+# TODO: clean up this code
+# type: ignore
+
 import ast
 import re
 import os.path

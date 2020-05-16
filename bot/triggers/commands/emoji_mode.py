@@ -1,27 +1,30 @@
+from typing import cast, List
+
 import discord
 
 from . import Command
 from .. import utils
+from ...duck import DuckClient
 
 
-async def channel_in_emoji_state(client, channel):
+async def channel_in_emoji_state(client: DuckClient, channel: utils.Sendable) -> bool:
     async with client.lock:
         client.cursor.execute(
             "SELECT count(*) FROM emoji_channels WHERE channel_id = :channel_id",
             {"channel_id": channel.id},
         )
         hits = client.cursor.fetchone()[0]
-        return hits > 0
+        return bool(hits > 0)
 
 
-async def user_in_emoji_state(client, user):
+async def user_in_emoji_state(client: DuckClient, user: discord.Member) -> bool:
     async with client.lock:
         client.cursor.execute(
             "SELECT count(*) FROM emoji_users WHERE user_id = :user_id",
             {"user_id": user.id},
         )
         hits = client.cursor.fetchone()[0]
-        return hits > 0
+        return bool(hits > 0)
 
 
 class EmojiMode(Command):
@@ -29,27 +32,29 @@ class EmojiMode(Command):
     description = "Modifies the state of emoji-mode on an entity"
     requires_mod = True
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         if content == "":
             await self.channel_emoji_mode_toggle(client, msg.channel)
             return
 
-        content = content.split(" ")
+        action = content.split()[0]
         users = [
-            client.server.get_member(user_id)
+            cast(discord.Member, client.server.get_member(user_id))
             for user_id in msg.raw_mentions
             if client.server.get_member(user_id) is not None
         ]
         channels = [
-            client.server.get_channel(channel_id)
+            cast(discord.TextChannel, client.server.get_channel(channel_id))
             for channel_id in msg.raw_channel_mentions
             if client.server.get_channel(channel_id) is not None
         ]
 
-        if content[0] == "on":
+        if action == "on":
             user_action = self.user_emoji_mode_on
             channel_action = self.channel_emoji_mode_on
-        elif content[0] == "off":
+        elif action == "off":
             user_action = self.user_emoji_mode_off
             channel_action = self.channel_emoji_mode_off
         else:
@@ -64,13 +69,17 @@ class EmojiMode(Command):
         if len(users) == 0 and len(channels) == 0:
             await channel_action(client, msg.channel)
 
-    async def channel_emoji_mode_toggle(self, client, channel):
+    async def channel_emoji_mode_toggle(
+        self, client: DuckClient, channel: utils.Sendable
+    ) -> None:
         if await channel_in_emoji_state(client, channel):
             await self.channel_emoji_mode_off(client, channel)
         else:
             await self.channel_emoji_mode_on(client, channel)
 
-    async def channel_emoji_mode_on(self, client, channel):
+    async def channel_emoji_mode_on(
+        self, client: DuckClient, channel: utils.Sendable
+    ) -> None:
         if await channel_in_emoji_state(client, channel):
             return
 
@@ -85,7 +94,9 @@ class EmojiMode(Command):
             channel, client.messages["emoji_mode_channel_activate"], delay_factor=0.01
         )
 
-    async def channel_emoji_mode_off(self, client, channel):
+    async def channel_emoji_mode_off(
+        self, client: DuckClient, channel: utils.Sendable
+    ) -> None:
         if not await channel_in_emoji_state(client, channel):
             return
 
@@ -100,13 +111,17 @@ class EmojiMode(Command):
             channel, client.messages["emoji_mode_channel_deactivate"], delay_factor=0.01
         )
 
-    async def user_emoji_mode_toggle(self, client, user, sending_channel):
+    async def user_emoji_mode_toggle(
+        self, client: DuckClient, user: discord.Member, sending_channel: utils.Sendable,
+    ) -> None:
         if await user_in_emoji_state(client, user):
             await self.user_emoji_mode_off(client, user, sending_channel)
         else:
             await self.user_emoji_mode_on(client, user, sending_channel)
 
-    async def user_emoji_mode_on(self, client, user, sending_channel):
+    async def user_emoji_mode_on(
+        self, client: DuckClient, user: discord.Member, sending_channel: utils.Sendable,
+    ) -> None:
         if await user_in_emoji_state(client, user):
             return
 
@@ -125,7 +140,9 @@ class EmojiMode(Command):
             client.messages["emoji_mode_user_activate_public"].format(user.mention)
         )
 
-    async def user_emoji_mode_off(self, client, user, sending_channel):
+    async def user_emoji_mode_off(
+        self, client: DuckClient, user: discord.Member, sending_channel: utils.Sendable,
+    ) -> None:
         if not await user_in_emoji_state(client, user):
             return
 

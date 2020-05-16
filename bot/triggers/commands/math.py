@@ -1,7 +1,10 @@
 import wolframalpha
 
+import discord
+
 from . import Command
 from .. import utils
+from ...duck import DuckClient
 
 
 class Math(Command):
@@ -10,7 +13,9 @@ class Math(Command):
     usage = "!math [expression]"
     examples = "!math d/dx sin(x)^2"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         if not content:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return

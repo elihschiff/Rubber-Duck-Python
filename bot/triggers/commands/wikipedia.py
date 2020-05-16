@@ -1,10 +1,12 @@
 from bs4 import BeautifulSoup
-import discord
 import requests
 import wikipediaapi
 
+import discord
+
 from . import Command
 from .. import utils
+from ...duck import DuckClient
 
 
 class Wikipedia(Command):
@@ -13,10 +15,12 @@ class Wikipedia(Command):
     usage = "!wiki [phrase]"
     examples = "!wiki duck"
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.wiki = wikipediaapi.Wikipedia("en")
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         if not content:
             page_link = "https://en.wikipedia.org/wiki/Special:Random"
             page_response = requests.get(page_link, timeout=30)

@@ -1,8 +1,11 @@
 from bs4 import BeautifulSoup
 import requests
 
+import discord
+
 from . import Command
 from .. import utils
+from ...duck import DuckClient
 
 
 class CppRef(Command):
@@ -11,7 +14,9 @@ class CppRef(Command):
     usage = "!usage [container/class/object] [(optional) member function]"
     examples = "!usage vector push_back, !cpp sort"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         args = content.split(" ")
 
         if not content:

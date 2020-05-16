@@ -4,12 +4,15 @@
 # PLEASE SEE `commands/emoji_mode.py` FOR MODIFYING THE EMOJI-MODE STATE
 
 import re
+from typing import Match, Union
 
-from discord import ChannelType, HTTPException
 import emoji
 import requests
 
+import discord
+
 from . import utils
+from ..duck import DuckClient
 
 
 # emotes are of the form <:emote_name:1234> where `1234` is the emote's id
@@ -22,10 +25,12 @@ INVALID_EMOJI_RE = re.compile(
 )
 
 # explains to the violator why their message was deleted
-async def send_message_to_violator(client, user):
+async def send_message_to_violator(
+    client: DuckClient, user: Union[discord.User, discord.Member]
+) -> None:
     try:
         await user.send(client.messages["emoji_mode_dm"])
-    except HTTPException:
+    except discord.HTTPException:
         pass
 
 
@@ -33,19 +38,23 @@ async def send_message_to_violator(client, user):
 # id. if the emote is valid, it will return an empty string to remove the
 # emote from the message content.  If the emote is invalid, the content string
 # will be unmodified.
-def validate_discord_emote(emote) -> str:
-    emote_id = DISCORD_EMOTE_ID_RE.search(str(emote)).group(1)
+def validate_discord_emote(emote: Match[str]) -> str:
+    match = DISCORD_EMOTE_ID_RE.search(str(emote))
+    if not match:
+        return ""
+
+    emote_id = match.group(1)
     if requests.get(f"https://cdn.discordapp.com/emojis/{emote_id}").status_code == 200:
         # valid emote
         return ""
     else:
         # invalid emote
-        return emote
+        return str(emote)
 
 
 # returns true if the message only contains emoji and whitespace.  It will
 # validate discord emotes as well.
-def valid_emoji(content, msg) -> bool:
+def valid_emoji(content: str, msg: discord.Message) -> bool:
     if msg.embeds or msg.attachments or NESTED_EMOTE_RE.match(content):
         return False
 
@@ -58,8 +67,11 @@ def valid_emoji(content, msg) -> bool:
 
 # deletes message if the message is invalid
 # returns true if the message was deleted
-async def invalid_emoji_message(client, msg) -> bool:
-    if msg.channel.type is ChannelType.private or msg.channel.type is ChannelType.group:
+async def invalid_emoji_message(client: DuckClient, msg: discord.Message) -> bool:
+    if (
+        msg.channel.type is discord.ChannelType.private
+        or msg.channel.type is discord.ChannelType.group
+    ):
         return False
 
     hits = 0

@@ -1,7 +1,10 @@
 from googletrans import Translator
 
+import discord
+
 from . import Command
 from .. import utils
+from ...duck import DuckClient
 
 
 class Translate(Command):
@@ -10,10 +13,12 @@ class Translate(Command):
     usage = "!translate [message]"
     examples = "!translate いんちき"
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.translator = Translator()
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         if len(content) == 0:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return

@@ -3,11 +3,13 @@ import os
 import urllib.request
 
 import cairosvg
-import discord
 import requests
+
+import discord
 
 from . import Command
 from .. import utils
+from ...duck import DuckClient
 
 
 class Latex(Command):
@@ -18,7 +20,9 @@ class Latex(Command):
 
     # TODO: rewrite this to not need linter disabling
     # pylint: disable=too-many-locals
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         if not content:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return

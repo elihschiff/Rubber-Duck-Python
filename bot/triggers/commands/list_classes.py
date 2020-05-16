@@ -1,13 +1,15 @@
 import json
 import string
+from typing import Iterable, List
 
 import discord
 
 from . import Command
 from .. import utils
+from ...duck import DuckClient
 
 
-def get_classes(client, subj):
+def get_classes(client: DuckClient, subj: str) -> List[str]:
     client.cursor.execute(
         "SELECT * FROM classes WHERE departments LIKE ?", ("%" + subj.upper() + "%",),
     )
@@ -27,7 +29,7 @@ def get_classes(client, subj):
     ]
 
 
-def generate_embeds(prelude, classes):
+def generate_embeds(prelude: str, classes: Iterable[str]) -> List[discord.Embed]:
     embeds = []
     class_str = ""
 
@@ -55,7 +57,9 @@ class ListClasses(Command):
     usage = "!list"
     notes_no_courses = ""
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         if not content or not client.config["ENABLE_COURSES"]:
             await self.general_listing(client, msg)
             return
@@ -75,7 +79,9 @@ class ListClasses(Command):
 
         await self.send_list(client, msg, content)
 
-    async def send_list(self, client, msg, subj):
+    async def send_list(
+        self, client: DuckClient, msg: discord.Message, subj: str
+    ) -> None:
         classes = get_classes(client, subj)
 
         if not classes:
@@ -96,7 +102,7 @@ class ListClasses(Command):
         for embed in embeds[1:]:
             msg.author.send(prelude, embed=embed)
 
-    async def general_listing(self, client, msg):
+    async def general_listing(self, client: DuckClient, msg: discord.Message) -> None:
         embed = discord.Embed(color=0xDCC308)
         for role_category in client.roles["role_categories"]:
             roles_list = ""

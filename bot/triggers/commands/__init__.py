@@ -1,10 +1,12 @@
 import re
+from typing import List, Optional, Tuple
 
 from fuzzywuzzy import fuzz
-from discord import ChannelType
+import discord
 
 from .. import utils
 from ..message_trigger import MessageTrigger
+from ...duck import DuckClient
 
 
 # Import all command classes here
@@ -17,7 +19,7 @@ from .cpp_ref import CppRef
 from .delete import Delete
 from .echo import Echo
 from .emoji_mode import EmojiMode
-from .java import Java
+from .java import Java  # type: ignore
 from .issue import Issue
 from .latex import Latex  # latex machine broke
 from .list_classes import ListClasses
@@ -71,13 +73,13 @@ ALL_COMMANDS = [
 
 
 class Command(MessageTrigger):
-    names = []
+    names: List[str] = []
     prefixes = ["!"]
     requires_mod = False
     should_type = True
     causes_spam = False
 
-    async def is_valid(self, msg) -> (int, bool):
+    async def is_valid(self, msg: discord.Message) -> Tuple[Optional[int], float]:
         command = ""
 
         max_ratio = 0
@@ -101,14 +103,18 @@ class Command(MessageTrigger):
         if max_ratio != 1:
             return (None, max_ratio)
 
-        return (len(command), True)
+        return (len(command), 1)
 
-    async def get_trigger_score(self, client, msg):
+    async def get_trigger_score(
+        self, client: DuckClient, msg: discord.Message
+    ) -> Tuple[float, Optional[int]]:
         (idx, recognized) = await self.is_valid(msg)
 
         return recognized, idx
 
-    async def execute_message(self, client, msg, idx):
+    async def execute_message(
+        self, client: DuckClient, msg: discord.Message, idx: int
+    ) -> None:
         if self.requires_mod and not utils.user_is_mod(client, msg.author):
             await utils.delay_send(msg.channel, client.messages["invalid_permissions"])
             return
@@ -117,7 +123,7 @@ class Command(MessageTrigger):
         # any command without self.causes_spam will cause an exception and skip this to run like normal
         if (
             self.causes_spam
-            and msg.channel.type is not ChannelType.private
+            and msg.channel.type is not discord.ChannelType.private
             and msg.channel.id not in client.config["spam_channel_ids"]
         ):
             channel_tags = ""
@@ -130,7 +136,7 @@ class Command(MessageTrigger):
             return
 
         # The execute command is defined here to decrease code reuse below
-        async def _execute():
+        async def _execute() -> None:
             await self.execute_command(
                 client, msg, utils.sanitized(msg.clean_content[idx:].strip())
             )
@@ -141,14 +147,16 @@ class Command(MessageTrigger):
         else:
             await _execute()
 
-    async def execute_command(self, client, msg, content: str):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         raise NotImplementedError("'execute_command' not implemented for this command")
 
-    def __lt__(self, other):
+    def __lt__(self, other: Command) -> bool:
         return self.names[0] < other.names[0]
 
 
-async def invalid_command(client, msg):
+async def invalid_command(client: DuckClient, msg: discord.Message) -> bool:
     if msg.author.bot or len(msg.content) < 2 or msg.content[0] != "!":
         return False
 

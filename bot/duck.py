@@ -3,6 +3,7 @@ import json
 import subprocess
 import sqlite3
 import sys
+from typing import cast, Optional
 
 import discord
 
@@ -16,7 +17,7 @@ from .triggers.emoji_mode import invalid_emoji_message
 
 # pylint: disable=too-many-instance-attributes
 class DuckClient(discord.Client):
-    def __init__(self, root_path=sys.path[0] + "/"):
+    def __init__(self, root_path: str = sys.path[0] + "/"):
         super().__init__()
 
         config_filename = root_path + "config/config.json"
@@ -55,30 +56,35 @@ class DuckClient(discord.Client):
         self.log_connection = sqlite3.connect(root_path + "logging.db")
         self.log_c = self.log_connection.cursor()
 
-        self.log_server = None
-        self.server = None
-        self.traceback_channel = None
+        self.log_server = cast(discord.Guild, None)
+        self.server = cast(discord.Guild, None)
+        self.traceback_channel: Optional[discord.TextChannel] = None
 
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         if len(sys.argv) > 1:
             args = ["kill", "-9"]
             args.extend(sys.argv[1:])
             subprocess.call(args)
 
-        self.log_server = self.get_guild(self.config["log_server_ID"])
-        self.server = self.get_guild(self.config["server_ID"])
+        self.log_server = cast(
+            discord.Guild, self.get_guild(self.config["log_server_ID"])
+        )
+        self.server = cast(discord.Guild, self.get_guild(self.config["server_ID"]))
 
         try:
-            traceback_server = self.get_guild(self.config["TRACEBACK_SERVER_ID"])
-            self.traceback_channel = traceback_server.get_channel(
-                self.config["TRACEBACK_CHANNEL_ID"]
+            traceback_server = cast(
+                discord.Guild, self.get_guild(self.config["TRACEBACK_SERVER_ID"])
+            )
+            self.traceback_channel = cast(
+                Optional[discord.TextChannel],
+                traceback_server.get_channel(self.config["TRACEBACK_CHANNEL_ID"]),
             )
         except KeyError:
             self.traceback_channel = None
 
         print(f"Connected as {self.user}!")
 
-    async def on_message(self, msg):
+    async def on_message(self, msg: discord.Message) -> None:
         try:
             await logging.log_message(self, msg)
 
@@ -90,7 +96,7 @@ class DuckClient(discord.Client):
 
             replied = False
             best_trigger = None
-            best_trigger_idx = 0
+            best_trigger_idx = None
             best_trigger_score = self.config["min_trigger_fuzzy_score"]
             for trigger in MSG_TRIGGERS:
                 if type(trigger).__name__ in self.config["disabled_triggers"]["msg"]:
@@ -101,10 +107,12 @@ class DuckClient(discord.Client):
                     best_trigger_score = trigger_score
                     best_trigger_idx = idx
                 if trigger_score == 1:
+                    idx = cast(int, idx)
                     await trigger.execute_message(self, msg, idx)
                     replied = True
 
             if best_trigger and not replied:
+                best_trigger_idx = cast(int, best_trigger_idx)
                 await best_trigger.execute_message(self, msg, best_trigger_idx)
                 replied = True
 
@@ -115,8 +123,8 @@ class DuckClient(discord.Client):
         except:
             await utils.send_traceback(self, msg.content)
 
-    async def on_raw_message_edit(self, msg):
-        channel = await self.fetch_channel(msg.data["channel_id"])
+    async def on_raw_message_edit(self, msg: discord.RawMessageUpdateEvent) -> None:
+        channel = cast(utils.Sendable, await self.fetch_channel(msg.data["channel_id"]))
         msg_full = await channel.fetch_message(msg.message_id)
         user = await self.fetch_user(msg_full.author.id)
 
@@ -128,13 +136,13 @@ class DuckClient(discord.Client):
         except AttributeError:
             pass
 
-    async def on_raw_message_delete(self, msg):
+    async def on_raw_message_delete(self, msg: discord.RawMessageDeleteEvent) -> None:
         try:
             await logging.log_message_delete(self, msg)
         except AttributeError:
             pass
 
-    async def on_member_join(self, member):
+    async def on_member_join(self, member: discord.Member) -> None:
         for trigger in NEW_MEMBER_TRIGGERS:
             if type(trigger).__name__ in self.config["disabled_triggers"]["new_member"]:
                 continue
@@ -145,10 +153,13 @@ class DuckClient(discord.Client):
             except:
                 await utils.send_traceback(self)
 
-    async def on_raw_reaction_add(self, reaction):
-        user = self.server.get_member(reaction.user_id)
+    async def on_raw_reaction_add(
+        self, reaction: discord.RawReactionActionEvent
+    ) -> None:
+        user = self.get_user(reaction.user_id)
         if not user:  # user is not in the cache
             user = await self.fetch_user(reaction.user_id)
+        user = user
 
         # This may need to be removed later but for now we dont every do anything
         # when a bot sending the reaction so this saves up to 2 api calls
@@ -158,6 +169,7 @@ class DuckClient(discord.Client):
         channel = self.get_channel(reaction.channel_id)
         if not channel:  # channel is not in the cache
             channel = await self.fetch_channel(reaction.channel_id)
+        channel = cast(discord.TextChannel, channel)
 
         # as far as I know there is not get_message command that checks the cache
         msg = await channel.fetch_message(reaction.message_id)

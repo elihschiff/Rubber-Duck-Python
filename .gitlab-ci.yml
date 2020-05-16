@@ -31,7 +31,7 @@ mypy:
                 - pip install mypy
                 - pip install -r requirements.txt
         script:
-                - mypy main.py --strict --junit-xml mypy.xml
+                - mypy main.py --strict --ignore-missing-imports --junit-xml mypy.xml
         artifacts:
                 reports:
                         junit:

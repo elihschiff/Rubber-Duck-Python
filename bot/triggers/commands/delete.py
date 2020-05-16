@@ -1,7 +1,12 @@
+from typing import cast, Optional, Union
+
+import discord
+
 from . import Command
 from .. import utils
 from ..reaction_trigger import ReactionTrigger
 from ...logging import get_log_channel
+from ...duck import DuckClient
 
 
 class Delete(Command, ReactionTrigger):
@@ -10,9 +15,16 @@ class Delete(Command, ReactionTrigger):
     description = "ADMIN ONLY: Deletes a channel"
     requires_mod = True
 
+    def __init__(self) -> None:
+        self.thumb: Optional[discord.Emoji] = None
+
     async def prompt_for_channel_deletion(
-        self, client, command_channel, channel_to_delete, author
-    ):
+        self,
+        client: DuckClient,
+        command_channel: discord.TextChannel,
+        channel_to_delete: discord.TextChannel,
+        author: discord.Member,
+    ) -> None:
         async with client.log_lock:
             client.cursor.execute(
                 "SELECT * FROM classes WHERE channel_id = :channel_id",
@@ -29,9 +41,20 @@ class Delete(Command, ReactionTrigger):
             command_channel,
             f"WARNING: You are about to delete <#{channel_to_delete.id}>.  <@{author.id}> can confirm this action by reacting :+1: to this message.",
         )
-        await msg.add_reaction(client.get_emoji(client.config["thumb_id"]))
 
-    async def execute_command(self, client, msg, content):
+        if not self.thumb:
+            thumb_emoji = client.get_emoji(client.config["thumb_id"])
+            if not thumb_emoji:
+                raise AttributeError(
+                    "Tried to use %delete when not configured.  Make sure 'thumb_id' in config is properly set."
+                )
+            self.thumb = thumb_emoji
+
+        await msg.add_reaction(self.thumb)
+
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         if not client.config["ENABLE_COURSES"]:
             await utils.delay_send(
                 msg.channel,
@@ -39,9 +62,12 @@ class Delete(Command, ReactionTrigger):
             )
             return
 
+        msg.author = cast(discord.Member, msg.author)
         if not msg.author.guild_permissions.administrator:
             utils.delay_send(msg.channel, client.messages["invalid_permissions"])
             return
+
+        msg.channel = cast(discord.TextChannel, msg.channel)
 
         if not msg.channel_mentions:
             await self.prompt_for_channel_deletion(
@@ -54,7 +80,14 @@ class Delete(Command, ReactionTrigger):
                 client, msg.channel, channel, msg.author,
             )
 
-    async def execute_reaction(self, client, reaction, channel, msg, user):
+    async def execute_reaction(
+        self,
+        client: DuckClient,
+        reaction: discord.RawReactionActionEvent,
+        channel: discord.TextChannel,
+        msg: discord.Message,
+        user: discord.User,
+    ) -> bool:
         if (  # pylint: disable=too-many-boolean-expressions
             reaction.emoji.id != client.config["thumb_id"]  # reaction must be a :+1:
             or not msg.author.bot  # must be reacting to a bot message
@@ -66,9 +99,10 @@ class Delete(Command, ReactionTrigger):
             or not any(
                 react.me and react.emoji.id == client.config["thumb_id"]
                 for react in msg.reactions
+                if isinstance(react.emoji, (discord.Emoji, discord.PartialEmoji))
             )  # the bot must agree to this
         ):
-            return
+            return False
 
         await msg.clear_reactions()
 
@@ -101,3 +135,5 @@ class Delete(Command, ReactionTrigger):
 
         if channel_to_delete.id != msg.channel.id:
             await utils.delay_send(msg.channel, "DELETED {deleted_name}")
+
+        return True
