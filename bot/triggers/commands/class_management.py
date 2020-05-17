@@ -2,8 +2,9 @@ import json
 import re
 from typing import Any, cast, List, Tuple, Optional
 
-import discord
 from fuzzywuzzy import process
+
+import discord
 
 from . import Command
 from .. import utils

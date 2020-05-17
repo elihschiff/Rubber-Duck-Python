@@ -1,8 +1,9 @@
 import os
 import random
 
-import discord
 import png
+
+import discord
 
 from . import Command
 from .. import utils

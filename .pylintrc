@@ -72,6 +72,7 @@ disable=missing-module-docstring,
 	no-self-use,
 	consider-using-in,
 	duplicate-code,
+	cyclic-import, # for some reason, this is buggy
 	bad-continuation
 
 # Enable the message, report, category or checker with the given id(s). You can

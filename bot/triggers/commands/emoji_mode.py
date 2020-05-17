@@ -1,4 +1,4 @@
-from typing import cast, List
+from typing import cast
 
 import discord
 

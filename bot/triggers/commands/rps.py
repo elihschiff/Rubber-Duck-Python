@@ -147,7 +147,7 @@ class RockPaperScissors(Game, ReactionTrigger):
         utils.delay_send(msg.channel, client.messages["rockpaperscissors_game_init"])
 
     # TODO: rewrite this to not need linter disabling
-    # pylint: disable=too-many-branches,too-many-locals,too-many-return-statements
+    # pylint: disable=too-many-branches,too-many-locals,too-many-return-statements,too-many-statements
     async def execute_reaction(
         self,
         client: DuckClient,

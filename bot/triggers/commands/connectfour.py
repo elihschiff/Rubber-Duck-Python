@@ -187,7 +187,7 @@ class ConnectFour(Game, ReactionTrigger):
             return (row, col)
 
     # TODO: rewrite this to not need linter disabling
-    # pylint: disable=too-many-return-statements
+    # pylint: disable=too-many-return-statements,too-many-statements,too-many-locals
     async def execute_command(
         self, client: DuckClient, msg: discord.Message, content: str
     ) -> None:

@@ -1,4 +1,4 @@
-from typing import cast, Optional, Union
+from typing import cast, Optional
 
 import discord
 

@@ -159,7 +159,6 @@ class DuckClient(discord.Client):
         user = self.get_user(reaction.user_id)
         if not user:  # user is not in the cache
             user = await self.fetch_user(reaction.user_id)
-        user = user
 
         # This may need to be removed later but for now we dont every do anything
         # when a bot sending the reaction so this saves up to 2 api calls
