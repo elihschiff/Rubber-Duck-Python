@@ -11,8 +11,8 @@ from ...duck import DuckClient
 class CppRef(Command):
     names = ["cpp"]
     description = "Sends a link to a cpp reference page, if it exists"
-    usage = "!usage [container/class/object] [(optional) member function]"
-    examples = "!usage vector push_back, !cpp sort"
+    usage = "!cpp [container/class/object] [(optional) member function]"
+    examples = f"!cpp vector push_back, !cpp sort"
 
     async def execute_command(
         self, client: DuckClient, msg: discord.Message, content: str

@@ -45,5 +45,5 @@ deploy-to-server:
                 - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
                 - chmod -R 700 ~/.ssh
                 - for user in $BOT_USERS; do ssh gitlab@$CONTAINER_IP "sh -c 'sudo runuser -u $user -- sh -c \"cd /home/$user/$user && ./deploy-entry.sh\"'"; done
-        only:
-                - master@rpi-academic-discord/slithering-duck
+        rules:
+                - if: $CI_COMMIT_BRANCH == "master"
