@@ -97,6 +97,17 @@ class DuckClient(discord.Client):
         if await invalid_emoji_message(self, msg):
             return
 
+        if (
+            "discord.gg/" in msg.content
+            or "discordapp.com/invite/" in msg.content
+            or "discord.com/invite/" in msg.content
+        ):
+            await msg.delete()
+            await msg.author.send(
+                "Your message (`{utils.sanitized(msg.content)}`) has been removed because it contained a discord server invite link."
+            )
+            return
+
         replied = False
         best_trigger = None
         best_trigger_idx = 0
