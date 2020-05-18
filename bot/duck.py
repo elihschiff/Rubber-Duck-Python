@@ -104,7 +104,7 @@ class DuckClient(discord.Client):
         ):
             await msg.delete()
             await msg.author.send(
-                "Your message (`{utils.sanitized(msg.content)}`) has been removed because it contained a discord server invite link."
+                f"Your message (`{utils.sanitized(msg.content)}`) has been removed because it contained a discord server invite link."
             )
             return
 
@@ -152,7 +152,7 @@ class DuckClient(discord.Client):
             ):
                 await msg.delete()
                 await msg.author.send(
-                    "Your message (`{utils.sanitized(msg.content)}`) has been removed because it contained a discord server invite link."
+                    f"Your message (`{utils.sanitized(msg.content)}`) has been removed because it contained a discord server invite link."
                 )
                 return
         except:
