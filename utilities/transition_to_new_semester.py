@@ -4,16 +4,36 @@ import sqlite3
 import discord
 from dotenv import load_dotenv
 import os
+import json
 
 if len(sys.argv) != 2:
     print(f"USAGE: python {sys.argv[0]} DB_NAME")
     sys.exit(1)
 
-yacs_result = requests.get("https://yacs.cs.rpi.edu/api/v6/listings").json()
+
+# Uncomment next line to use current yacs data
+# raw_course_data = requests.get("https://yacs.cs.rpi.edu/api/v6/listings").json()
+
+
+# Uncomment next section to use data scraped from quacs
+with open("courses.json") as f:
+    quacs_data = json.load(f)
+
+raw_course_data = {}
+raw_course_data["data"] = []
+for department in quacs_data["departments"]:
+    for course in department["courses"]:
+        course_data = {}
+        course_data["attributes"] = {}
+        course_data["attributes"]["longname"] = course["Title"]
+        course_data["attributes"]["course_shortname"] = course["Crse"]
+        raw_course_data["data"].append(course_data)
+# End quacs data section
+
 
 courses = set()
 
-for course in yacs_result["data"]:
+for course in raw_course_data["data"]:
     # the following line removes extra spaces from the course name
     # and capitalizes it.
     course_name = " ".join(course["attributes"]["longname"].split()).upper()
