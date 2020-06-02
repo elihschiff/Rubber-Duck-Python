@@ -18,6 +18,7 @@ $ cp config/messages.json.example config/messages.json
 $ cp config/quacks.txt.example config/quacks.txt
 $ cp config/courses.json.example config/courses.json
 $ cp config/games.txt.example config/games.txt
+$ cp config/roles.txt.example config/roles.txt
 ```
 While most of the json files should work out of the box, `config.json` must be filled out or the bot may crash while running.
 
