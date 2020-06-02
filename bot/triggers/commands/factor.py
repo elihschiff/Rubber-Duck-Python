@@ -7,9 +7,12 @@ transformations=(standard_transformations + (implicit_multiplication_application
 
 class Factor(Command):
     names = ["factor"]
-    description = "Simplifies an expression"
+    description = "Takes a polynomial and factors it into irreducible factors over the rational numbers."
     usage = "!factor"
 
     async def factor(self, client, msg, content):
-        output = str(factor(parse_expr(content, transformations=transformations))).replace('*', '\*')
-        await utils.delay_send(msg.channel, output, 0)
+        try:
+            output = str(factor(parse_expr(content, transformations=transformations))).replace('*', '\*')
+            await utils.delay_send(msg.channel,output, 0)
+        except:
+            await utils.delay_send(msg.channel, "Invalid Expression :(", 0)

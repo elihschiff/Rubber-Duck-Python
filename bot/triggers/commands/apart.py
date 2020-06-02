@@ -7,9 +7,12 @@ transformations=(standard_transformations + (implicit_multiplication_application
 
 class Apart(Command):
     names = ["apart"]
-    description = "Simplifies an expression"
+    description = "Performs a partial fraction decomposition on a rational function."
     usage = "!apart"
 
     async def execute_command(self, client, msg, content):
-        output = str(apart(parse_expr(content, transformations=transformations))).replace('*', '\*')
-        await utils.delay_send(msg.channel,output, 0)
+        try:
+            output = str(apart(parse_expr(content, transformations=transformations))).replace('*', '\*')
+            await utils.delay_send(msg.channel,output, 0)
+        except:
+            await utils.delay_send(msg.channel, "Invalid Expression :(", 0)

@@ -7,9 +7,12 @@ transformations=(standard_transformations + (implicit_multiplication_application
 
 class ExpandTrig(Command):
     names = ["expandtrig"]
-    description = "Simplifies an expression"
+    description = "Expand trigonometric functions, that is, apply the sum or double angle identities"
     usage = "!expand"
 
     async def execute_command(self, client, msg, content):
-        output = str(expand_trig(parse_expr(content, transformations=transformations))).replace('*', '\*')
-        await utils.delay_send(msg.channel, output, 0)
+        try:
+            output = str(expand_trig(parse_expr(content, transformations=transformations))).replace('*', '\*')
+            await utils.delay_send(msg.channel,output, 0)
+        except:
+            await utils.delay_send(msg.channel, "Invalid Expression :(", 0)

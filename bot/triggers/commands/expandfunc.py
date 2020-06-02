@@ -7,9 +7,12 @@ transformations=(standard_transformations + (implicit_multiplication_application
 
 class ExpandFunc(Command):
     names = ["expandfunc"]
-    description = "Simplifies an expression"
+    description = "Expands special functions in terms of some identities."
     usage = "!expandfunc"
 
     async def execute_command(self, client, msg, content):
-        output = str(expand_func(parse_expr(content, transformations=transformations))).replace('*', '\*')
-        await utils.delay_send(msg.channel, output, 0)
+        try:
+            output = str(expand_func(parse_expr(content, transformations=transformations))).replace('*', '\*')
+            await utils.delay_send(msg.channel,output, 0)
+        except:
+            await utils.delay_send(msg.channel, "Invalid Expression :(", 0)

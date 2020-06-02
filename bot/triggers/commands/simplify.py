@@ -11,5 +11,8 @@ class Simplify(Command):
     usage = "!Simply"
 
     async def execute_command(self, client, msg, content):
-        output = str(simplify(parse_expr(content, transformations=transformations))).replace('*', '\*')
-        await utils.delay_send(msg.channel, output, 0)
+        try:
+            output = str(simplify(parse_expr(content, transformations=transformations))).replace('*', '\*')
+            await utils.delay_send(msg.channel,output, 0)
+        except:
+            await utils.delay_send(msg.channel, "Invalid Expression :(", 0)
