@@ -14,7 +14,7 @@ class Factor(Command):
     description = "Takes a polynomial and factors it into irreducible factors over the rational numbers."
     usage = "!factor"
 
-    async def factor(self, client, msg, content):
+    async def execute_command(self, client, msg, content):
         try:
             output = str(
                 factor(parse_expr(content, transformations=transformations))
