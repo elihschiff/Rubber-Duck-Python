@@ -55,7 +55,7 @@
 			]
 		},
 		{
-			"category_name": "Major Roles"
+			"category_name": "Major Roles",
 			"help_name": "MAJOR",
 			"roles": [{
 					"id": 0,
