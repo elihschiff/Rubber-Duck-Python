@@ -120,6 +120,7 @@ from .expandfunc import ExpandFunc
 from .expandtrig import ExpandTrig
 from .gammasimp import GammaSimp
 from .hyperexpand import HyperExpand
+
 # Commands will auto alphabetize
 all_commands = [
     AddClass(),
