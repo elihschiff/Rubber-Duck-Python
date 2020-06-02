@@ -108,18 +108,37 @@ from .translate import Translate
 from .version import Version
 from .wikipedia import Wikipedia
 from .xkcd import Xkcd
-
+from .simplify import Simplify
+from .cancel import Cancel
+from .expand import Expand
+from .factor import Factor
+from .simplify import Simplify
+from .apart import Apart
+from .trigsimp import TripSimp
+from .combsimp import CombSimp
+from .expandfunc import ExpandFunc
+from .expandtrig import ExpandTrig
+from .gammasimp import GammaSimp
+from .hyperexpand import HyperExpand
 # Commands will auto alphabetize
 all_commands = [
     AddClass(),
+    Apart(),
     AI(),
+    Cancel(),
     Choice(),
     Code(),
+    CombSimp(),
     ConnectFour(),
     CppRef(),
     Delete(),
     Echo(),
     EmojiMode(),
+    Expand(),
+    ExpandFunc(),
+    Factor(),
+    GammaSimp(),
+    HyperExpand(),
     Java(),
     Issue(),
     Latex(),
@@ -135,8 +154,10 @@ all_commands = [
     RGB(),
     RockPaperScissors(),
     Steam(),
+    Simplify(),
     TicTacToe(),
     Translate(),
+    TripSimp(),
     Version(),
     Wikipedia(),
     Xkcd(),
