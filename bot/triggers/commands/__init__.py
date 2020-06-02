@@ -137,6 +137,7 @@ all_commands = [
     EmojiMode(),
     Expand(),
     ExpandFunc(),
+    ExpandTrig(),
     Factor(),
     GammaSimp(),
     HyperExpand(),
