@@ -13,6 +13,7 @@ class Apart(Command):
     names = ["apart"]
     description = "Performs a partial fraction decomposition on a rational function."
     usage = "!apart"
+    causes_spam = True
 
     async def execute_command(self, client, msg, content):
         try:

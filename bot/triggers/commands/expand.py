@@ -13,6 +13,7 @@ class Expand(Command):
     names = ["expand"]
     description = "Given a polynomial, expands puts it into a canonical form of a sum of monomials."
     usage = "!expand"
+    causes_spam = True
 
     async def execute_command(self, client, msg, content):
         try:

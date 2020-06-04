@@ -13,6 +13,7 @@ class HyperExpand(Command):
     names = ["hyperexpand"]
     description = "rewrites hyper in terms of more standard functions"
     usage = "!hyperexpand"
+    causes_spam = True
 
     async def execute_command(self, client, msg, content):
         try:

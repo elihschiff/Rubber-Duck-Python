@@ -13,6 +13,7 @@ class TripSimp(Command):
     names = ["trigsimp"]
     description = "Simplifies expressions using trigonometric identities"
     usage = "!trigsimp"
+    causes_spam = True
 
     async def execute_command(self, client, msg, content):
         try:

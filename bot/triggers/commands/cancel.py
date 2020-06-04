@@ -17,6 +17,7 @@ class Cancel(Command):
         "leading coefficients of p and q do not have denominators (i.e., are integers)."
     )
     usage = "!Cancel"
+    causes_spam = True
 
     async def execute_command(self, client, msg, content):
         try:

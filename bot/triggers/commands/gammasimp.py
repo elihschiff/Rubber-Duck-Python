@@ -13,6 +13,7 @@ class GammaSimp(Command):
     names = ["gammasimp"]
     description = "Simplifies expressions with gamma functions or combinatorial functions with non-integer argument"
     usage = "!gammasimp"
+    causes_spam = True
 
     async def execute_command(self, client, msg, content):
         try:

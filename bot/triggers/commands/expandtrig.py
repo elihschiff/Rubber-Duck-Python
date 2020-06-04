@@ -13,6 +13,7 @@ class ExpandTrig(Command):
     names = ["expandtrig"]
     description = "Expand trigonometric functions, that is, apply the sum or double angle identities"
     usage = "!expand"
+    causes_spam = True
 
     async def execute_command(self, client, msg, content):
         try:

@@ -13,6 +13,7 @@ class Factor(Command):
     names = ["factor"]
     description = "Takes a polynomial and factors it into irreducible factors over the rational numbers."
     usage = "!factor"
+    causes_spam = True
 
     async def execute_command(self, client, msg, content):
         try:

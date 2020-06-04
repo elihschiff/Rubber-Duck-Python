@@ -13,6 +13,7 @@ class Simplify(Command):
     names = ["simplify"]
     description = "Simplifies an expression"
     usage = "!Simply"
+    causes_spam = True
 
     async def execute_command(self, client, msg, content):
         try:

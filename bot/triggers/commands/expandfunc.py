@@ -13,6 +13,7 @@ class ExpandFunc(Command):
     names = ["expandfunc"]
     description = "Expands special functions in terms of some identities."
     usage = "!expandfunc"
+    causes_spam = True
 
     async def execute_command(self, client, msg, content):
         try:
