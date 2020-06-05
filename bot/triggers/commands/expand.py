@@ -18,7 +18,7 @@ class Expand(Command):
     async def execute_command(self, client, msg, content):
         try:
             output = str(
-                expand(parse_expr(content, transformations=transformations))
+                expand(parse_expr(content))
             ).replace("*", "\*")
             await utils.delay_send(msg.channel, output, 0)
         except:
