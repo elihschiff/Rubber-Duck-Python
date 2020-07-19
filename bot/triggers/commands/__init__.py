@@ -107,6 +107,7 @@ from .tictactoe import TicTacToe
 from .translate import Translate
 from .version import Version
 from .wikipedia import Wikipedia
+from .weather import Weather
 from .xkcd import Xkcd
 
 # Commands will auto alphabetize
@@ -140,6 +141,7 @@ all_commands = [
     Translate(),
     Version(),
     Wikipedia(),
+    Weather(),
     Xkcd(),
 ]
 all_commands.sort()
