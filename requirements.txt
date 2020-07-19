@@ -16,3 +16,4 @@ pypng
 
 wheel
 cairosvg
+jikanpy
