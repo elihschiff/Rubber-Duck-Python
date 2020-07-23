@@ -1,18 +1,23 @@
-from .commands.help import Help
-from .commands import all_commands
-from .commands.delete import Delete
-from .welcome import Welcome
+from typing import List
+
+from .commands import ALL_COMMANDS, Command
 from .commands.class_management import AddClass, RemoveClass
 from .commands.connectfour import ConnectFour
+from .commands.delete import Delete
+from .commands.help import Help
 from .commands.tictactoe import TicTacToe
 from .commands.rps import RockPaperScissors
+from .welcome import Welcome
 
-msg_triggers = [Help()]
-msg_triggers.extend(all_commands)
+from .new_member_trigger import NewMemberTrigger
+from .reaction_trigger import ReactionTrigger
 
-new_member_triggers = [Welcome()]
+MSG_TRIGGERS: List[Command] = [Help()]
+MSG_TRIGGERS.extend(ALL_COMMANDS)
 
-reaction_triggers = [
+NEW_MEMBER_TRIGGERS: List[NewMemberTrigger] = [Welcome()]
+
+REACTION_TRIGGERS: List[ReactionTrigger] = [
     AddClass(),
     ConnectFour(),
     Delete(),

@@ -1,30 +1,35 @@
-from bs4 import BeautifulSoup
+# TODO: clean up this code
+# type: ignore
 
-from . import Command
-from .. import utils
-import requests
+import ast
 import re
 import os.path
 import time
 import urllib.request
-import ast
+
+from bs4 import BeautifulSoup
+import requests
+
+from . import Command
+from .. import utils
+
+
+def get_file_age(filepath):
+    return time.time() - os.path.getmtime(filepath)
 
 
 class Java(Command):
     names = ["java"]
     description = "Sends a link to a Java reference page if it exists (JavaSE 13)"
     usage = "!java [module/package/tag/type/member]"
-    examples = f"!java clear, !java java.base"
-
-    def get_file_age(self, filepath):
-        return time.time() - os.path.getmtime(filepath)
+    examples = "!java clear, !java java.base"
 
     def search_dict(self, search, file):
-        if not os.path.exists(file[0]) or self.get_file_age(file[0]) > 2678400:
+        if not os.path.exists(file[0]) or get_file_age(file[0]) > 2678400:
             urllib.request.urlretrieve(file[1], file[0])
         if os.path.exists(file[0]):
-            with open(file[0], "r") as readFile:
-                data = readFile.read()
+            with open(file[0], "r") as read_file:
+                data = read_file.read()
                 match = re.search(
                     re.escape(f'"l":"{search}"'), data, flags=re.IGNORECASE
                 )
@@ -41,6 +46,8 @@ class Java(Command):
                         return ast.literal_eval(data[left_index:right_index])
         return None
 
+    # TODO: rewrite this to not need linter disabling
+    # pylint: disable=too-many-return-statements
     def search_index(self, search):
         save_location = "/tmp/"
         baseapi = "http://docs.oracle.com/en/java/javase/13/docs/api/"
@@ -107,42 +114,33 @@ class Java(Command):
                 )
         dictionary = self.search_dict(search, files[4])
         if dictionary:
+            base_url = (
+                baseapi
+                + self.search_dict(dictionary["p"], files[1])["m"]
+                + "/"
+                + dictionary["p"].replace(".", "/")
+                + "/"
+                + dictionary["c"]
+                + ".html"
+                + "#"
+            )
             if "url" in dictionary:
-                return (
-                    baseapi
-                    + self.search_dict(dictionary["p"], files[1])["m"]
-                    + "/"
-                    + dictionary["p"].replace(".", "/")
-                    + "/"
-                    + dictionary["c"]
-                    + ".html"
-                    + "#"
-                    + dictionary["url"]
-                )
+                return base_url + dictionary["url"]
             else:
-                return (
-                    baseapi
-                    + self.search_dict(dictionary["p"], files[1])["m"]
-                    + "/"
-                    + dictionary["p"].replace(".", "/")
-                    + "/"
-                    + dictionary["c"]
-                    + ".html"
-                    + "#"
-                    + dictionary["l"]
-                )
+                return base_url + dictionary["l"]
+        return "ERROR"
 
     async def execute_command(self, client, msg, content):
         if not content:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return
 
-        r = requests.get(
+        results = requests.get(
             f"https://docs.oracle.com/apps/search/search.jsp?q={content}&category=java&product=en"
             f"/java/javase/13"
         )
         search = self.search_index(content)
-        soup = BeautifulSoup(r.text, "html.parser")
+        soup = BeautifulSoup(results.text, "html.parser")
         result = f"Potential match(es) for `{content}`:\n"
         if search:
             result += search + "\n"

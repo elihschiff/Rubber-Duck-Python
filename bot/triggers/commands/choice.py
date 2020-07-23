@@ -1,16 +1,22 @@
+import random
+
+import discord
+
 from . import Command
 from .. import utils
 from ..utils import sanitized
-import random
+from ...duck import DuckClient
 
 
 class Choice(Command):
     names = ["choice", "choose"]
     description = "Chooses from a list of things"
     usage = "!choice [options]"
-    examples = f"!choice choose from these words"
+    examples = "!choice choose from these words"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         if not content:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return

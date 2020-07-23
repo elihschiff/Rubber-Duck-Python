@@ -7,10 +7,35 @@ stages:
 style-check:
         stage: test
         before_script:
-        - pip install black
+                - pip install black
         script:
-        - black --check .
+                - black --check .
         allow_failure: true
+
+pylint:
+        stage: test
+        before_script:
+                - pip install pylint pylint_junit
+                - pip install -r requirements.txt # required for checking imports
+        script:
+                - pylint --version
+                - pylint --rcfile .pylintrc bot --output-format=pylint_junit.JUnitReporter | tee pylint.xml
+        artifacts:
+                reports:
+                        junit:
+                                pylint.xml
+
+mypy:
+        stage: test
+        before_script:
+                - pip install mypy
+                - pip install -r requirements.txt
+        script:
+                - mypy main.py --strict --ignore-missing-imports --junit-xml mypy.xml
+        artifacts:
+                reports:
+                        junit:
+                                mypy.xml
 
 deploy-to-server:
         stage: deploy

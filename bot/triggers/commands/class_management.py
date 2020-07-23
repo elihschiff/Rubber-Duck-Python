@@ -1,27 +1,105 @@
+import json
+import re
+from typing import Any, cast, List, Tuple, Optional
+
+from fuzzywuzzy import process
+
+import discord
+
 from . import Command
 from .. import utils
 from ..reaction_trigger import ReactionTrigger
+from ...duck import DuckClient
 
-import discord
-import string
-import json
-import ast
-import re
+ALPHANUM_RE = re.compile(r"[^\w ]+")
 
-# from fuzzyfinder import fuzzyfinder
-from fuzzywuzzy import process
+# Cache of users who recently added a class.  Used to avoid spamming class
+# channels with add messages if they re-add the class repeatedly.
+# This will be reset when the bot reboots, but that's not too bad.
+RECENTLY_ADDED_CACHE: List[Tuple[int, int]] = []
 
 
-async def fuzzy_search(client, query, max_results):
-    # this matches the length of class_list but always has the name of a class corresponding
-    # with the item in class_list. So if class_list has the item "DS" in slot 12 this will
-    # have "Data Structures" in slot 12
+async def get_course_channel(
+    client: DuckClient, msg_content: str, emoji: str
+) -> Tuple[str, Optional[discord.TextChannel]]:
+    course, course_name, channel_id = get_course(client, msg_content, emoji)
+
+    if channel_id != 0:
+        return course_name, cast(discord.TextChannel, client.get_channel(channel_id))
+
+    course_name = " ".join(course_name.replace("/", " ").split())
+    new_channel_name = ALPHANUM_RE.sub(" ", course_name.lower())
+    new_channel_name = " ".join(new_channel_name.split()).replace(" ", "-")
+
+    for category_id in client.config["class_category_ids"]:
+        channel = await try_generate_course_channel(
+            client, category_id, course, course_name, new_channel_name
+        )
+        if channel:
+            return course_name, channel
+    return course_name, None
+
+
+async def try_generate_course_channel(
+    client: DuckClient,
+    category_id: int,
+    course: List[str],
+    course_name: str,
+    channel_name: str,
+) -> Optional[discord.TextChannel]:
+    class_category_channel = client.get_channel(category_id)
+    class_category_channel = cast(discord.CategoryChannel, class_category_channel)
+
+    all_seer = client.server.get_role(client.config["all_seer_id"])
+    time_out = client.server.get_role(client.config["time_out_id"])
+
+    try:
+        channel = await class_category_channel.create_text_channel(
+            channel_name,
+            topic=", ".join(json.loads(course[3].replace("'", '"'))) + ": " + course[1],
+            overwrites={
+                client.server.default_role: discord.PermissionOverwrite(
+                    read_messages=False
+                ),
+                all_seer: discord.PermissionOverwrite(read_messages=True),  # type: ignore
+                time_out: discord.PermissionOverwrite(  # type: ignore
+                    send_messages=False, add_reactions=False
+                ),
+            },
+        )
+    except discord.HTTPException:
+        return None
+
+    client.cursor.execute(
+        "UPDATE classes SET channel_id = :channel_id WHERE name = :course_name",
+        {"channel_id": channel.id, "course_name": course_name},
+    )
+    client.connection.commit()
+
+    return channel
+
+
+def get_course(
+    client: DuckClient, msg_content: str, emoji: str
+) -> Tuple[Any, str, int]:
+    line_start_idx = msg_content.index(emoji)
+    start_idx = msg_content.index(":", line_start_idx) + 1
+    end_idx = msg_content.index("\n", line_start_idx)
+
+    course_name = msg_content[start_idx:end_idx].strip()
+    client.cursor.execute(
+        "SELECT * FROM classes WHERE name = :course_name", {"course_name": course_name},
+    )
+    course = client.cursor.fetchone()
+    return course, course_name, int(course[2])
+
+
+def get_class_list(client: DuckClient) -> Tuple[List[str], List[str]]:
     real_name_list = []
     class_list = []  # a list of ever class and every course_code etc
 
-    async with client.lock:
-        client.c.execute("SELECT * FROM classes WHERE active != 0")
-        records = client.c.fetchall()
+    client.cursor.execute("SELECT * FROM classes WHERE active != 0")
+    records = client.cursor.fetchall()
 
     for i in records:
         real_name = "**" + ", ".join(json.loads(i[3].replace("'", '"'))) + "**: " + i[1]
@@ -39,6 +117,16 @@ async def fuzzy_search(client, query, max_results):
             class_list.append(ident)
             real_name_list.append(real_name)
 
+    return real_name_list, class_list
+
+
+async def fuzzy_search(client: DuckClient, query: str, max_results: int) -> List[str]:
+    # this matches the length of class_list but always has the name of a class corresponding
+    # with the item in class_list. So if class_list has the item "DS" in slot 12 this will
+    # have "Data Structures" in slot 12
+
+    real_name_list, class_list = get_class_list(client)
+
     matches = process.extract(query, class_list, limit=20)
     results = []
     for match in matches:
@@ -51,9 +139,15 @@ async def fuzzy_search(client, query, max_results):
     return results
 
 
-async def add_role(client, msg, role_id, role_name):
-    role = client.SERVER.get_role(role_id)
-    server_member = client.SERVER.get_member(msg.author.id)
+async def add_role(
+    client: DuckClient, msg: discord.Message, role_id: int, role_name: str
+) -> None:
+    role = client.server.get_role(role_id)
+    role = cast(discord.Role, role)
+
+    server_member = client.server.get_member(msg.author.id)
+    server_member = cast(discord.Member, server_member)
+
     await server_member.add_roles(role)
 
     if role_name == "-------":
@@ -68,9 +162,15 @@ async def add_role(client, msg, role_id, role_name):
         )
 
 
-async def remove_role(client, msg, role_id, role_name):
-    role = client.SERVER.get_role(role_id)
-    server_member = client.SERVER.get_member(msg.author.id)
+async def remove_role(
+    client: DuckClient, msg: discord.Message, role_id: int, role_name: str
+) -> None:
+    role = client.server.get_role(role_id)
+    role = cast(discord.Role, role)
+
+    server_member = client.server.get_member(msg.author.id)
+    server_member = cast(discord.Member, server_member)
+
     await server_member.remove_roles(role)
 
     if role_name == "-------":
@@ -89,19 +189,18 @@ class AddClass(Command, ReactionTrigger):
     names = ["add", "join", "register"]
     description = "Adds you to roles and class specific channels"
     usage = "!add [class code]"
-    examples = f"!add cs1200, !add Computer Science"
-    notes = f"To see available roles, majors, and classes, use !list"
+    examples = "!add cs1200, !add Computer Science"
+    notes = "To see available roles, majors, and classes, use !list"
 
     names_no_courses = ["add", "join", "addrole", "joinrole"]
     description_no_courses = "Adds you to a role"
     usage_no_courses = "!add [role]"
-    examples = f"!add Computer Science"
-    notes_no_courses = f"To see available roles, use !list"
+    examples = "!add Computer Science"
+    notes_no_courses = "To see available roles, use !list"
 
-    def __init__(self):
-        self.alphanum_re = re.compile("[^\w ]+")
-
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         if not content:
             await utils.delay_send(msg.channel, client.messages["add_no_content"])
             return
@@ -132,7 +231,7 @@ class AddClass(Command, ReactionTrigger):
                     await add_role(client, msg, role["id"], role["name"])
                     if role["id"] == client.config["all_seer_id"]:
                         await remove_role(
-                            client, msg, client.config["non_all_seer_id"], None
+                            client, msg, client.config["non_all_seer_id"], ""
                         )
                     return
 
@@ -154,106 +253,44 @@ class AddClass(Command, ReactionTrigger):
             "No results match",
         )
 
-    # a temp var that is ok to reset on reboot.
-    # It keeps a list of people and classes that were recently added to reduce welcome message spam
-    recent_class_cache = []
+    async def execute_reaction(
+        self,
+        client: DuckClient,
+        reaction: discord.RawReactionActionEvent,
+        channel: discord.TextChannel,
+        msg: discord.Message,
+        user: discord.User,
+    ) -> bool:
+        if (  # pylint: disable=too-many-boolean-expressions
+            not client.config["ENABLE_COURSES"]
+            or user.bot
+            or channel.type is not discord.ChannelType.private
+            or msg.author != client.user
+            or user not in msg.mentions
+            or " add " not in msg.content
+            or reaction.emoji.name not in utils.EMOJI_NUMBERS
+        ):
+            return False
 
-    async def execute_reaction(self, client, reaction, channel, msg, user):
-        if not client.config["ENABLE_COURSES"]:
-            return
-
-        # user = await client.fetch_user(reaction.user_id)
-        if user.bot:
-            return
-
-        # channel = await client.fetch_channel(reaction.channel_id)
-        if channel.type is not discord.ChannelType.private:
-            return
-
-        # msg = await channel.fetch_message(reaction.message_id)
-        if msg.author != client.user:
-            return
-
-        if user not in msg.mentions:
-            return
-
-        if " add " not in msg.content:
-            return
-
-        if reaction.emoji.name == utils.no_matching_results_emote:
+        if reaction.emoji.name == utils.NO_MATCHING_RESULTS_EMOTE:
             await utils.delay_send(msg.channel, client.messages["add_no_roles_match"])
+            return False
 
-        if reaction.emoji.name not in utils.emoji_numbers:
-            return
+        course_name, course_channel = await get_course_channel(
+            client, msg.content, reaction.emoji.name
+        )
 
-        line_start_idx = msg.content.index(reaction.emoji.name)
-        start_idx = msg.content.index(":", line_start_idx) + 1
-        end_idx = msg.content.index("\n", line_start_idx)
-
-        course_name = msg.content[start_idx:end_idx].strip()
-        async with client.lock:
-            client.c.execute(
-                "SELECT * FROM classes WHERE name = :course_name",
-                {"course_name": course_name},
+        if not course_channel:
+            await utils.delay_send(
+                msg.channel,
+                "Error: Unable to add course.  Please message an admin about this.",
             )
-            course = client.c.fetchone()
-            channel_id = int(course[2])
-
-        channel = None
-        if channel_id != 0:
-            channel = client.get_channel(channel_id)
-        else:
-            course_name = " ".join(course_name.replace("/", " ").split())
-            new_channel_name = self.alphanum_re.sub(" ", course_name.lower())
-            new_channel_name = " ".join(new_channel_name.split()).replace(" ", "-")
-
-            added = False
-            for category_id in client.config["class_category_ids"]:
-                class_category_channel = client.get_channel(category_id)
-
-                all_seer = client.SERVER.get_role(client.config["all_seer_id"])
-                time_out = client.SERVER.get_role(client.config["time_out_id"])
-
-                try:
-                    channel = await class_category_channel.create_text_channel(
-                        new_channel_name,
-                        topic=", ".join(json.loads(course[3].replace("'", '"')))
-                        + ": "
-                        + course[1],
-                        overwrites={
-                            client.SERVER.default_role: discord.PermissionOverwrite(
-                                read_messages=False
-                            ),
-                            all_seer: discord.PermissionOverwrite(read_messages=True),
-                            time_out: discord.PermissionOverwrite(
-                                send_messages=False, add_reactions=False
-                            ),
-                        },
-                    )
-                    added = True
-                except discord.HTTPException as e:
-                    continue
-
-                async with client.lock:
-                    client.c.execute(
-                        "UPDATE classes SET channel_id = :channel_id WHERE name = :course_name",
-                        {"channel_id": channel.id, "course_name": course_name},
-                    )
-                    client.connection.commit()
-
-                break
-
-            if not added:
-                await utils.delay_send.send(
-                    msg.channel,
-                    "Error: Unable to add course.  Please message an admin about this.",
-                )
-                return
+            return False
 
         try:
             overwrite = discord.PermissionOverwrite()
-            overwrite.read_messages = True
-            await channel.set_permissions(user, overwrite=overwrite)
+            overwrite.update(read_messages=True)
+            await course_channel.set_permissions(user, overwrite=overwrite)  # type: ignore
 
             await utils.delay_send(
                 msg.channel,
@@ -261,38 +298,43 @@ class AddClass(Command, ReactionTrigger):
             )
 
             # check if this user and channel is in the cache
-            for past_user, past_channel in self.recent_class_cache:
+            for past_user, past_channel in RECENTLY_ADDED_CACHE:
                 if past_user == user.id and past_channel == channel.id:
-                    return
+                    return False
 
-            self.recent_class_cache.append((user.id, channel.id))
-            if len(self.recent_class_cache) > client.config["recent_class_cache_size"]:
-                self.recent_class_cache.pop(0)
+            RECENTLY_ADDED_CACHE.append((user.id, channel.id))
+            if len(RECENTLY_ADDED_CACHE) > client.config["recent_class_cache_size"]:
+                RECENTLY_ADDED_CACHE.pop(0)
 
             await utils.delay_send(
                 channel,
                 client.messages["class_add_welcome"].format(course_name, user.mention),
             )
 
+        # pylint: disable=broad-except
         except Exception as e:
             await utils.delay_send(
                 msg.channel, client.messages["err_adding_class"].format(e)
             )
-            await utils.sendTraceback(client, msg.content)
+            await utils.send_traceback(client, msg.content)
+
+        return False
 
 
 class RemoveClass(Command, ReactionTrigger):
     names = ["remove", "leave", "sub", "unregister", "drop"]
     description = "Removes you from roles and class specific channels"
     usage = "!remove [class code]"
-    examples = f"!remove Bio 1010, !remove Chemistry"
+    examples = "!remove Bio 1010, !remove Chemistry"
 
     names_no_courses = ["remove", "leave", "leaverole", "drop", "droprole"]
     description_no_courses = "Removes you from a role"
     usage_no_courses = "!remove [role]"
-    examples = f"!remove Chemistry"
+    examples_no_courses = "!remove Chemistry"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         if not content:
             await utils.delay_send(msg.channel, client.messages["remove_no_content"])
             return
@@ -313,7 +355,7 @@ class RemoveClass(Command, ReactionTrigger):
                     await remove_role(client, msg, role["id"], role["name"])
                     if role["id"] == client.config["all_seer_id"]:
                         await add_role(
-                            client, msg, client.config["non_all_seer_id"], None
+                            client, msg, client.config["non_all_seer_id"], ""
                         )
                     return
 
@@ -337,35 +379,31 @@ class RemoveClass(Command, ReactionTrigger):
             "No results match",
         )
 
-    async def execute_reaction(self, client, reaction, channel, msg, user):
-        if not client.config["ENABLE_COURSES"]:
-            return
+    async def execute_reaction(
+        self,
+        client: DuckClient,
+        reaction: discord.RawReactionActionEvent,
+        channel: discord.TextChannel,
+        msg: discord.Message,
+        user: discord.User,
+    ) -> bool:
+        if (  # pylint: disable=too-many-boolean-expressions
+            not client.config["ENABLE_COURSES"]
+            or user.bot
+            or channel.type is not discord.ChannelType.private
+            or msg.author != msg.mentions
+            or user not in msg.mentions
+            or " remove " not in msg.content
+        ):
+            return False
 
-        # user = await client.fetch_user(reaction.user_id)
-        if user.bot:
-            return
-
-        # channel = await client.fetch_channel(reaction.channel_id)
-        if channel.type is not discord.ChannelType.private:
-            return
-
-        # msg = await channel.fetch_message(reaction.message_id)
-        if msg.author != client.user:
-            return
-
-        if user not in msg.mentions:
-            return
-
-        if " remove " not in msg.content:
-            return
-
-        if reaction.emoji.name == utils.no_matching_results_emote:
+        if reaction.emoji.name == utils.NO_MATCHING_RESULTS_EMOTE:
             await utils.delay_send(
                 msg.channel, client.messages["remove_no_roles_match"]
             )
 
-        if reaction.emoji.name not in utils.emoji_numbers:
-            return
+        if reaction.emoji.name not in utils.EMOJI_NUMBERS:
+            return False
 
         line_start_idx = msg.content.index(reaction.emoji.name)
         start_idx = msg.content.index(":", line_start_idx) + 1
@@ -373,23 +411,26 @@ class RemoveClass(Command, ReactionTrigger):
 
         course_name = msg.content[start_idx:end_idx].strip()
         async with client.lock:
-            client.c.execute(
+            client.cursor.execute(
                 f"SELECT channel_id FROM classes WHERE name = '{course_name}'"
             )
-            channel_id = int(client.c.fetchone()[0])
+            channel_id = int(client.cursor.fetchone()[0])
 
         try:
             if channel_id != 0:
-                channel = client.get_channel(channel_id)
+                course_channel = client.get_channel(channel_id)
 
-                await channel.set_permissions(user, overwrite=None)
+                await course_channel.set_permissions(user, overwrite=None)  # type: ignore
 
             await utils.delay_send(
                 msg.channel,
                 client.messages["class_remove_confirmation"].format(course_name),
             )
+        # pylint: disable=broad-except
         except Exception as e:
             await utils.delay_send(
                 msg.channel, client.messages["err_removing_class"].format(e)
             )
-            await utils.sendTraceback(client, msg.content)
+            await utils.send_traceback(client, msg.content)
+
+        return False

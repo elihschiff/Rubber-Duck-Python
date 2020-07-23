@@ -1,11 +1,18 @@
+import os
+from typing import cast, Iterable, List, Optional, Tuple, Union
+
+import requests
+
 import discord
 from discord import ChannelType
-import requests
-import os
+
+from .duck import DuckClient
 
 # action_taken gets put in front of the log message
 # an example might be "(EDITED)" to show this message was edited
-async def log_message(client, msg, action_taken=""):
+async def log_message(
+    client: DuckClient, msg: discord.Message, action_taken: str = ""
+) -> None:
     if log_server_missing(client):
         return
 
@@ -13,9 +20,9 @@ async def log_message(client, msg, action_taken=""):
         return
 
     try:
-      destination_channel = await get_log_channel(msg.channel, client)
-    except:
-      return
+        destination_channel = await get_log_channel(msg.channel, client)
+    except RuntimeError:
+        return
     log_content = await get_log_content(msg, client)
     attached_embed = get_embed(msg)
     (attached_files_to_send, files_to_remove) = get_files(msg)
@@ -32,7 +39,9 @@ async def log_message(client, msg, action_taken=""):
     remove_files(files_to_remove)
 
 
-async def log_message_delete(client, msg):
+async def log_message_delete(
+    client: DuckClient, msg: discord.RawMessageDeleteEvent
+) -> None:
     if msg.cached_message:
         if msg.cached_message.author.bot:
             return
@@ -40,19 +49,26 @@ async def log_message_delete(client, msg):
         await log_message(client, msg.cached_message, "(DELETED)")
     else:
         channel_removed_from = await client.fetch_channel(msg.channel_id)
+        channel_removed_from = cast(
+            Union[discord.TextChannel, discord.DMChannel], channel_removed_from
+        )
         destination_channel = await get_log_channel(channel_removed_from, client)
         await destination_channel.send(f"(DELETED) id:{msg.message_id}")
 
 
-def not_valid_channel(channel, guild, client):
-    if channel.type is not ChannelType.private and guild != client.SERVER:
+def not_valid_channel(
+    channel: Union[discord.TextChannel, discord.DMChannel, discord.GroupChannel],
+    guild: Optional[discord.Guild],
+    client: DuckClient,
+) -> bool:
+    if channel.type is not ChannelType.private and guild != client.server:
         return True
     return False
 
 
-def log_server_missing(client):
-    if client.LOG_SERVER is None:
-        # check does not need to be here (client.LOG_SERVER is only necessary in the case
+def log_server_missing(client: DuckClient) -> bool:
+    if client.log_server is None:
+        # check does not need to be here (client.log_server is only necessary in the case
         # that no corresponding logging channel exists) since the client can receive
         # a channel by its id alone, but putting the check here helps ensuring a sane
         # config file
@@ -60,12 +76,17 @@ def log_server_missing(client):
     return False
 
 
-async def get_log_channel(channel, client):
-    if channel.type is ChannelType.private:
-        destination_channel = client.LOG_SERVER.get_channel(
+async def get_log_channel(
+    channel: Union[discord.TextChannel, discord.DMChannel, discord.GroupChannel],
+    client: DuckClient,
+) -> discord.TextChannel:
+    if channel.type is ChannelType.private and "DM_LOG_CHANNEL_ID" in client.config:
+        destination_channel = client.log_server.get_channel(
             client.config["DM_LOG_CHANNEL_ID"]
         )
+        destination_channel = cast(discord.TextChannel, destination_channel)
     else:
+        channel = cast(discord.TextChannel, channel)
         async with client.log_lock:
             client.log_c.execute(
                 "SELECT dest_channel_id FROM logging WHERE source_channel_id = :channel_id",
@@ -75,7 +96,7 @@ async def get_log_channel(channel, client):
 
         if dest_channel_id is None:
             try:
-                destination_channel = await client.LOG_SERVER.create_text_channel(
+                destination_channel = await client.log_server.create_text_channel(
                     channel.name
                 )
             except discord.HTTPException:
@@ -84,7 +105,8 @@ async def get_log_channel(channel, client):
                 dest_channel_id = client.log_c.fetchone()[0]
                 client.log_lock.release()
 
-                destination_channel = client.LOG_SERVER.get_channel(dest_channel_id[0])
+                destination_channel = client.log_server.get_channel(dest_channel_id[0])
+                destination_channel = cast(discord.TextChannel, destination_channel)
                 await destination_channel.edit(name=channel.name)
                 await destination_channel.send(f"CHANNEL NOW LOGGING: {channel.name}")
 
@@ -99,14 +121,16 @@ async def get_log_channel(channel, client):
                 client.log_connection.commit()
 
         else:
-            destination_channel = client.LOG_SERVER.get_channel(dest_channel_id[0])
+            destination_channel = client.log_server.get_channel(dest_channel_id[0])
+            destination_channel = cast(discord.TextChannel, destination_channel)
 
     return destination_channel
 
 
-async def get_log_content(msg, client):
+async def get_log_content(msg: discord.Message, client: DuckClient) -> str:
     if msg.channel.type is ChannelType.private:
         # if rubber duck is the account who sent the message
+        msg.channel = cast(discord.DMChannel, msg.channel)
         rcvd_channel_tag = ""
         if msg.author == client.user:
             rcvd_channel_tag = (
@@ -124,7 +148,7 @@ async def get_log_content(msg, client):
 
 # only sends the first embed, as far as I know a message cannot have more than
 # 1 embed anyway even though msg.embeds is a list
-def get_embed(msg):
+def get_embed(msg: discord.Message) -> Optional[discord.Embed]:
     attached_embed = None
     if len(msg.embeds) > 0:
         attached_embed = msg.embeds[0]
@@ -132,12 +156,12 @@ def get_embed(msg):
 
 
 # returns the files to send and also the locations so they may be removed later
-def get_files(msg):
+def get_files(msg: discord.Message) -> Tuple[List[discord.File], List[str]]:
     attached_file_locations = []
     for attachment in msg.attachments:
         tmp_location = f"/tmp/{msg.id}-{attachment.filename}"
-        r = requests.get(attachment.url, allow_redirects=True)
-        open(tmp_location, "wb").write(r.content)
+        file_contents = requests.get(attachment.url, allow_redirects=True)
+        open(tmp_location, "wb").write(file_contents.content)
 
         attached_file_locations.append(tmp_location)
 
@@ -148,6 +172,6 @@ def get_files(msg):
     return attached_files_to_send, attached_file_locations
 
 
-def remove_files(files_to_remove):
+def remove_files(files_to_remove: Iterable[str]) -> None:
     for location in files_to_remove:
         os.remove(location)

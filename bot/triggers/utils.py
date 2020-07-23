@@ -1,11 +1,28 @@
-import time
 import asyncio
-import discord
 import re
 import traceback
+from typing import Any, cast, List, Optional, Union
+
+import discord
+
+from ..duck import DuckClient
+
+Sendable = Union[
+    discord.TextChannel,
+    discord.DMChannel,
+    discord.GroupChannel,
+    discord.User,
+    discord.Member,
+]
 
 
-async def delay_send(sendable, msg="", delay_factor=1.0, embed=None, file=None):
+async def delay_send(
+    sendable: Sendable,
+    msg: str = "",
+    delay_factor: float = 1.0,
+    embed: Optional[discord.Embed] = None,
+    file: Optional[discord.File] = None,
+) -> discord.Message:
     async with sendable.typing():
         delay = (0.5 + 0.003 * len(msg)) * delay_factor
 
@@ -20,7 +37,7 @@ async def delay_send(sendable, msg="", delay_factor=1.0, embed=None, file=None):
         return await sendable.send(msg, embed=embed, file=file)
 
 
-emoji_numbers = [
+EMOJI_NUMBERS = [
     "\u0030\u20E3",
     "\u0031\u20E3",
     "\u0032\u20E3",
@@ -33,38 +50,56 @@ emoji_numbers = [
     "\u0039\u20E3",
 ]
 
-no_matching_results_emote = "🚫"
+NO_MATCHING_RESULTS_EMOTE = "🚫"
 
 
 async def generate_react_menu(
-    sendable, user_id, opening_message, max_length, option_list, cancel_message
-):
-    max_length = min(max_length, len(emoji_numbers))
+    sendable: Sendable,
+    user_id: int,
+    opening_message: str,
+    max_length: int,
+    option_list: List[str],
+    cancel_message: str,
+) -> None:
+    max_length = min(max_length, len(EMOJI_NUMBERS))
 
     msg_to_send = f"<@{user_id}>"
     msg_to_send += opening_message
     for i in range(min(max_length, len(option_list))):
-        msg_to_send += f"\n\n{emoji_numbers[i]} {option_list[i]}"
-    msg_to_send += f"\n\n{no_matching_results_emote} {cancel_message}"
+        msg_to_send += f"\n\n{EMOJI_NUMBERS[i]} {option_list[i]}"
+    msg_to_send += f"\n\n{NO_MATCHING_RESULTS_EMOTE} {cancel_message}"
     sent_msg = await sendable.send(msg_to_send)
     for i in range(min(max_length, len(option_list))):
-        await sent_msg.add_reaction(emoji_numbers[i])
-    await sent_msg.add_reaction(no_matching_results_emote)
+        await sent_msg.add_reaction(EMOJI_NUMBERS[i])
+    await sent_msg.add_reaction(NO_MATCHING_RESULTS_EMOTE)
 
 
-def user_is_mod(client, user) -> bool:
+def user_is_mod(client: DuckClient, user: Union[discord.User, discord.Member]) -> bool:
     if not hasattr(user, "roles"):
-        user = client.SERVER.get_member(user.id)
+        member = client.server.get_member(user.id)
+        if member is None:
+            return False
+        user = member
 
-    for role in user.roles:
+    member = cast(discord.Member, user)
+
+    for role in member.roles:
         if role.id == client.config["mod_role_id"]:
             return True
 
     return False
 
 
-def user_in_timeout(client, user) -> bool:
-    member = client.SERVER.get_member(user.id)
+def user_in_timeout(
+    client: DuckClient, user: Union[discord.User, discord.Member]
+) -> bool:
+    if not hasattr(user, "roles"):
+        member = client.server.get_member(user.id)
+        if member is None:
+            return False
+        user = member
+
+    member = cast(discord.Member, user)
     for role in member.roles:
         if role.id == client.config["time_out_id"]:
             return True
@@ -72,7 +107,7 @@ def user_in_timeout(client, user) -> bool:
     return False
 
 
-def has_flag(flag, content):
+def has_flag(flag: str, content: str) -> bool:
     """Determines if a command's content contains a flag.
 
     Arguments:
@@ -82,7 +117,7 @@ def has_flag(flag, content):
     return "-" + flag in content.split()
 
 
-def get_flag(flag, content, default=None):
+def get_flag(flag: str, content: str, default: Optional[str] = None) -> Optional[str]:
     """Finds the value associated with a flag in a command's content.
 
     Arguments:
@@ -104,19 +139,19 @@ def get_flag(flag, content, default=None):
     return args[i + 1]
 
 
-def user_from_mention(client, mention):
-    match = re.match("<@!?(\d+)>", mention)
+def user_from_mention(client: DuckClient, mention: str) -> Optional[discord.User]:
+    match = re.match(r"<@!?(\d+)>", mention)
     if match is None:
         return None
     else:
         return client.get_user(int(match.group(1)))
 
 
-def sanitized(msg):
+def sanitized(msg: str) -> str:
     return msg.replace("`", "'")
 
 
-def get_correct_attr(obj, attr, client):
+def get_correct_attr(obj: Any, attr: str, client: DuckClient) -> Optional[Any]:
     if not client.config["ENABLE_COURSES"] and hasattr(obj, f"{attr}_no_courses"):
         return getattr(obj, f"{attr}_no_courses")
     elif hasattr(obj, attr):
@@ -127,19 +162,15 @@ def get_correct_attr(obj, attr, client):
 
 # prints a traceback and sends it to discord
 # to get a traceback sent to steam put this line in any except: call
-# await utils.sendTraceback(client, "")
-async def sendTraceback(client, content=""):
+# await utils.send_traceback(client, "")
+async def send_traceback(client: DuckClient, content: str = "") -> None:
     # print the traceback to the terminal
     print(content)
     print(traceback.format_exc())
 
     # if there is a traceback server and channel, send the traceback in discord as well
-    try:
+    if client.traceback_channel:
         msg_to_send = f"```bash\n{traceback.format_exc()}\n```"
         if content:
             msg_to_send = f"`{content}`\n" + msg_to_send
-        await client.TRACEBACK_CHANNEL.send(msg_to_send)
-    except:
-        print(
-            "\nNote: traceback was not sent to Discord, if you want this double check your config.json"
-        )
+        await client.traceback_channel.send(msg_to_send)
