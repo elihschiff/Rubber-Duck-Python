@@ -1,16 +1,22 @@
+from bs4 import BeautifulSoup
+import requests
+
+import discord
+
 from . import Command
 from .. import utils
-import requests
-from bs4 import BeautifulSoup
+from ...duck import DuckClient
 
 
 class CppRef(Command):
     names = ["cpp"]
     description = "Sends a link to a cpp reference page, if it exists"
     usage = "!cpp [container/class/object] [(optional) member function]"
-    examples = f"!cpp vector push_back, !cpp sort"
+    examples = "!cpp vector push_back, !cpp sort"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         args = content.split(" ")
 
         if not content:
@@ -21,9 +27,9 @@ class CppRef(Command):
         if len(args) >= 1:
             first = args[0]
             # getting all sub_links from the main page
-            main_page = f"http://www.cplusplus.com/reference/"
-            r = requests.get(main_page)
-            soup = BeautifulSoup(r.text, "html.parser")
+            main_page = "http://www.cplusplus.com/reference/"
+            page_content = requests.get(main_page)
+            soup = BeautifulSoup(page_content.text, "html.parser")
             links = soup.find_all("a")
             # keep trying different sublinks until either something works
             # and we break out of the loop, or loop ends
@@ -34,14 +40,14 @@ class CppRef(Command):
                 if sub_link[0:10] != "/reference":
                     continue
                 url = f"http://www.cplusplus.com{sub_link}{first}/"
-                r = requests.get(url)
-                if "<h1>404 Page Not Found</h1>" not in r.text:
+                page_content = requests.get(url)
+                if "<h1>404 Page Not Found</h1>" not in page_content.text:
                     break
-            if "<h1>404 Page Not Found</h1>" in r.text:
+            if "<h1>404 Page Not Found</h1>" in page_content.text:
                 # last attempt: maybe it is its own link not under a thread
                 url = f"http://www.cplusplus.com/reference/{first}/{first}/"
-                r = requests.get(url)
-                if "<h1>404 Page Not Found</h1>" in r.text:
+                page_content = requests.get(url)
+                if "<h1>404 Page Not Found</h1>" in page_content.text:
                     # no links work
                     # return an error to the user in discord and exit function
                     await utils.delay_send(
@@ -60,18 +66,14 @@ class CppRef(Command):
         elif len(args) >= 3:
             # Too many arguments. Still checking for url from first two args but
             # notifying user their other arguments won't be used.
-            await utils.delay_send(
-                msg.channel,
-                f"Too many arguments. Use format: \
-!cpp [container/class/object] [(optional) member function]",
-            )
+            await utils.delay_send(msg.channel, f"Usage: {self.usage}")
         elif len(args) >= 2:
             # get the second part of the url if the user entered an optional
             # member function
             second = args[1]
             url2 = url + f"{second}/"
-            r2 = requests.get(url2)
-            if "<h1>404 Page Not Found</h1>" in r2.text:
+            page_content = requests.get(url2)
+            if "<h1>404 Page Not Found</h1>" in page_content.text:
                 # second argument doesn't work but first one does
                 # inform user in discord, send first link, and exit function
                 await utils.delay_send(
@@ -80,9 +82,7 @@ class CppRef(Command):
 , but found the general page with {first}.",
                 )
                 await utils.delay_send(msg.channel, url)
-                return
             else:
                 # only other condition: both second and first argument work
                 # send link to user and exit function
                 await utils.delay_send(msg.channel, url2)
-                return

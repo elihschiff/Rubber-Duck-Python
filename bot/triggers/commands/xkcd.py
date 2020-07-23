@@ -1,20 +1,26 @@
+import json
+import os
+import urllib.request
+
+import requests
+import xkcd
+
+import discord
+
 from . import Command
 from .. import utils
-import discord
-import requests
-import urllib.request
-import os
-import json
-import xkcd
+from ...duck import DuckClient
 
 
 class Xkcd(Command):
     names = ["xkcd"]
     description = "Finds a relevant xkcd using a keyword or comic number"
     usage = "!xkcd [(optional) search term]"
-    examples = f"!xkcd, !xkcd duck, !xkcd 537"
+    examples = "!xkcd, !xkcd duck, !xkcd 537"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         image_url = ""
         title = ""
         alt_text = ""
@@ -29,6 +35,7 @@ class Xkcd(Command):
                 image_url = comic.getImageLink()
                 title = comic.getTitle()
                 alt_text = comic.getAltText()
+            # pylint: disable=bare-except
             except:
                 await utils.delay_send(
                     msg.channel, client.messages["no_xkcd_found"].format(content)
@@ -54,8 +61,10 @@ class Xkcd(Command):
             alt_text = response["results"][0]["titletext"]
 
         msg_to_send = "**" + title + ":** " + alt_text
-        tmpLocation = f"/tmp/xkcd_image.png"
-        urllib.request.urlretrieve(image_url, tmpLocation)
+        tmp_location = "/tmp/xkcd_image.png"
+        try:
+            urllib.request.urlretrieve(image_url, tmp_location)
 
-        await msg.channel.send(msg_to_send, file=discord.File(tmpLocation))
-        os.remove(tmpLocation)
+            await msg.channel.send(msg_to_send, file=discord.File(tmp_location))
+        finally:
+            os.remove(tmp_location)

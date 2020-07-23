@@ -1,5 +1,8 @@
+import discord
+
 from . import Command
 from .. import utils
+from ...duck import DuckClient
 
 
 class Echo(Command):
@@ -7,7 +10,9 @@ class Echo(Command):
     description = "Echoes the given message"
     usage = "!echo [message]"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         if content:
             content.replace("@everyone", "@\u200beveryone")
             content.replace("@here", "@\u200bhere")

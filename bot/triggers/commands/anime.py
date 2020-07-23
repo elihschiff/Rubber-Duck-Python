@@ -1,16 +1,20 @@
-from . import Command
-from .. import utils
 from jikanpy import Jikan
 import discord
+
+from . import Command
+from .. import utils
+from ...duck import DuckClient
 
 
 class Anime(Command):
     names = ["anime"]
     description = "Sends a description of an anime using MAL."
     usage = "!anime [Name of anime]"
-    examples = f"!anime hunter x hunter"
+    examples = "!anime hunter x hunter"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(
+        self, client: DuckClient, msg: discord.Message, content: str
+    ) -> None:
         if not content:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return
