@@ -1,26 +1,21 @@
-from bs4 import BeautifulSoup
-import requests
-import wikipediaapi
-
-import discord
-
 from . import Command
 from .. import utils
-from ...duck import DuckClient
+from bs4 import BeautifulSoup
+import requests
+import discord
+import wikipediaapi
 
 
 class Wikipedia(Command):
     names = ["wiki", "wikipedia"]
     description = "Searches Wikipedia for a phrase"
     usage = "!wiki [phrase]"
-    examples = "!wiki duck"
+    examples = f"!wiki duck"
 
-    def __init__(self) -> None:
+    def __init__(self):
         self.wiki = wikipediaapi.Wikipedia("en")
 
-    async def execute_command(
-        self, client: DuckClient, msg: discord.Message, content: str
-    ) -> None:
+    async def execute_command(self, client, msg, content):
         if not content:
             page_link = "https://en.wikipedia.org/wiki/Special:Random"
             page_response = requests.get(page_link, timeout=30)

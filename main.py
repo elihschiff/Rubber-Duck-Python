@@ -1,18 +1,12 @@
-import os
-import sys
-
+from bot.duck import *
 from dotenv import load_dotenv
-
-from bot.duck import DuckClient
+import os
+import sqlite3
+import sys
 
 # loads variables from local .env file as environment variables (use os.getenv)
 load_dotenv()
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-if not BOT_TOKEN:
-    print("ERROR: NO TOKEN PROVIDED.  ABORTING...")
-    sys.exit(1)
+duck = DuckClient()
 
-DUCK = DuckClient()
-
-DUCK.run(BOT_TOKEN)
+duck.run(os.getenv("BOT_TOKEN"))

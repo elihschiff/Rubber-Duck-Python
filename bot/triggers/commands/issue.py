@@ -1,8 +1,5 @@
-import discord
-
 from . import Command
 from .. import utils
-from ...duck import DuckClient
 
 
 class Issue(Command):
@@ -10,7 +7,5 @@ class Issue(Command):
     description = "Tells user how to report a change"
     usage = "!issue"
 
-    async def execute_command(
-        self, client: DuckClient, msg: discord.Message, content: str
-    ) -> None:
+    async def execute_command(self, client, msg, content):
         await utils.delay_send(msg.channel, client.messages["issue"], 0)

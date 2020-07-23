@@ -1,13 +1,10 @@
-import random
-import re
-from typing import cast, Dict, List, Optional, Tuple, Union
-
-import discord
-
-from .games import Game, get_game_footer
+from .games import Game
 from .. import utils
 from ..reaction_trigger import ReactionTrigger
-from ...duck import DuckClient
+
+import discord
+import re
+import random
 
 POSITIONS = [
     {"emoji": "1\u20E3", "name": ":one:"},
@@ -22,24 +19,15 @@ POSITIONS = [
 ]
 
 
-def in_board(pos: Tuple[int, int]) -> bool:
-    return 0 <= pos[0] < 3 and 0 <= pos[1] < 3
-
-
 class TicTacToe(Game, ReactionTrigger):
     names = ["ttt", "tictactoe"]
     description = "Begins a game of Tic Tac Toe with a player."
     usage = "!ttt [@ another user]"
 
     class Game:
-        def __init__(
-            self,
-            players: Optional[List[Dict[str, Union[int, discord.User]]]] = None,
-            board: Optional[List[List[Union[int, str]]]] = None,
-        ):
-            # do the casting here so we don't have to deal with it later
-            self.players = cast(List[Dict[str, Union[int, discord.User]]], players)
-            self.board = cast(List[List[Union[int, str]]], board)
+        def __init__(self, players=None, board=None):
+            self.players = players
+            self.board = board
             # new
             self.pieces = {
                 -1: ":one:",
@@ -56,21 +44,18 @@ class TicTacToe(Game, ReactionTrigger):
             self.turn = 0
             self.winner = -1
 
-        def parse_msg(self, msg: discord.Message, client: DuckClient) -> None:
+        def parse_msg(self, msg, client):
             embed = msg.embeds[0]
 
             for field in embed.fields:
-                if field.name == "Players":  # type: ignore
+                if field.name == "Players":
                     self.players = []
-                    for player in field.value.split(" vs. "):  # type: ignore
+                    for player in field.value.split(" vs. "):
                         player = player.split()
                         self.players.append(
                             {
                                 "piece": player[0],
-                                "user": cast(
-                                    discord.User,
-                                    utils.user_from_mention(client, player[1]),
-                                ),
+                                "user": utils.user_from_mention(client, player[1]),
                             }
                         )
                     break
@@ -93,71 +78,68 @@ class TicTacToe(Game, ReactionTrigger):
             for (i, player) in enumerate(self.players):
                 pieces[i] = player["piece"]
 
-            self.board = embed.description.split("\n")  # type: ignore
+            self.board = embed.description.split("\n")
 
-            for row_idx in range(3):
-                row = self.board[row_idx]
+            for r in range(3):
+                row = self.board[r]
                 for (i, piece) in pieces.items():
-                    row = row.replace(piece, chr(i + 9))  # type: ignore
-                # TODO: what does the next line do?
-                self.board[row_idx] = [ord(c) - 9 for c in row]  # type: ignore
+                    row = row.replace(piece, chr(i + 9))
+                self.board[r] = [ord(c) - 9 for c in row]
 
             if msg.content == "Draw!":
                 return
 
-            mention = re.search(r"<@!?(\d+)>", msg.content)
+            mention = re.search("<@!?(\d+)>", msg.content)
 
-            users = []
+            user = []
             for (i, player) in enumerate(self.players):
-                if player["user"].id == int(mention.group(1)):  # type: ignore
-                    users.append(i)
-            user = users[0]
+                if player["user"].id == int(mention.group(1)):
+                    user.append(i)
+            user = user[0]
 
             if msg.content.endswith(" has won!"):
                 self.winner = user
             else:
                 self.turn = user
 
-        def is_draw(self) -> bool:
+        def is_draw(self):
             for row in self.board:
                 for element in row:
-                    if int(element) < 0:
+                    if element < 0:
                         return False
             return True
 
-        def get_content(self) -> str:
+        def get_content(self):
             if self.winner == -1:
                 if self.is_draw():
                     return "Draw!"
                 else:
-                    return f"It's {self.players[self.turn]['user'].mention}'s turn."  # type: ignore
+                    return f"It's {self.players[self.turn]['user'].mention}'s turn."
             else:
-                return f"{self.players[self.winner]['user'].mention} has won!"  # type: ignore
+                return f"{self.players[self.winner]['user'].mention} has won!"
 
-        def get_piece(self, player: int) -> Union[int, str]:
+        def get_piece(self, player):
             # if player == -1:
             #     return ":black_large_square:"
             if player < 0:
                 return self.pieces[player]
-            return cast(int, self.players[player]["piece"])
+            return self.players[player]["piece"]
 
-        def get_embed(self, footer: str) -> discord.Embed:
+        def get_embed(self, footer):
             board = self.board
-            for row_idx in range(3):
-                for col_idx in range(3):
-                    board[row_idx][col_idx] = self.get_piece(
-                        cast(int, board[row_idx][col_idx])
-                    )
+            for r in range(3):
+                for c in range(3):
+                    board[r][c] = self.get_piece(board[r][c])
 
             embed = discord.Embed(
                 title="Tic Tac Toe",
-                description="\n".join(["\n".join(["".join(row) for row in board])]),  # type: ignore
+                description="\n".join(["\n".join(["".join(row) for row in board])]),
             )
             embed.add_field(
                 name="Players",
                 value=" vs. ".join(
                     [
-                        player["piece"] + " " + player["user"].mention  # type: ignore
+                        player["piece"] + " " + player["user"].mention
                         for player in self.players
                     ]
                 ),
@@ -166,9 +148,10 @@ class TicTacToe(Game, ReactionTrigger):
 
             return embed
 
-        # TODO: rewrite this to not need linter disabling
-        # pylint: disable=too-many-branches
-        def check_for_winner(self) -> None:
+        def in_board(self, pos):
+            return pos[0] >= 0 and pos[1] >= 0 and pos[0] < 3 and pos[1] < 3
+
+        def check_for_winner(self, pos):
             # check horizontals
             for i in range(3):
                 end = True
@@ -208,23 +191,21 @@ class TicTacToe(Game, ReactionTrigger):
                 self.winner = self.turn
                 return
 
-        def take_turn(self, pos: int) -> Optional[int]:
+        def take_turn(self, pos):
             if self.winner != -1:
                 return None
-            if self.board[pos // 3][pos % 3] >= 0:  # type: ignore
+            if self.board[pos // 3][pos % 3] >= 0:
                 return None
 
             self.board[pos // 3][pos % 3] = self.turn
 
-            self.check_for_winner()
+            self.check_for_winner(pos)
             self.turn = (self.turn + 1) % 2
 
             return pos
 
     # this is called when a message starting with "!commandname" is run
-    async def execute_command(
-        self, client: DuckClient, msg: discord.Message, content: str
-    ) -> None:
+    async def execute_command(self, client, msg, content):
         if not content:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return
@@ -249,41 +230,34 @@ class TicTacToe(Game, ReactionTrigger):
         random.shuffle(players)
 
         players = [
-            {"piece": pieces[i], "user": player} for (i, player) in enumerate(players)  # type: ignore
+            {"piece": pieces[i], "user": player} for (i, player) in enumerate(players)
         ]
 
         game = TicTacToe.Game(
             # note we can't use [] * 3 otherwise it creates a deep copy
-            players,  # type: ignore
+            players,
             [[-1 - c - 3 * r for c in range(3)] for r in range(3)],
         )
 
         msg = await utils.delay_send(
             msg.channel,
             game.get_content(),
-            embed=game.get_embed(get_game_footer(client)),
+            embed=game.get_embed(self.get_game_footer(client)),
         )
 
         for spot in POSITIONS[:9]:
             await msg.add_reaction(spot["emoji"])
 
-    async def execute_reaction(
-        self,
-        client: DuckClient,
-        reaction: discord.RawReactionActionEvent,
-        channel: discord.TextChannel,
-        msg: discord.Message,
-        user: discord.User,
-    ) -> bool:
+    async def execute_reaction(self, client, reaction, channel, msg, user):
         if client.user.id == reaction.user_id:
-            return False
+            return
 
         # channel = await client.fetch_channel(reaction.channel_id)
         # msg = await channel.fetch_message(reaction.message_id)
         if len(msg.embeds) == 0 or msg.embeds[0].title != "Tic Tac Toe":
-            return False
+            return
 
-        await msg.remove_reaction(reaction.emoji, client.get_user(reaction.user_id))  # type: ignore
+        await msg.remove_reaction(reaction.emoji, client.get_user(reaction.user_id))
 
         game = TicTacToe.Game()
         game.parse_msg(msg, client)
@@ -291,12 +265,12 @@ class TicTacToe(Game, ReactionTrigger):
         positions = [spot["emoji"] for spot in POSITIONS[:9]]
 
         if reaction.emoji.name not in positions:
-            return False
-        if reaction.user_id != game.players[game.turn]["user"].id:  # type: ignore
-            return False
+            return
+        if reaction.user_id != game.players[game.turn]["user"].id:
+            return
         pos = game.take_turn(positions.index(reaction.emoji.name))
         if pos is None:
-            return False
+            return
 
         await msg.clear_reaction(reaction.emoji)
 
@@ -307,10 +281,10 @@ class TicTacToe(Game, ReactionTrigger):
             reactions_to_add = []
 
         new_msg = await utils.delay_send(
-            channel, game.get_content(), embed=game.get_embed(get_game_footer(client)),
+            channel,
+            game.get_content(),
+            embed=game.get_embed(self.get_game_footer(client)),
         )
 
-        for add_reaction in reactions_to_add:
-            await new_msg.add_reaction(add_reaction)
-
-        return True
+        for reaction in reactions_to_add:
+            await new_msg.add_reaction(reaction)

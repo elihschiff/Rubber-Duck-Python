@@ -1,29 +1,24 @@
-from googletrans import Translator
-
-import discord
-
 from . import Command
 from .. import utils
-from ...duck import DuckClient
+from ..utils import sanitized
+from googletrans import Translator
 
 
 class Translate(Command):
     names = ["translate"]
     description = "Translates a given phrase, or the previous message, into English"
     usage = "!translate [message]"
-    examples = "!translate いんちき"
+    examples = f"!translate いんちき"
 
-    def __init__(self) -> None:
+    def __init__(self):
         self.translator = Translator()
 
-    async def execute_command(
-        self, client: DuckClient, msg: discord.Message, content: str
-    ) -> None:
+    async def execute_command(self, client, msg, content):
         if len(content) == 0:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return
 
         translation = self.translator.translate(content)
 
-        response = f"`{utils.sanitized(content)}` translates from {translation.src.upper()} to: `{utils.sanitized(translation.text)}`"
+        response = f"`{sanitized(content)}` translates from {translation.src.upper()} to: `{sanitized(translation.text)}`"
         await utils.delay_send(msg.channel, response, 1)

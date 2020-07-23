@@ -1,15 +1,12 @@
-import json
-import os
-import urllib.request
-
-import cairosvg
-import requests
-
-import discord
-
 from . import Command
 from .. import utils
-from ...duck import DuckClient
+import discord
+import os
+import requests
+import json
+import urllib.request
+import math
+import cairosvg
 
 
 class Latex(Command):
@@ -18,11 +15,7 @@ class Latex(Command):
     usage = "!latex [command]"
     examples = f"!latex \\frac{1}{2}"
 
-    # TODO: rewrite this to not need linter disabling
-    # pylint: disable=too-many-locals
-    async def execute_command(
-        self, client: DuckClient, msg: discord.Message, content: str
-    ) -> None:
+    async def execute_command(self, client, msg, content):
         if not content:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return
@@ -37,15 +30,15 @@ class Latex(Command):
                 "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
             }
             response = requests.request("POST", url, data=payload, headers=headers)
-            resp_dict = json.loads(response.text)
-            url = r"https://latex2image.joeraut.com/" + resp_dict["imageURL"]
-            tmp_location_svg = "/tmp/" + resp_dict["imageURL"][7:]
-            tmp_location_png = resp_dict["imageURL"][7:-3] + "png"
-            urllib.request.urlretrieve(url, tmp_location_svg)
+            dict = json.loads(response.text)
+            url = r"https://latex2image.joeraut.com/" + dict["imageURL"]
+            tmpLocationSVG = f"/tmp/" + dict["imageURL"][7:]
+            tmpLocationPNG = dict["imageURL"][7:-3] + "png"
+            urllib.request.urlretrieve(url, tmpLocationSVG)
             try:
-                with open(tmp_location_svg, "r") as in_file:
+                with open(tmpLocationSVG, "r") as in_file:
                     buf = in_file.readlines()
-                with open(tmp_location_svg, "w") as out_file:
+                with open(tmpLocationSVG, "w") as out_file:
                     for line in buf:
                         if line.startswith("<svg"):
                             line += """
@@ -60,14 +53,14 @@ class Latex(Command):
                                     """
                         out_file.write(line)
                 cairosvg.svg2png(
-                    file_obj=open(tmp_location_svg, "rb"), write_to=tmp_location_png
+                    file_obj=open(tmpLocationSVG, "rb"), write_to=tmpLocationPNG
                 )
                 # don't use utils.delay_send() here since the above HTTP
                 # likely took a while
-                await msg.channel.send(file=discord.File(tmp_location_png))
+                await msg.channel.send(file=discord.File(tmpLocationPNG))
             finally:
-                os.remove(tmp_location_svg)
-                os.remove(tmp_location_png)
-        # pylint: disable=bare-except
+                os.remove(tmpLocationSVG)
+                os.remove(tmpLocationPNG)
+
         except:
             await utils.delay_send(msg.channel, "Error rending LaTeX")

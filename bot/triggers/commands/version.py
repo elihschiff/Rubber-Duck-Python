@@ -1,10 +1,6 @@
-import subprocess
-
-import discord
-
 from . import Command
 from .. import utils
-from ...duck import DuckClient
+import subprocess
 
 
 class Version(Command):
@@ -12,9 +8,7 @@ class Version(Command):
     description = "Sends the Git commit which the bot is currently running on"
     usage = "!version"
 
-    async def execute_command(
-        self, client: DuckClient, msg: discord.Message, content: str
-    ) -> None:
+    async def execute_command(self, client, msg, content):
         commit = (
             subprocess.check_output(["git", "log", "-n", "1"])
             .decode("utf-8")

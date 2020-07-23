@@ -1,15 +1,85 @@
-import re
-from typing import List, Optional, Tuple
-
-from fuzzywuzzy import fuzz
-import discord
-
-from .. import utils
 from ..message_trigger import MessageTrigger
-from ...duck import DuckClient
+from .. import utils
+import re
+from fuzzywuzzy import fuzz
+
+from discord import ChannelType
 
 
-# Import all command classes here
+class Command(MessageTrigger):
+    prefixes = ["!"]
+    requires_mod = False
+    should_type = True
+
+    async def is_valid(self, client, msg) -> (int, bool):
+        command = ""
+
+        max_ratio = 0
+        for name in self.names:
+            for prefix in self.prefixes:
+                if re.match(f"^{prefix}{name}\\b", msg.content.lower()):
+                    command = prefix + name
+                    max_ratio = 1  # exact match
+                    break
+                if msg.content.lower().startswith(prefix):
+                    ratio = fuzz.ratio(
+                        msg.content.lower().split()[0], f"{prefix}{name}"
+                    )
+                    max_ratio = ratio if ratio > max_ratio else max_ratio
+            if command:
+                break
+
+        if command == "" and len(msg.content.lower()) > 0:
+            command = msg.content.lower().split()[0]
+
+        if max_ratio != 1:
+            return (None, max_ratio)
+
+        return (len(command), True)
+
+    async def get_trigger_score(self, client, msg):
+        (idx, recognized) = await self.is_valid(client, msg)
+
+        return recognized, idx
+
+    async def execute_message(self, client, msg, idx):
+        if self.requires_mod and not utils.user_is_mod(client, msg.author):
+            await utils.delay_send(msg.channel, client.messages["invalid_permissions"])
+            return
+        # checks if a trigger causes spam and then if that trigger should run given the channel it was sent in
+        try:  # any command without self.causes_spam will cause an exception and skip this to run like normal
+            if self.causes_spam and msg.channel.type is not ChannelType.private:
+                if msg.channel.id not in client.config["spam_channel_ids"]:
+                    channel_tags = ""
+                    for id in client.config["spam_channel_ids"]:
+                        channel_tags += f" <#{id}>"
+                    await utils.delay_send(
+                        msg.channel,
+                        client.messages["send_to_spam_channel"].format(channel_tags),
+                    )
+                    return
+        except:
+            pass
+
+        # The execute command is defined here to decrease code reuse below
+        async def _execute():
+            await self.execute_command(
+                client, msg, utils.sanitized(msg.clean_content[idx:].strip())
+            )
+
+        if self.should_type:
+            async with msg.channel.typing():
+                await _execute()
+        else:
+            await _execute()
+
+    async def execute_command(self, client, msg, content: str):
+        raise NotImplementedError("'execute_command' not implemented for this command")
+
+    def __lt__(self, other):
+        return self.names[0] < other.names[0]
+
+
 from .ai import AI
 from .anime import Anime
 from .choice import Choice
@@ -20,7 +90,7 @@ from .cpp_ref import CppRef
 from .delete import Delete
 from .echo import Echo
 from .emoji_mode import EmojiMode
-from .java import Java  # type: ignore
+from .java import Java
 from .issue import Issue
 from .latex import Latex  # latex machine broke
 from .list_classes import ListClasses
@@ -40,8 +110,8 @@ from .wikipedia import Wikipedia
 from .weather import Weather
 from .xkcd import Xkcd
 
-# NB: Please keep this in alphabetical order to maintain organized code
-ALL_COMMANDS = [
+# Commands will auto alphabetize
+all_commands = [
     AddClass(),
     AI(),
     Anime(),
@@ -74,93 +144,10 @@ ALL_COMMANDS = [
     Weather(),
     Xkcd(),
 ]
+all_commands.sort()
 
 
-class Command(MessageTrigger):
-    names: List[str] = []
-    prefixes = ["!"]
-    requires_mod = False
-    should_type = True
-    causes_spam = False
-
-    async def is_valid(self, msg: discord.Message) -> Tuple[Optional[int], float]:
-        command = ""
-
-        max_ratio = 0
-        for name in self.names:
-            for prefix in self.prefixes:
-                if re.match(f"^{prefix}{name}\\b", msg.content.lower()):
-                    command = prefix + name
-                    max_ratio = 1  # exact match
-                    break
-                if msg.content.lower().startswith(prefix):
-                    ratio = fuzz.ratio(
-                        msg.content.lower().split()[0], f"{prefix}{name}"
-                    )
-                    max_ratio = ratio if ratio > max_ratio else max_ratio
-            if command:
-                break
-
-        if command == "" and len(msg.content.lower()) > 0:
-            command = msg.content.lower().split()[0]
-
-        if max_ratio != 1:
-            return (None, max_ratio)
-
-        return (len(command), 1)
-
-    async def get_trigger_score(
-        self, client: DuckClient, msg: discord.Message
-    ) -> Tuple[float, Optional[int]]:
-        (idx, recognized) = await self.is_valid(msg)
-
-        return recognized, idx
-
-    async def execute_message(
-        self, client: DuckClient, msg: discord.Message, idx: int
-    ) -> None:
-        if self.requires_mod and not utils.user_is_mod(client, msg.author):
-            await utils.delay_send(msg.channel, client.messages["invalid_permissions"])
-            return
-
-        # checks if a trigger causes spam and then if that trigger should run given the channel it was sent in
-        # any command without self.causes_spam will cause an exception and skip this to run like normal
-        if (
-            self.causes_spam
-            and msg.channel.type is not discord.ChannelType.private
-            and msg.channel.id not in client.config["spam_channel_ids"]
-        ):
-            channel_tags = ""
-            for chann_id in client.config["spam_channel_ids"]:
-                channel_tags += f" <#{chann_id}>"
-            await utils.delay_send(
-                msg.channel,
-                client.messages["send_to_spam_channel"].format(channel_tags),
-            )
-            return
-
-        # The execute command is defined here to decrease code reuse below
-        async def _execute() -> None:
-            await self.execute_command(
-                client, msg, utils.sanitized(msg.clean_content[idx:].strip())
-            )
-
-        if self.should_type:
-            async with msg.channel.typing():
-                await _execute()
-        else:
-            await _execute()
-
-    async def execute_command(
-        self, client: DuckClient, msg: discord.Message, content: str
-    ) -> None:
-        raise NotImplementedError("'execute_command' not implemented for this command")
-
-    def __lt__(self, other: Command) -> bool:
-        return self.names[0] < other.names[0]
-
-
-async def invalid_command(client: DuckClient, msg: discord.Message) -> bool:
+async def invalid_command(client, msg):
     if msg.author.bot or len(msg.content) < 2 or msg.content[0] != "!":
         return False
 

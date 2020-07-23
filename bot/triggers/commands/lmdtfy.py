@@ -1,21 +1,15 @@
-from urllib.parse import urlencode
-
-import discord
-
 from . import Command
 from .. import utils
-from ...duck import DuckClient
+from urllib.parse import urlencode
 
 
 class Lmdtfy(Command):
     names = ["lmdtfy", "search"]
     description = "Helps someone look something up on the superior search engine"
     usage = "!lmdtfy [query]"
-    examples = "!lmdtfy Does water boil in space?"
+    examples = f"!lmdtfy Does water boil in space?"
 
-    async def execute_command(
-        self, client: DuckClient, msg: discord.Message, content: str
-    ) -> None:
+    async def execute_command(self, client, msg, content):
         if not content:
             content = "How do I think of what to search?"
 
@@ -27,11 +21,9 @@ class Lmgtfy(Command):
     names = ["lmgtfy"]
     description = "Helps someone look something up on the inferior search engine"
     usage = "!lmgtfy [query]"
-    examples = "!lmgtfy Why am I not using DuckDuckGo?"
+    examples = f"!lmgtfy Why am I not using DuckDuckGo?"
 
-    async def execute_command(
-        self, client: DuckClient, msg: discord.Message, content: str
-    ) -> None:
+    async def execute_command(self, client, msg, content):
         if not content:
             content = "How do I think of what to search?"
 

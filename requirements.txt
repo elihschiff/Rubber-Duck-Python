@@ -1,4 +1,4 @@
--e git://github.com/bryanforbes/discord.py@typings#egg=discord-py
+discord.py>=1.2.3
 emoji
 fuzzywuzzy
 googletrans>=2.4.0
