@@ -12,7 +12,10 @@ async def log_message(client, msg, action_taken=""):
     if not_valid_channel(msg.channel, msg.guild, client):
         return
 
-    destination_channel = await get_log_channel(msg.channel, client)
+    try:
+      destination_channel = await get_log_channel(msg.channel, client)
+    except:
+      return
     log_content = await get_log_content(msg, client)
     attached_embed = get_embed(msg)
     (attached_files_to_send, files_to_remove) = get_files(msg)
