@@ -12,10 +12,14 @@ async def log_message(client, msg, action_taken=""):
     if not_valid_channel(msg.channel, msg.guild, client):
         return
 
-    try:
-      destination_channel = await get_log_channel(msg.channel, client)
-    except:
-      return
+    if msg.channel.type is ChannelType.private:
+        destination_channel = client.LOG_SERVER.get_channel(
+            client.config["DM_LOG_CHANNEL_ID"]
+        )
+    else:
+        destination_channel = client.LOG_SERVER.get_channel(
+            client.config["LOG_CHANNEL_ID"]
+        )
     log_content = await get_log_content(msg, client)
     attached_embed = get_embed(msg)
     (attached_files_to_send, files_to_remove) = get_files(msg)
@@ -115,9 +119,7 @@ async def get_log_content(msg, client):
 
         log_content = f"{msg.author.name} ({msg.author.id}){rcvd_channel_tag} [{msg.id}]: {msg.clean_content}"
     else:
-        log_content = (
-            f"{msg.author.name} ({msg.author.id}) [{msg.id}]: {msg.clean_content}"
-        )
+        log_content = f"{msg.channel.name} ({msg.channel.id}) - {msg.author.name} ({msg.author.id}) [{msg.id}]: {msg.clean_content}"
 
     return log_content
 
