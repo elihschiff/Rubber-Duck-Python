@@ -44,8 +44,17 @@ async def log_message_delete(client, msg):
         await log_message(client, msg.cached_message, "(DELETED)")
     else:
         channel_removed_from = await client.fetch_channel(msg.channel_id)
-        destination_channel = await get_log_channel(channel_removed_from, client)
-        await destination_channel.send(f"(DELETED) id:{msg.message_id}")
+        if channel_removed_from.type is ChannelType.private:
+            destination_channel = client.LOG_SERVER.get_channel(
+                client.config["DM_LOG_CHANNEL_ID"]
+            )
+        else:
+            destination_channel = client.LOG_SERVER.get_channel(
+                client.config["LOG_CHANNEL_ID"]
+            )
+        await destination_channel.send(
+            f"({channel_removed_from.id}) - (DELETED) id:{msg.message_id}"
+        )
 
 
 def not_valid_channel(channel, guild, client):
@@ -114,12 +123,12 @@ async def get_log_content(msg, client):
         rcvd_channel_tag = ""
         if msg.author == client.user:
             rcvd_channel_tag = (
-                f" to {msg.channel.recipient.name} ({msg.channel.recipient.id})"
+                f" to @{msg.channel.recipient.name} ({msg.channel.recipient.id})"
             )
 
-        log_content = f"{msg.author.name} ({msg.author.id}){rcvd_channel_tag} [{msg.id}]: {msg.clean_content}"
+        log_content = f"@{msg.author.name} ({msg.author.id}){rcvd_channel_tag} [{msg.id}]: {msg.clean_content}"
     else:
-        log_content = f"{msg.channel.name} ({msg.channel.id}) - {msg.author.name} ({msg.author.id}) [{msg.id}]: {msg.clean_content}"
+        log_content = f"#{msg.channel.name} ({msg.channel.id}) - @{msg.author.name} ({msg.author.id}) [{msg.id}]: {msg.clean_content}"
 
     return log_content
 
