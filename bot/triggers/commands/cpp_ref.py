@@ -1,5 +1,6 @@
 from . import Command
 from .. import utils
+import requests
 from bs4 import BeautifulSoup
 
 
@@ -21,12 +22,11 @@ class CppRef(Command):
             first = args[0]
             # getting all sub_links from the main page
             main_page = f"http://www.cplusplus.com/reference/"
-            async with utils.get_aiohttp().get(main_page) as r:
-                soup = BeautifulSoup(await r.text(), "html.parser")
+            r = requests.get(main_page)
+            soup = BeautifulSoup(r.text, "html.parser")
             links = soup.find_all("a")
             # keep trying different sublinks until either something works
             # and we break out of the loop, or loop ends
-            text = None
             for link in links:
                 sub_link = str(link["href"])
                 # only want links for reference pages (not contact, info, etc.
@@ -34,16 +34,14 @@ class CppRef(Command):
                 if sub_link[0:10] != "/reference":
                     continue
                 url = f"http://www.cplusplus.com{sub_link}{first}/"
-                async with utils.get_aiohttp().get(url) as r:
-                    text = await r.text()
-                if "<h1>404 Page Not Found</h1>" not in text:
+                r = requests.get(url)
+                if "<h1>404 Page Not Found</h1>" not in r.text:
                     break
-            if "<h1>404 Page Not Found</h1>" in text:
+            if "<h1>404 Page Not Found</h1>" in r.text:
                 # last attempt: maybe it is its own link not under a thread
                 url = f"http://www.cplusplus.com/reference/{first}/{first}/"
-                async with utils.get_aiohttp().get(url) as r:
-                    text = await r.text()
-                if "<h1>404 Page Not Found</h1>" in text:
+                r = requests.get(url)
+                if "<h1>404 Page Not Found</h1>" in r.text:
                     # no links work
                     # return an error to the user in discord and exit function
                     await utils.delay_send(
@@ -72,9 +70,8 @@ class CppRef(Command):
             # member function
             second = args[1]
             url2 = url + f"{second}/"
-            async with utils.get_aiohttp().get(url2) as r2:
-                text = await r2.text()
-            if "<h1>404 Page Not Found</h1>" in text:
+            r2 = requests.get(url2)
+            if "<h1>404 Page Not Found</h1>" in r2.text:
                 # second argument doesn't work but first one does
                 # inform user in discord, send first link, and exit function
                 await utils.delay_send(

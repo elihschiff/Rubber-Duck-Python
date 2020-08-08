@@ -7,6 +7,7 @@ from . import utils
 import emoji
 import random
 import re
+import requests
 
 from discord import ChannelType
 
@@ -31,17 +32,14 @@ async def send_message_to_violator(client, user):
 # id. if the emote is valid, it will return an empty string to remove the
 # emote from the message content.  If the emote is invalid, the content string
 # will be unmodified.
-async def validate_discord_emote(emote) -> str:
+def validate_discord_emote(emote) -> str:
     emote_id = discord_emote_id_re.search(str(emote)).group(1)
-    async with utils.get_aiohttp().get(
-        f"https://cdn.discordapp.com/emojis/{emote_id}"
-    ) as request:
-        if await request.status_code() == 200:
-            # valid emote
-            return ""
-        else:
-            # invalid emote
-            return emote
+    if requests.get(f"https://cdn.discordapp.com/emojis/{emote_id}").status_code == 200:
+        # valid emote
+        return ""
+    else:
+        # invalid emote
+        return emote
 
 
 # returns true if the message only contains emoji and whitespace.  It will

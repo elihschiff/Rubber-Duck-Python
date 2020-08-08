@@ -2,6 +2,7 @@ from . import Command
 from .. import utils
 import urllib
 from bs4 import BeautifulSoup
+import requests
 import discord
 import datetime
 import calendar
@@ -19,8 +20,8 @@ class Dining(Command):
             time = datetime.datetime.now().time()
             minute = time.hour * 60 + time.minute
             page_link = "https://rensselaerdining.com/dining-near-me/open-now"
-            async with utils.get_aiohttp().get(page_link, timeout=30) as page_response:
-                page_content = BeautifulSoup(await page_response.read(), "html.parser")
+            page_response = requests.get(page_link, timeout=30)
+            page_content = BeautifulSoup(page_response.content, "html.parser")
             locs = page_content.findAll("div", {"class": "dining-halls-container"})
             message = ""
             embed = discord.Embed(

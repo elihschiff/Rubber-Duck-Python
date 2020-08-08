@@ -2,6 +2,7 @@ from . import Command
 from .. import utils
 import urllib
 from bs4 import BeautifulSoup
+import requests
 import discord
 
 
@@ -21,8 +22,8 @@ class Steam(Command):
             page_link = (
                 "https://store.steampowered.com/search/?term=" + filtered_content
             )
-            async with utils.get_aiohttp().get(page_link) as page_response:
-                page_content = BeautifulSoup(await page_response.read(), "html.parser")
+            page_response = requests.get(page_link, timeout=30)
+            page_content = BeautifulSoup(page_response.content, "html.parser")
             rows = page_content.find(id="search_resultsRows")
             if rows == None:
                 await msg.channel.send(
@@ -36,12 +37,8 @@ class Steam(Command):
                 "birthtime": "376030801",
                 "lastagecheckage": "1-0-1982",
             }
-            async with utils.get_aiohttp().get(
-                link, cookies=cookies
-            ) as game_page_response:
-                game_page_content = BeautifulSoup(
-                    await game_page_response.read(), "html.parser"
-                )
+            game_page_response = requests.get(link, cookies=cookies, timeout=30)
+            game_page_content = BeautifulSoup(game_page_response.content, "html.parser")
             desc = game_page_content.find("div", {"class": "game_description_snippet"})
             img = None
             if desc == None:
