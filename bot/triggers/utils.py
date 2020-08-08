@@ -3,6 +3,7 @@ import asyncio
 import discord
 import re
 import traceback
+import aiohttp
 
 
 async def delay_send(sendable, msg="", delay_factor=1.0, embed=None, file=None):
@@ -143,3 +144,11 @@ async def sendTraceback(client, content=""):
         print(
             "\nNote: traceback was not sent to Discord, if you want this double check your config.json"
         )
+
+
+# Global http session
+http_session = aiohttp.ClientSession()
+
+
+def get_aiohttp():
+    return http_session

@@ -2,7 +2,6 @@ from bs4 import BeautifulSoup
 
 from . import Command
 from .. import utils
-import requests
 import re
 import os.path
 import time
@@ -136,13 +135,12 @@ class Java(Command):
         if not content:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return
-
-        r = requests.get(
+        search = self.search_index(content)
+        async with utils.get_aiohttp().get(
             f"https://docs.oracle.com/apps/search/search.jsp?q={content}&category=java&product=en"
             f"/java/javase/13"
-        )
-        search = self.search_index(content)
-        soup = BeautifulSoup(r.text, "html.parser")
+        ) as r:
+            soup = BeautifulSoup(await r.text(), "html.parser")
         result = f"Potential match(es) for `{content}`:\n"
         if search:
             result += search + "\n"

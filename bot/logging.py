@@ -1,7 +1,7 @@
 import discord
 from discord import ChannelType
-import requests
 import os
+from .triggers.utils import get_aiohttp
 
 # action_taken gets put in front of the log message
 # an example might be "(EDITED)" to show this message was edited
@@ -22,7 +22,7 @@ async def log_message(client, msg, action_taken=""):
         )
     log_content = await get_log_content(msg, client)
     attached_embed = get_embed(msg)
-    (attached_files_to_send, files_to_remove) = get_files(msg)
+    (attached_files_to_send, files_to_remove) = await get_files(msg)
 
     if action_taken:
         action_taken += " "
@@ -143,12 +143,12 @@ def get_embed(msg):
 
 
 # returns the files to send and also the locations so they may be removed later
-def get_files(msg):
+async def get_files(msg):
     attached_file_locations = []
     for attachment in msg.attachments:
         tmp_location = f"/tmp/{msg.id}-{attachment.filename}"
-        r = requests.get(attachment.url, allow_redirects=True)
-        open(tmp_location, "wb").write(r.content)
+        async with get_aiohttp().get(attachment.url, allow_redirects=True) as r:
+            open(tmp_location, "wb").write(await r.read())
 
         attached_file_locations.append(tmp_location)
 
