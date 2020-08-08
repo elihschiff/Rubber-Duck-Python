@@ -1,6 +1,5 @@
 from . import Command
 from .. import utils
-import requests
 
 
 class Man(Command):
@@ -32,8 +31,9 @@ class Man(Command):
 
         if which_page > 0:
             url = f"https://linux.die.net/man/{which_page}/{prgm}"
-            r = requests.get(url)
-            if "<h1>Not Found</h1>" in r.text or "<h1>Section " in r.text:
+            async with utils.get_aiohttp().get(url) as r:
+                text = await r.text()
+            if "<h1>Not Found</h1>" in text or "<h1>Section " in text:
                 await utils.delay_send(
                     msg.channel,
                     f"Could not find man page for `{prgm}` in section `{args[0]}`",
@@ -44,8 +44,9 @@ class Man(Command):
 
         for page in range(0, 9):
             url = f"https://linux.die.net/man/{page}/{prgm}"
-            r = requests.get(url)
-            if "<h1>Not Found</h1>" not in r.text and "<h1>Section " not in r.text:
+            async with utils.get_aiohttp().get(url) as r:
+                text = await r.text()
+            if "<h1>Not Found</h1>" not in text and "<h1>Section " not in text:
                 await utils.delay_send(msg.channel, url)
                 return
 
