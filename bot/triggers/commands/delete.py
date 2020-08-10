@@ -73,9 +73,7 @@ class Delete(Command, ReactionTrigger):
         await msg.clear_reactions()
 
         channel_to_delete = msg.channel_mentions[0]  # only one channel per message
-        log_equivalent = await get_log_channel(channel_to_delete, client)
         deleted_id = channel_to_delete.id
-        deleted_name = channel_to_delete.name
 
         async with client.lock:
             await channel_to_delete.delete()
@@ -85,19 +83,3 @@ class Delete(Command, ReactionTrigger):
                 {"channel_id": deleted_id},
             )
             client.connection.commit()
-
-        async with client.log_lock:
-            client.log_c.execute(
-                "INSERT INTO unused_logging VALUES (:channel_id);",
-                {"channel_id": log_equivalent.id},
-            )
-            client.log_c.execute(
-                "DELETE FROM logging WHERE dest_channel_id = (:channel_id);",
-                {"channel_id": log_equivalent.id},
-            )
-            client.log_connection.commit()
-
-        await log_equivalent.send(f"CHANNEL WAS: {deleted_name}")
-
-        if channel_to_delete.id != msg.channel.id:
-            await utils.delay_send(msg.channel, "DELETED {deleted_name}")
