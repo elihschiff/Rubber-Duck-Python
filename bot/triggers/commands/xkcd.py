@@ -1,8 +1,6 @@
 from . import Command
 from .. import utils
 import discord
-import requests
-import urllib.request
 import os
 import json
 import xkcd
@@ -35,13 +33,12 @@ class Xkcd(Command):
                 )
                 return
         else:
-
-            response = json.loads(
-                requests.post(
-                    "https://relevant-xkcd-backend.herokuapp.com/search",
-                    data={"search": content},
-                ).text
-            )
+            async with utils.get_aiohttp().post(
+                "https://relevant-xkcd-backend.herokuapp.com/search",
+                data={"search": content},
+            ) as request:
+                text = await request.text()
+            response = json.loads(text)
 
             if not response["success"] or len(response["results"]) == 0:
                 await utils.delay_send(
@@ -54,8 +51,10 @@ class Xkcd(Command):
             alt_text = response["results"][0]["titletext"]
 
         msg_to_send = "**" + title + ":** " + alt_text
-        tmpLocation = f"/tmp/xkcd_image.png"
-        urllib.request.urlretrieve(image_url, tmpLocation)
+        tmp_location = f"/tmp/{msg.id}-xkcd.png"
+        with open(tmp_location, "wb") as tmp_file:
+            async with utils.get_aiohttp().get(image_url) as r:
+                tmp_file.write(await r.read())
 
-        await msg.channel.send(msg_to_send, file=discord.File(tmpLocation))
-        os.remove(tmpLocation)
+        await msg.channel.send(msg_to_send, file=discord.File(tmp_location))
+        os.remove(tmp_location)

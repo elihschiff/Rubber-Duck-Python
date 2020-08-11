@@ -1,12 +1,10 @@
 from . import Command
 from .. import utils
 import discord
-import os
-import requests
 import json
-import urllib.request
-import math
 import cairosvg
+from io import StringIO, BytesIO
+import urllib
 
 
 class Latex(Command):
@@ -27,40 +25,27 @@ class Latex(Command):
                 "latexInput=" + filtered_content + "&outputFormat=SVG&outputScale=1000%"
             )
             headers = {
-                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
+                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "User-Agent": "slithering-duck/1.0 (+http://rpi.chat)",
             }
-            response = requests.request("POST", url, data=payload, headers=headers)
-            dict = json.loads(response.text)
-            url = r"https://latex2image.joeraut.com/" + dict["imageURL"]
-            tmpLocationSVG = f"/tmp/" + dict["imageURL"][7:]
-            tmpLocationPNG = dict["imageURL"][7:-3] + "png"
-            urllib.request.urlretrieve(url, tmpLocationSVG)
-            try:
-                with open(tmpLocationSVG, "r") as in_file:
-                    buf = in_file.readlines()
-                with open(tmpLocationSVG, "w") as out_file:
-                    for line in buf:
-                        if line.startswith("<svg"):
-                            line += """
-                                    <style>
-                                    svg {
-                                        fill: white;
-                                        stroke: black;
-                                        stroke-width: .1px;
-                                        stroke-linejoin: round;
-                                    }
-                                    </style>
-                                    """
-                        out_file.write(line)
-                cairosvg.svg2png(
-                    file_obj=open(tmpLocationSVG, "rb"), write_to=tmpLocationPNG
-                )
-                # don't use utils.delay_send() here since the above HTTP
-                # likely took a while
-                await msg.channel.send(file=discord.File(tmpLocationPNG))
-            finally:
-                os.remove(tmpLocationSVG)
-                os.remove(tmpLocationPNG)
+            async with utils.get_aiohttp().post(
+                url, data=payload, headers=headers
+            ) as response:
+                response.raise_for_status()
+                dict = json.loads(await response.text())
+            url = f"https://latex2image.joeraut.com/{dict['imageURL']}"
 
+            async with utils.get_aiohttp().get(url, headers=headers) as response:
+                tmpLocationSVG = (await response.text()).replace(
+                    "</svg>",
+                    "<style> svg { fill: white; stroke: black; stroke-width: .1px; stroke-linejoin: round; } </style> </svg>",
+                )
+            await utils.delay_send(
+                msg.channel,
+                file=discord.File(
+                    BytesIO(cairosvg.svg2png(file_obj=StringIO(tmpLocationSVG))),
+                    f"{content}.png",
+                ),
+            )
         except:
             await utils.delay_send(msg.channel, "Error rending LaTeX")

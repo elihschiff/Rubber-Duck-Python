@@ -1,3 +1,4 @@
+aiohttp
 discord.py>=1.2.3
 emoji
 fuzzywuzzy
