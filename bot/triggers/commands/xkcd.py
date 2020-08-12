@@ -4,6 +4,7 @@ import discord
 import os
 import json
 import xkcd
+from io import BytesIO
 
 
 class Xkcd(Command):
@@ -51,10 +52,8 @@ class Xkcd(Command):
             alt_text = response["results"][0]["titletext"]
 
         msg_to_send = "**" + title + ":** " + alt_text
-        tmp_location = f"/tmp/{msg.id}-xkcd.png"
-        with open(tmp_location, "wb") as tmp_file:
-            async with utils.get_aiohttp().get(image_url) as r:
-                tmp_file.write(await r.read())
-
-        await msg.channel.send(msg_to_send, file=discord.File(tmp_location))
-        os.remove(tmp_location)
+        tmp_file = BytesIO()
+        async with utils.get_aiohttp().get(image_url) as r:
+            tmp_file.write(await r.read())
+        tmp_file.seek(0)
+        await msg.channel.send(msg_to_send, file=discord.File(tmp_file, "xkcd.png"))

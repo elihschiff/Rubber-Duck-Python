@@ -4,6 +4,7 @@ import os
 import discord
 import png
 import random
+from io import BytesIO
 
 
 class RGB(Command):
@@ -64,14 +65,8 @@ class RGB(Command):
         p = []
         for i in range(0, 128):
             p.append(row)
-        file_name = "/tmp/temp_" + str(msg.id) + ".png"
-        with open(file_name, "wb") as f:
-            try:
-                w = png.Writer(128, 128, greyscale=False)
-                w.write(f, p)
-                f.close()
-                await utils.delay_send(msg.channel, file=discord.File(file_name))
-            except:
-                await utils.sendTraceback(client, msg.content)
-            finally:
-                os.remove(file_name)
+        w = png.Writer(128, 128, greyscale=False)
+        png_data = BytesIO()
+        w.write(png_data, p)
+        png_data.seek(0)
+        await utils.delay_send(msg.channel, file=discord.File(png_data, "rgb.png"))
