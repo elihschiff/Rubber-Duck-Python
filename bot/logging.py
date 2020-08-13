@@ -2,6 +2,7 @@ import discord
 from discord import ChannelType
 import os
 from .triggers.utils import get_aiohttp
+from io import BytesIO
 
 # action_taken gets put in front of the log message
 # an example might be "(EDITED)" to show this message was edited
@@ -22,18 +23,15 @@ async def log_message(client, msg, action_taken=""):
         )
     log_content = await get_log_content(msg, client)
     attached_embed = get_embed(msg)
-    (attached_files_to_send, files_to_remove) = await get_files(msg)
 
     if action_taken:
         action_taken += " "
 
-    await destination_channel.send(
-        f"{action_taken}{log_content}",
-        files=attached_files_to_send,
-        embed=attached_embed,
-    )
+    files = [await attach.to_file() for attach in msg.attachments]
 
-    remove_files(files_to_remove)
+    await destination_channel.send(
+        f"{action_taken}{log_content}", files=files, embed=attached_embed,
+    )
 
 
 async def log_message_delete(client, msg):
@@ -140,25 +138,3 @@ def get_embed(msg):
     if len(msg.embeds) > 0:
         attached_embed = msg.embeds[0]
     return attached_embed
-
-
-# returns the files to send and also the locations so they may be removed later
-async def get_files(msg):
-    attached_file_locations = []
-    for attachment in msg.attachments:
-        tmp_location = f"/tmp/{msg.id}-{attachment.filename}"
-        async with get_aiohttp().get(attachment.url, allow_redirects=True) as r:
-            open(tmp_location, "wb").write(await r.read())
-
-        attached_file_locations.append(tmp_location)
-
-    attached_files_to_send = []
-    for location in attached_file_locations:
-        opened_file = discord.File(location)
-        attached_files_to_send.append(opened_file)
-    return attached_files_to_send, attached_file_locations
-
-
-def remove_files(files_to_remove):
-    for location in files_to_remove:
-        os.remove(location)

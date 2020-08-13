@@ -69,7 +69,7 @@ class DuckClient(discord.Client):
             args = ["kill", "-9"]
             args.extend(sys.argv[1:])
             subprocess.call(args)
-
+        utils.initialize_http(self.loop)
         self.LOG_SERVER = self.get_guild(self.config["LOG_SERVER_ID"])
         self.SERVER = self.get_guild(self.config["SERVER_ID"])
 
