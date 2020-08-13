@@ -147,7 +147,12 @@ async def sendTraceback(client, content=""):
 
 
 # Global http session
-http_session = aiohttp.ClientSession()
+http_session = None
+
+
+def initialize_http(loop):
+    global http_session
+    http_session = aiohttp.ClientSession(loop=loop)
 
 
 def get_aiohttp():
