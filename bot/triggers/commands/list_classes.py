@@ -75,7 +75,7 @@ class ListClasses(Command):
             delay_msg_sent = False
             for class_name in sorted(class_list):
                 class_str += class_name + "\n"
-                if len(class_str) + len(prelude) >= 2000:
+                if len(class_str) + len(prelude) >= 1900:
                     embed = discord.Embed(description=class_str, color=0xDCC308)
 
                     await utils.delay_send(msg.author, prelude, embed=embed)
