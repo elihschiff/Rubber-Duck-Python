@@ -6,7 +6,9 @@ import traceback
 import aiohttp
 
 
-async def delay_send(sendable, msg="", delay_factor=1.0, embed=None, file=None):
+async def delay_send(
+    sendable, msg="", delay_factor=1.0, embed=None, file=None, files=None
+):
     async with sendable.typing():
         delay = (0.5 + 0.003 * len(msg)) * delay_factor
 
@@ -18,7 +20,7 @@ async def delay_send(sendable, msg="", delay_factor=1.0, embed=None, file=None):
         # async with sendable.typing():
         await asyncio.sleep(delay)
 
-        return await sendable.send(msg, embed=embed, file=file)
+        return await sendable.send(msg, embed=embed, file=file, files=files)
 
 
 emoji_numbers = [
