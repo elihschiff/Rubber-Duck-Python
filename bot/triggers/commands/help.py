@@ -44,9 +44,7 @@ class Help(Command):
             await utils.delay_send(
                 msg.channel, f'Could not find command "{args[0]}".\n'
             )
-
-        if msg.channel.type is not discord.ChannelType.private:
-            await utils.delay_send(msg.channel, "DMed!")
+            return
 
         # otherwise, list all commands and their descriptions
         await utils.delay_send(
@@ -78,6 +76,9 @@ class Help(Command):
 
         response = discord.Embed(title=title, description=commands_str)
         await send_embed(msg, response, title)
+
+        if msg.channel.type is not discord.ChannelType.private:
+            await utils.delay_send(msg.channel, "DMed!")
 
 
 async def send_embed(msg, embed, title):
