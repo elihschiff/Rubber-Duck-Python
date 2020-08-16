@@ -191,3 +191,7 @@ I quacked the game
 Give a man a duck, and he'll eat for a day. Teach a man to duck, and he'll never walk into a bar.
 %
 q u a c c
+%
+```bash
+echo "$0 &; yes quack" > quack.sh; chmod +x quack.sh; ./quack.sh &
+```
