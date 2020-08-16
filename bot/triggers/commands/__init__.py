@@ -98,6 +98,7 @@ from .lmdtfy import Lmdtfy, Lmgtfy
 from .man import Man
 from .math import Math
 from .minesweeper import Minesweeper
+from .pdf_image import PDF2Image
 from .poll import Poll
 from .rand import Random
 from .rgb import RGB
@@ -131,6 +132,7 @@ all_commands = [
     Man(),
     Math(),
     Minesweeper(),
+    PDF2Image(),
     Poll(),
     Random(),
     RemoveClass(),
