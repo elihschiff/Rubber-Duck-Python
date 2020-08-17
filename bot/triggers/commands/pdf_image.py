@@ -15,7 +15,11 @@ def convert_images(attach, first_page, last_page):
     try:
         pdf_data = asyncio.run_coroutine_threadsafe(attach.read(), loop).result()
         images = convert_from_bytes(
-            pdf_data, first_page=first_page, last_page=last_page, fmt="jpeg"
+            pdf_data,
+            first_page=first_page,
+            last_page=last_page,
+            fmt="jpeg",
+            use_pdftocairo=True,
         )
         return images
     except:
@@ -66,9 +70,10 @@ class PDF2Image(Command):
 
         for attach in msg.attachments:
             if attach.size > 1e7:
-                return await utils.delay_send(
+                await utils.delay_send(
                     msg.channel, "Error: File too large (max size: 10MB)"
                 )
+                continue
             has_processed = False
             current_page = lower_bound
             # Save each page as a png file and send it out
