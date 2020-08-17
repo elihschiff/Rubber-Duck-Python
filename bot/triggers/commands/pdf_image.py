@@ -13,9 +13,9 @@ loop = asyncio.get_event_loop()
 
 def convert_images(attach, first_page, last_page):
     try:
-        pdf = asyncio.run_coroutine_threadsafe(attach.to_file(), loop).result()
+        pdf_data = asyncio.run_coroutine_threadsafe(attach.read(), loop).result()
         images = convert_from_bytes(
-            pdf.fp.read(), first_page=first_page, last_page=last_page
+            pdf_data, first_page=first_page, last_page=last_page, fmt="jpeg"
         )
         return images
     except:
@@ -23,13 +23,13 @@ def convert_images(attach, first_page, last_page):
 
 
 class PDF2Image(Command):
-    names = ["pdfimage", "pdf2image", "pdfpng", "pdf2png"]
+    names = ["pdfimage", "pdf2image"]
     description = "Converts an attached PDF into images for easy viewing"
     usage = "!pdfimage [start: optional] [end: optional]"
     examples = [
-        "!pdfimage -- outputs all pages (max: 50)",
+        "!pdfimage -- outputs all pages (max: 10)",
         "!pdfimage 2 -- outputs page 2",
-        "!pdfimage 10 40 -- outputs pages 10-40",
+        "!pdfimage 10 20 -- outputs pages 10-20",
     ]
     causes_spam = True
 
@@ -39,10 +39,14 @@ class PDF2Image(Command):
                 msg.channel, "Error: no PDFs attached to message!"
             )
 
-        # We enforce a range of 50 images max to prevent spam, limit server resources
-        args = content.strip().split(" ")
+        # We enforce a range of 10 images max to prevent spam, limit server resource usage
+        args = content.strip()
+
+        if len(args) != 0:
+            args = args.split(" ")
+
         lower_bound = 1
-        upper_bound = 51
+        upper_bound = 11
 
         try:
             if len(args) == 2:
@@ -50,39 +54,39 @@ class PDF2Image(Command):
                 upper_bound = int(args[1])
             elif len(args) == 1:
                 lower_bound = upper_bound = int(args[0])
-        except ValueError:
-            lower_bound = 1
-            upper_bound = 51
 
-        if (
-            lower_bound < 0
-            or upper_bound < lower_bound
-            or (upper_bound - lower_bound > 50)
-        ):
+            if (
+                lower_bound < 0
+                or upper_bound < lower_bound
+                or (upper_bound - lower_bound > 10)
+            ):
+                raise ValueError()
+        except:
             return await utils.delay_send(msg.channel, "Error: Invalid range")
 
         for attach in msg.attachments:
-            images = await loop.run_in_executor(
-                pool, convert_images, attach, lower_bound, upper_bound
-            )
+            has_processed = False
+            current_page = lower_bound
+            # Save each page as a png file and send it out
+            while current_page <= upper_bound:
+                image = await loop.run_in_executor(
+                    pool, convert_images, attach, current_page, current_page
+                )
+                if image is None or len(image) == 0:
+                    break
+                image = image[0]
+                data = BytesIO()
+                image.save(data, "jpeg")
+                data.seek(0)
+                await utils.delay_send(
+                    msg.channel,
+                    file=discord.File(data, filename=f"f{current_page}.jpeg"),
+                )
+                has_processed = True
+                current_page += 1
 
-            if images is None:
+            if not has_processed:
                 return await utils.delay_send(
                     msg.channel,
                     "Error: failed to process attachment. Please check that the file is a PDF!",
                 )
-
-            # Save each page as a png file and send it out
-            files = []
-            i = 1
-            while len(images) > 0:
-                data = BytesIO()
-                images[0].save(data, "png")
-                del images[0]
-                data.seek(0)
-                files.append(discord.File(data, filename=f"f{i}.png"))
-                i += 1
-                # discord.py can only send 10 files per bulk operation
-                if len(files) == 10 or len(images) == 0:
-                    await utils.delay_send(msg.channel, files=files)
-                    files = []
