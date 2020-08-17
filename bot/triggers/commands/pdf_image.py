@@ -44,11 +44,15 @@ class PDF2Image(Command):
         lower_bound = 1
         upper_bound = 51
 
-        if len(args) == 2:
-            lower_bound = int(args[0])
-            upper_bound = int(args[1])
-        elif len(args) == 1:
-            lower_bound = upper_bound = int(args[0])
+        try:
+            if len(args) == 2:
+                lower_bound = int(args[0])
+                upper_bound = int(args[1])
+            elif len(args) == 1:
+                lower_bound = upper_bound = int(args[0])
+        except ValueError:
+            lower_bound = 1
+            upper_bound = 51
 
         if (
             lower_bound < 0
@@ -65,7 +69,7 @@ class PDF2Image(Command):
             if images is None:
                 return await utils.delay_send(
                     msg.channel,
-                    f"Error: failed to process attachment. Please check that the file is a PDF!",
+                    "Error: failed to process attachment. Please check that the file is a PDF!",
                 )
 
             # Save each page as a png file and send it out
