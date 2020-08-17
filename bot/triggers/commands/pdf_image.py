@@ -65,6 +65,10 @@ class PDF2Image(Command):
             return await utils.delay_send(msg.channel, "Error: Invalid range")
 
         for attach in msg.attachments:
+            if attach.size > 1e7:
+                return await utils.delay_send(
+                    msg.channel, "Error: File too large (max size: 10MB)"
+                )
             has_processed = False
             current_page = lower_bound
             # Save each page as a png file and send it out
