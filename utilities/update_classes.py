@@ -13,45 +13,35 @@ if len(sys.argv) < 2 or len(sys.argv) > 3:
 
 
 # Uncomment next section to use data scraped from quacs
-with open("courses.json") as f:
+with open("quacs-data/courses.json") as f:
     quacs_data = json.load(f)
-
-raw_course_data = {}
-raw_course_data["data"] = []
-for department in quacs_data["departments"]:
-    for course in department["courses"]:
-        course_data = {}
-        course_data["attributes"] = {}
-        course_data["attributes"]["longname"] = course["Title"]
-        course_data["attributes"]["course_shortname"] = course["Crse"]
-        course_data["attributes"]["subject_shortname"] = course["Subj"]
-        raw_course_data["data"].append(course_data)
 # End quacs data section
 
 
 courses = {}
 
-for course in raw_course_data["data"]:
-    # the following line removes extra spaces from the course name
-    # and capitalizes it.
-    course_name = " ".join(course["attributes"]["longname"].split()).upper()
-    course_dept = course["attributes"]["subject_shortname"]
-    course_code = f"{course['attributes']['subject_shortname']} {course['attributes']['course_shortname']}"
+for dept in quacs_data:
+    for course in dept["courses"]:
+        # the following line removes extra spaces from the course name
+        # and capitalizes it.
+        course_name = " ".join(course["name"].split()).upper()
+        course_dept = course["subj"]
+        course_code = f"{course['subj']} {course['crse']}"
 
-    print(f"Parsing course: {course_name}")
+        print(f"Parsing course: {course_name}")
 
-    if int(course["attributes"]["course_shortname"]) >= 6000:
-        continue
+        if int(course["csre"]) >= 6000:
+            continue
 
-    if course_name in courses:
-        courses[course_name]["course_codes"].append(course_code)
-        courses[course_name]["departments"].append(course_dept)
-    else:
-        courses[course_name] = {
-            "course_codes": [course_code],
-            "departments": [course_dept],
-            "identifiers": [],
-        }
+        if course_name in courses:
+            courses[course_name]["course_codes"].append(course_code)
+            courses[course_name]["departments"].append(course_dept)
+        else:
+            courses[course_name] = {
+                "course_codes": [course_code],
+                "departments": [course_dept],
+                "identifiers": [],
+            }
 
 if len(sys.argv) == 3:
     course_identifiers = {}
