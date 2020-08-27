@@ -17,5 +17,7 @@ class Weather(Command):
         ) as weather_request:
             forecast = await weather_request.text()
             if len(forecast) == 0:
-                return await ctx.channel.send("Upstream weather provider is down :-(")
+                return await utils.delay_send(
+                    msg.channel, "Upstream weather provider is down :-("
+                )
             await utils.delay_send(msg.channel, f"```bash\n{forecast}```")
