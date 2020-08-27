@@ -244,7 +244,7 @@ class AddClass(Command, ReactionTrigger):
                 break
 
             if not added:
-                await utils.delay_send.send(
+                await utils.delay_send(
                     msg.channel,
                     "Error: Unable to add course.  Please message an admin about this.",
                 )
