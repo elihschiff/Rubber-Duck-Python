@@ -45,13 +45,19 @@ class Delete(Command, ReactionTrigger):
 
         if not msg.channel_mentions:
             await self.prompt_for_channel_deletion(
-                client, msg.channel, msg.channel, msg.author,
+                client,
+                msg.channel,
+                msg.channel,
+                msg.author,
             )
             return
 
         for channel in msg.channel_mentions:
             await self.prompt_for_channel_deletion(
-                client, msg.channel, channel, msg.author,
+                client,
+                msg.channel,
+                channel,
+                msg.author,
             )
 
     async def execute_reaction(self, client, reaction, channel, msg, user):

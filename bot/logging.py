@@ -30,7 +30,9 @@ async def log_message(client, msg, action_taken=""):
     files = [await attach.to_file() for attach in msg.attachments]
 
     await destination_channel.send(
-        f"{action_taken}{log_content}", files=files, embed=attached_embed,
+        f"{action_taken}{log_content}",
+        files=files,
+        embed=attached_embed,
     )
 
 
