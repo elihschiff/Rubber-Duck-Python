@@ -96,14 +96,6 @@ class Purge(Command):
                 break
 
         if not bot_message_sent_in_semester:
-            async for message in channel.history(after=CURR_SEMESTER_START):
-                if message.author == client.user:
-                    print(f"Date: {message.created_at}")
-                    bot_message_sent_in_semester = True
-                    break
-            print(
-                f"Current date: {current_date}, CURR_SEMESTER_START: {CURR_SEMESTER_START}"
-            )
             reasons.append(
                 "No one has added the course since registration for this semester opened"
             )
@@ -146,9 +138,9 @@ class Purge(Command):
 
                 print(f"Will delete {course_channel.name}")
 
-                # await self.prompt_for_channel_deletion(
-                # client, course_channel, course_channel, msg.author
-                # )
-                # await self.send_deletion_reasons(
-                # client, course_channel, deletion_reasons
-                # )
+                await self.prompt_for_channel_deletion(
+                    client, course_channel, course_channel, msg.author
+                )
+                await self.send_deletion_reasons(
+                    client, course_channel, deletion_reasons
+                )
