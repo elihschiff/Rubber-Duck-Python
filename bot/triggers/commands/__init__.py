@@ -100,6 +100,7 @@ from .math import Math
 from .minesweeper import Minesweeper
 from .pdf_image import PDF2Image
 from .poll import Poll
+from .purge import Purge
 from .rand import Random
 from .rgb import RGB
 from .rps import RockPaperScissors
@@ -134,6 +135,7 @@ all_commands = [
     Minesweeper(),
     PDF2Image(),
     Poll(),
+    Purge(),
     Random(),
     RemoveClass(),
     RGB(),
