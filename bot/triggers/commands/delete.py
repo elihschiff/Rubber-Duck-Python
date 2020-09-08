@@ -5,8 +5,8 @@ from ...logging import get_log_channel
 
 
 class Delete(Command, ReactionTrigger):
-    prefixes = ["%", "sudo rm -f"]
-    names = ["delete"]
+    prefixes = ["%"]
+    names = ["delete", "sude rm -f ."]
     description = "ADMIN ONLY: Deletes a channel"
     requires_mod = True
 
