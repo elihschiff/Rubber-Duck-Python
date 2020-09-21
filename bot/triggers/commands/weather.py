@@ -1,6 +1,9 @@
 from . import Command
 from .. import utils
 
+import discord
+import io
+
 
 class Weather(Command):
     names = ["weather"]
@@ -13,11 +16,17 @@ class Weather(Command):
         content = "12180" if len(content) == 0 else content
 
         async with utils.get_aiohttp().get(
-            f"https://wttr.in/{content}?0ATnF"
+            f"http://wttr.in/{content}.png?0pq"
         ) as weather_request:
-            forecast = await weather_request.text()
-            if len(forecast) == 0:
+            if weather_request.status != 200:
                 return await utils.delay_send(
-                    msg.channel, "Upstream weather provider is down :-("
+                    msg.channel,
+                    f"Failed to retrieve weather :-(. HTTP {weather_request.status}: ```{await weather_request.text()}```",
                 )
-            await utils.delay_send(msg.channel, f"```bash\n{forecast}```")
+            forecast = await weather_request.read()
+            buffer = io.BytesIO()
+            buffer.write(forecast)
+            buffer.seek(0)
+            await utils.delay_send(
+                msg.channel, file=discord.File(buffer, filename="weather.png")
+            )
