@@ -68,6 +68,9 @@ def user_is_mod(client, user) -> bool:
 
 def user_in_timeout(client, user) -> bool:
     member = client.SERVER.get_member(user.id)
+    if member is None:
+        return False
+
     for role in member.roles:
         if role.id == client.config["time_out_id"]:
             return True
