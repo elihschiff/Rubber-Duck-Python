@@ -21,6 +21,7 @@ from .triggers import utils
 class DuckClient(discord.Client):
     def __init__(
         self,
+        intents,
         config_filename="config/config.json",
         roles_filename="config/roles.json",
         messages_filename="config/messages.json",
@@ -28,7 +29,7 @@ class DuckClient(discord.Client):
         games_filename="config/games.txt",
         path=sys.path[0] + "/",
     ):
-        super().__init__()
+        super().__init__(intents=intents)
         config_filename = path + config_filename
         roles_filename = path + roles_filename
         messages_filename = path + messages_filename
