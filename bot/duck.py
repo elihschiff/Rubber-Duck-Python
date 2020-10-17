@@ -102,7 +102,7 @@ class DuckClient(discord.Client):
             "discord.gg/" in msg.content
             or "discordapp.com/invite/" in msg.content
             or "discord.com/invite/" in msg.content
-        ):
+        ) and not utils.user_is_mod(self, msg.author):
             await msg.delete()
             await msg.author.send(
                 f"Your message (`{utils.sanitized(msg.content)}`) has been removed because it contained a discord server invite link."
@@ -150,7 +150,7 @@ class DuckClient(discord.Client):
                 "discord.gg/" in msg_full.content
                 or "discordapp.com/invite/" in msg_full.content
                 or "discord.com/invite/" in msg_full.content
-            ):
+            ) and not utils.user_is_mod(self, msg.author):
                 await msg.delete()
                 await msg.author.send(
                     f"Your message (`{utils.sanitized(msg.content)}`) has been removed because it contained a discord server invite link."
