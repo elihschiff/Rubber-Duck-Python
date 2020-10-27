@@ -16,7 +16,7 @@ class Anime(Command):
             return
 
         jikan = Jikan()
-        show = jikan.search("anime", content)["results"][1]
+        show = jikan.search("anime", content)["results"][0]
 
         if show["rated"] == "Rx" or show["rated"] == "R+":
             await utils.delay_send(
