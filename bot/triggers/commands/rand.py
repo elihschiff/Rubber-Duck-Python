@@ -30,7 +30,7 @@ class Random(Command):
                 arg1 = float(args[arg1_idx])
                 arg2 = float(args[arg1_idx + 1])
         except (IndexError, ValueError) as e:
-            await utils.delay_send(msg.channel, f"Usage: {usage}")
+            await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return
 
         min_val = min(arg1, arg2)
