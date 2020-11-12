@@ -7,7 +7,7 @@ class Echo(Command):
     description = "Echoes the given message"
     usage = "!echo [message]"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         if content:
             content.replace("@everyone", "@\u200beveryone")
             content.replace("@here", "@\u200bhere")

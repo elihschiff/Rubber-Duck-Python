@@ -12,7 +12,7 @@ class Dining(Command):
     description = "Gets currently available dining halls on campus"
     usage = "!dining"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         DINING_HALL_LENGTH = 45
         try:
             day = calendar.day_name[datetime.datetime.now().weekday()]

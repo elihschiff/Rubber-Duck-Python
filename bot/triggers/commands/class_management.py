@@ -101,7 +101,7 @@ class AddClass(Command, ReactionTrigger):
     def __init__(self):
         self.alphanum_re = re.compile("[^\w ]+")
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         if not content:
             await utils.delay_send(msg.channel, client.messages["add_no_content"])
             return
@@ -158,7 +158,7 @@ class AddClass(Command, ReactionTrigger):
     # It keeps a list of people and classes that were recently added to reduce welcome message spam
     recent_class_cache = []
 
-    async def execute_reaction(self, client, reaction, channel, msg, user):
+    async def execute_reaction(self, client, reaction, channel, msg, user, **kwargs):
         if not client.config["ENABLE_COURSES"]:
             return
 
@@ -292,7 +292,7 @@ class RemoveClass(Command, ReactionTrigger):
     usage_no_courses = "!remove [role]"
     examples = f"!remove Chemistry"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         if not content:
             await utils.delay_send(msg.channel, client.messages["remove_no_content"])
             return
@@ -337,7 +337,7 @@ class RemoveClass(Command, ReactionTrigger):
             "No results match",
         )
 
-    async def execute_reaction(self, client, reaction, channel, msg, user):
+    async def execute_reaction(self, client, reaction, channel, msg, user, **kwargs):
         if not client.config["ENABLE_COURSES"]:
             return
 

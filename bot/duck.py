@@ -204,7 +204,7 @@ class DuckClient(discord.Client):
 
             try:
                 result = await trigger.execute_reaction(
-                    self, reaction, channel, msg, user
+                    self, reaction=reaction, channel=channel, msg=msg, user=user
                 )
                 # if you delete the message reacted to, return False
                 if result is False:

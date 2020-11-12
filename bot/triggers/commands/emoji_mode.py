@@ -107,7 +107,7 @@ class EmojiMode(Command):
             client.messages["emoji_mode_user_deactivate_public"].format(user.mention)
         )
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         if content == "":
             await self.channel_emoji_mode_toggle(client, msg.channel)
             return

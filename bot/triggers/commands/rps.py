@@ -83,7 +83,7 @@ class RockPaperScissors(Game, ReactionTrigger):
         return embed
 
     # this is called when a message starting with "!commandname" is run
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         if not content:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return
@@ -141,7 +141,7 @@ class RockPaperScissors(Game, ReactionTrigger):
 
         utils.delay_send(msg.channel, client.messages["rockpaperscissors_game_init"])
 
-    async def execute_reaction(self, client, reaction, channel, msg, user):
+    async def execute_reaction(self, client, reaction, channel, msg, user, **kwargs):
         if client.user.id == reaction.user_id:
             return
 

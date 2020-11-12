@@ -7,7 +7,7 @@ class Help(Command):
     names = ["help"]
     description = "Lists commands and their description"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         args = content.split(" ")
         # if a specific command for help was entered
         if args[0].strip() != "":

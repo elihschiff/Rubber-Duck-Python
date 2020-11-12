@@ -9,6 +9,6 @@ class Poll(Command):
 
     should_type = False
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         await msg.add_reaction("👍")
         await msg.add_reaction("👎")

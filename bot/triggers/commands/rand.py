@@ -10,7 +10,7 @@ class Random(Command):
     examples = f"!random, !random 1 10, !random float 1 10"
     notes = "By default, this returns a float in the range [0,1).  If given arguments, it'll try to match the type of the argument"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         if len(content) == 0:
             await utils.delay_send(msg.channel, str(random.random()))
             return

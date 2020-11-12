@@ -12,7 +12,7 @@ class Minesweeper(Command):
     examples = f"!ms, !ms 10 3, !ms 5 5 2"
     causes_spam = True
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         height = 8
         width = 8
         args = content.split()

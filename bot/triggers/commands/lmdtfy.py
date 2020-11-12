@@ -9,7 +9,7 @@ class Lmdtfy(Command):
     usage = "!lmdtfy [query]"
     examples = f"!lmdtfy Does water boil in space?"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         if not content:
             content = "How do I think of what to search?"
 
@@ -23,7 +23,7 @@ class Lmgtfy(Command):
     usage = "!lmgtfy [query]"
     examples = f"!lmgtfy Why am I not using DuckDuckGo?"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         if not content:
             content = "How do I think of what to search?"
 

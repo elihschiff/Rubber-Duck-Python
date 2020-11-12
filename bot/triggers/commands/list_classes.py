@@ -19,7 +19,7 @@ class ListClasses(Command):
     usage = "!list"
     notes_no_courses = ""
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         if not content or not client.config["ENABLE_COURSES"]:
             await self.general_listing(client, msg)
             return

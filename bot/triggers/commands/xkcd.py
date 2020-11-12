@@ -13,7 +13,7 @@ class Xkcd(Command):
     usage = "!xkcd [(optional) search term]"
     examples = f"!xkcd, !xkcd duck, !xkcd 537"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         image_url = ""
         title = ""
         alt_text = ""

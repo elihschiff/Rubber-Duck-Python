@@ -7,5 +7,5 @@ class Issue(Command):
     description = "Tells user how to report a change"
     usage = "!issue"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         await utils.delay_send(msg.channel, client.messages["issue"], 0)

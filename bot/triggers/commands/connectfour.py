@@ -180,7 +180,7 @@ class ConnectFour(Game, ReactionTrigger):
 
             return (row, col)
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         if not content:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return
@@ -255,7 +255,7 @@ class ConnectFour(Game, ReactionTrigger):
         for col in COLUMNS[:cols]:
             await msg.add_reaction(col["emoji"])
 
-    async def execute_reaction(self, client, reaction, channel, msg, user):
+    async def execute_reaction(self, client, reaction, channel, msg, user, **kwargs):
         if client.user.id == reaction.user_id:
             return
         # channel = await client.fetch_channel(reaction.channel_id)

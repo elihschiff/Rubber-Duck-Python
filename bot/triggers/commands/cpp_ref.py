@@ -9,7 +9,7 @@ class CppRef(Command):
     usage = "!cpp [container/class/object] [(optional) member function]"
     examples = f"!cpp vector push_back, !cpp sort"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         args = content.split(" ")
 
         if not content:

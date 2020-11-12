@@ -64,7 +64,9 @@ class Command(MessageTrigger):
         # The execute command is defined here to decrease code reuse below
         async def _execute():
             await self.execute_command(
-                client, msg, utils.sanitized(msg.clean_content[idx:].strip())
+                client,
+                msg=msg,
+                content=utils.sanitized(msg.clean_content[idx:].strip()),
             )
 
         if self.should_type:
@@ -73,7 +75,7 @@ class Command(MessageTrigger):
         else:
             await _execute()
 
-    async def execute_command(self, client, msg, content: str):
+    async def execute_command(self, client, msg, content: str, **kwargs):
         raise NotImplementedError("'execute_command' not implemented for this command")
 
     def __lt__(self, other):

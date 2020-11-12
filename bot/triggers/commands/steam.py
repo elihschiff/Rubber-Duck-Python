@@ -11,7 +11,7 @@ class Steam(Command):
     usage = "!steam [game name]"
     examples = f"!steam team fortress 2"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         if not content:
             await utils.delay_send(msg.channel, "<https://store.steampowered.com>")
             return

@@ -11,7 +11,7 @@ class RGB(Command):
     names = ["rgb", "color", "colour"]
     description = "Returns an image of the given color"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         args = content.split()
         if len(args) not in [0, 1, 3]:
             await utils.delay_send(

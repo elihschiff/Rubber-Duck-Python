@@ -111,7 +111,7 @@ class Purge(Command):
             "This deletion prompt was automatically generated.  A moderator will confirm that this channel should be deleted before deleting it."
         )
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         if not client.config["ENABLE_COURSES"]:
             await utils.delay_send(
                 msg.channel,

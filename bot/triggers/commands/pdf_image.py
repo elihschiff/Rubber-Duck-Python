@@ -37,7 +37,7 @@ class PDF2Image(Command):
     ]
     causes_spam = True
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         if len(msg.attachments) == 0:
             return await utils.delay_send(
                 msg.channel, "Error: no PDFs attached to message!"

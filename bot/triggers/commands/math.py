@@ -9,7 +9,7 @@ class Math(Command):
     usage = "!math [expression]"
     examples = f"!math d/dx sin(x)^2"
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         if not content:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return

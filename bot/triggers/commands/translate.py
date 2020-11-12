@@ -13,7 +13,7 @@ class Translate(Command):
     def __init__(self):
         self.translator = Translator()
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         if len(content) == 0:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return

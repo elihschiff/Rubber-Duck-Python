@@ -14,7 +14,7 @@ class Wikipedia(Command):
     def __init__(self):
         self.wiki = wikipediaapi.Wikipedia("en")
 
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         if not content:
             page_link = "https://en.wikipedia.org/wiki/Special:Random"
             async with utils.get_aiohttp().get(page_link) as page_response:

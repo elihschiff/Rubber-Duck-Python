@@ -205,7 +205,7 @@ class TicTacToe(Game, ReactionTrigger):
             return pos
 
     # this is called when a message starting with "!commandname" is run
-    async def execute_command(self, client, msg, content):
+    async def execute_command(self, client, msg, content, **kwargs):
         if not content:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return
