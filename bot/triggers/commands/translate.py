@@ -18,7 +18,7 @@ class Translate(Command):
             await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return
 
-        translation = self.translator.translate(content, lang_tgt='en')
+        translation = self.translator.translate(content, lang_tgt="en")
 
         response = f"`{sanitized(content)}` translates from {self.translator.detect(content)[0].upper()} to: `{sanitized(translation)}`"
         await utils.delay_send(msg.channel, response, 1)
