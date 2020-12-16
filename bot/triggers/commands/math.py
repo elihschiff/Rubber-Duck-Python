@@ -27,8 +27,7 @@ class Math(Command):
                 await msg.channel.send(
                     f"The answer for `{content}` is: `{result.plainText}`"
                 )
-        except StopIteration:
-            pass
-        await msg.channel.send(
-            f"I could not find an answer for `{utils.sanitized(content)}`"
-        )
+        except (AttributeError, StopIteration):
+            await msg.channel.send(
+                f"I could not find an answer for `{utils.sanitized(content)}`"
+            )
