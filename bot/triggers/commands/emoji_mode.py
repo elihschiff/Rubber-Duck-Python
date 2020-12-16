@@ -100,7 +100,7 @@ class EmojiMode(Command):
 
         try:
             await user.send(client.messages["emoji_mode_user_deactivate"])
-        except HTTPException:
+        except (HTTPException, discord.errors.Traceback):
             pass
 
         await sending_channel.send(
