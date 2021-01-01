@@ -1,7 +1,6 @@
 import requests
 import sys
 import sqlite3
-import discord
 from dotenv import load_dotenv
 import os
 import json
@@ -10,63 +9,85 @@ if len(sys.argv) != 3:
     print(f"USAGE: python {sys.argv[0]} QUACS_DATA DB_NAME")
     sys.exit(1)
 
-
-# Uncomment next line to use current yacs data
-# raw_course_data = requests.get("https://yacs.cs.rpi.edu/api/v6/listings").json()
-
-
-# Uncomment next section to use data scraped from quacs
 with open(sys.argv[1]) as f:
     quacs_data = json.load(f)
 
-raw_course_data = {}
-raw_course_data["data"] = []
+# Load data
+raw_course_data = []
 for department in quacs_data:
     for course in department["courses"]:
         course_data = {}
-        course_data["attributes"] = {}
-        course_data["attributes"]["title"] = course["title"]
-        course_data["attributes"]["crse"] = course["crse"]
-        raw_course_data["data"].append(course_data)
-# End quacs data section
+        course_data["title"] = course["title"]
+        course_data["crse"] = course["crse"]
+        course_data["dept"] = department["code"].upper()
+        raw_course_data.append(course_data)
 
-
-courses = set()
-
-for course in raw_course_data["data"]:
+# Parse raw data into something easier to use
+courses = []
+for course in raw_course_data:
     # the following line removes extra spaces from the course name
     # and capitalizes it.
-    course_name = " ".join(course["attributes"]["title"].split()).upper()
-    print(f"Parsing course: {course_name}")
-    if int(course["attributes"]["crse"]) < 6000:
-        courses.add(course_name)
+    course_name = " ".join(course["title"].split()).upper()
+    if int(course["crse"]) < 6000:
+        courses.append(
+            {
+                "name": course_name[:100],
+                "code": f'{course["dept"]} {course["crse"]}',
+                "dept": course["dept"],
+            }
+        )
 
 connection = sqlite3.connect(sys.argv[2])
 c = connection.cursor()
 
+# Set all courses to inactive
 c.execute("UPDATE classes SET active = 0;")
 
+# Update courses which already existed
 for course in courses:
-    course_name_discord = course[:100]
-
     c.execute(
-        "UPDATE classes SET active = 1 WHERE name = :name;",
-        {"name": course_name_discord},
+        "UPDATE classes SET active = 1 WHERE name = :name OR instr(course_codes, :code);",
+        course,
     )
 
-connection.commit()
+# Identify new courses (their name and course code is different)
+new_courses = []
+for course in courses:
+    c.execute(
+        "SELECT * FROM classes WHERE name = :name OR instr(course_codes, :code);",
+        course,
+    )
+    if c.fetchone() is None:
+        new_courses.append(course)
 
-bot = discord.Client()
+# Add new courses
+for course in new_courses:
+    c.execute(
+        "INSERT INTO classes (name, course_codes, departments, active) VALUES (:name, :course_codes, :departments, 1);",
+        {
+            "name": course["name"],
+            "course_codes": json.dumps([course["code"]]),
+            "departments": json.dumps([course["dept"]]),
+        },
+    )
 
+# Display changes and prompt for confirmation
+print("Inactive courses:")
+c.execute("SELECT name FROM classes WHERE active = 0;")
+for course in c.fetchall():
+    print(f"\t{course[0]}")
 
-@bot.event
-async def on_ready():
-    c.execute("SELECT channel_id FROM classes WHERE active = 0 AND channel_id != 0;")
-    for channel_id in c.fetchall():
-        print(f"Hiding {channel_id[0]}")
-        await bot.get_channel(channel_id[0]).edit(sync_permissions=True)
-    sys.exit(0)
+print("\nActive courses:")
+c.execute("SELECT name FROM classes WHERE active = 1;")
+for course in c.fetchall():
+    print(f"\t{course[0]}")
 
+res = ""
+while res not in ("yes", "no"):
+    try:
+        res = input("Type 'yes' to confirm these changes or 'no' to exit")
+    except EOFError:
+        break
 
-load_dotenv()
-bot.run(os.getenv("BOT_TOKEN"))
+    if res == "yes":
+        connection.commit()
