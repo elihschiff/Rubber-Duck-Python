@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 import os
 import json
 
-if len(sys.argv) != 2:
-    print(f"USAGE: python {sys.argv[0]} DB_NAME")
+if len(sys.argv) != 3:
+    print(f"USAGE: python {sys.argv[0]} QUACS_DATA DB_NAME")
     sys.exit(1)
 
 
@@ -16,17 +16,17 @@ if len(sys.argv) != 2:
 
 
 # Uncomment next section to use data scraped from quacs
-with open("courses.json") as f:
+with open(sys.argv[1]) as f:
     quacs_data = json.load(f)
 
 raw_course_data = {}
 raw_course_data["data"] = []
-for department in quacs_data["departments"]:
+for department in quacs_data:
     for course in department["courses"]:
         course_data = {}
         course_data["attributes"] = {}
-        course_data["attributes"]["longname"] = course["Title"]
-        course_data["attributes"]["course_shortname"] = course["Crse"]
+        course_data["attributes"]["title"] = course["title"]
+        course_data["attributes"]["crse"] = course["crse"]
         raw_course_data["data"].append(course_data)
 # End quacs data section
 
@@ -36,12 +36,12 @@ courses = set()
 for course in raw_course_data["data"]:
     # the following line removes extra spaces from the course name
     # and capitalizes it.
-    course_name = " ".join(course["attributes"]["longname"].split()).upper()
+    course_name = " ".join(course["attributes"]["title"].split()).upper()
     print(f"Parsing course: {course_name}")
-    if int(course["attributes"]["course_shortname"]) < 6000:
+    if int(course["attributes"]["crse"]) < 6000:
         courses.add(course_name)
 
-connection = sqlite3.connect(sys.argv[1])
+connection = sqlite3.connect(sys.argv[2])
 c = connection.cursor()
 
 c.execute("UPDATE classes SET active = 0;")
