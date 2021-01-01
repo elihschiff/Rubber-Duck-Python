@@ -73,19 +73,19 @@ for course in new_courses:
 
 # Display changes and prompt for confirmation
 print("Inactive courses:")
-c.execute("SELECT name FROM classes WHERE active = 0;")
+c.execute("SELECT name FROM classes WHERE active = 0 ORDER BY name;")
 for course in c.fetchall():
     print(f"\t{course[0]}")
 
 print("\nActive courses:")
-c.execute("SELECT name FROM classes WHERE active = 1;")
+c.execute("SELECT name FROM classes WHERE active = 1 ORDER BY name;")
 for course in c.fetchall():
     print(f"\t{course[0]}")
 
 res = ""
 while res not in ("yes", "no"):
     try:
-        res = input("Type 'yes' to confirm these changes or 'no' to exit")
+        res = input("Type 'yes' to confirm these changes or 'no' to exit: ")
     except EOFError:
         break
 
