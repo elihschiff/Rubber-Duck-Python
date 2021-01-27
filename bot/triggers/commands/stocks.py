@@ -21,7 +21,7 @@ class Stocks(Command):
             )
 
         # prepare query str
-        query = f"https://query1.finance.yahoo.com/v7/finance/quote?symbols={content}"
+        query = f"https://query1.finance.yahoo.com/v7/finance/quote?symbols={content.replace(',', '')}"
 
         async with utils.get_aiohttp().get(query) as stock_request:
             # Ensure HTTP request succeeded
