@@ -62,10 +62,9 @@ class Stocks(Command):
                 yearRange = get_info("fiftyTwoWeekRange")
 
                 if historic:
-                    await utils.delay_send(
+                    return await utils.delay_send(
                         msg.channel, f"Error: {symbol} is a historic stock symbol."
                     )
-                    continue
 
                 after_hours = False
                 after_hours_price = None
