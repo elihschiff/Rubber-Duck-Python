@@ -23,9 +23,10 @@ class Stocks(Command):
 
         async with utils.get_aiohttp().get(query) as stock_request:
             if stock_request.status != 200:
+                stock_request_text = await stock_request.text()
                 return await utils.delay_send(
                     msg.channel,
-                    f"Failed to retrieve stock information :-(. HTTP {stock_request.status}: ```{await stock_request.text()}```",
+                    f"Failed to retrieve stock information :-(. HTTP {stock_request.status}: ```{stock_request_text}```",
                 )
             forecast = json.loads(await stock_request.read())["quoteResponse"]["result"]
 
