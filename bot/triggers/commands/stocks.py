@@ -9,7 +9,7 @@ import json
 class Stocks(Command):
     names = ["stock", "stocks", "stonk", "stonks"]
     description = "Retrieves stock price information using Yahoo! Finance"
-    usage = "!stock <stock 1> <stock 2> <stock 3> <stock 4>"
+    usage = "!stock <stock>"
     examples = f"!stock GME BB"
 
     async def execute_command(self, client, msg, content, **kwargs):
@@ -21,7 +21,7 @@ class Stocks(Command):
             )
 
         # prepare query str
-        query = f"https://query1.finance.yahoo.com/v7/finance/quote?symbols={','.join(list(set(content.split(' ')))[:4])}"
+        query = f"https://query1.finance.yahoo.com/v7/finance/quote?symbols={','.join(list(set(content.split(' ')))[:1])}"
 
         async with utils.get_aiohttp().get(query) as stock_request:
             # Ensure HTTP request succeeded
