@@ -10,7 +10,7 @@ class Stocks(Command):
     names = ["stock", "stocks", "stonk", "stonks"]
     description = "Retrieves stock price information using Yahoo! Finance"
     usage = "!stock <stock>"
-    examples = f"!stock GME BB"
+    examples = "!stock GME"
 
     async def execute_command(self, client, msg, content, **kwargs):
         # At the moment, Yahoo! Finance has no way to get a random stock easily.
@@ -21,7 +21,7 @@ class Stocks(Command):
             )
 
         # prepare query str
-        query = f"https://query1.finance.yahoo.com/v7/finance/quote?symbols={','.join(list(set(content.split(' ')))[:1])}"
+        query = f"https://query1.finance.yahoo.com/v7/finance/quote?symbols={content}"
 
         async with utils.get_aiohttp().get(query) as stock_request:
             # Ensure HTTP request succeeded
