@@ -107,6 +107,7 @@ from .rand import Random
 from .rgb import RGB
 from .rps import RockPaperScissors
 from .steam import Steam
+from .stocks import Stocks
 from .tictactoe import TicTacToe
 from .translate import Translate
 from .version import Version
@@ -143,6 +144,7 @@ all_commands = [
     RGB(),
     RockPaperScissors(),
     Steam(),
+    Stocks(),
     TicTacToe(),
     Translate(),
     Version(),
