@@ -7,15 +7,15 @@ import aiohttp
 
 
 async def delay_send(
-    sendable, msg="", delay_factor=1.0, embed=None, file=None, files=None
+    sendable, msg="", delay_factor=0.5, embed=None, file=None, files=None
 ):
     async with sendable.typing():
         delay = (0.5 + 0.003 * len(msg)) * delay_factor
 
-        # delay will never take more than 2 seconds to respond
-        delay = min(2, delay)
-        # delay will never take less than .25 seconds to respond
-        delay = max(0.25, delay)
+        # delay will never take more than 1 seconds to respond
+        delay = min(1, delay)
+        # delay will never take less than .125 seconds to respond
+        delay = max(0.125, delay)
         # delay = 0
         # async with sendable.typing():
         await asyncio.sleep(delay)
