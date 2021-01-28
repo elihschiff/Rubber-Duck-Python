@@ -20,10 +20,9 @@ class Latex(Command):
 
         try:
             url = "https://e1kf0882p7.execute-api.us-east-1.amazonaws.com/default/latex2image"
-            filtered_content = urllib.parse.quote(content)
 
             payload = {
-                "latexInput": filtered_content,
+                "latexInput": content,
                 "outputFormat": "SVG",
                 "outputScale": "1000%",
             }
