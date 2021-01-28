@@ -19,21 +19,25 @@ class Latex(Command):
             return
 
         try:
-            url = "https://latex2image.joeraut.com/convert"
+            url = "https://e1kf0882p7.execute-api.us-east-1.amazonaws.com/default/latex2image"
             filtered_content = urllib.parse.quote(content)
-            payload = (
-                "latexInput=" + filtered_content + "&outputFormat=SVG&outputScale=1000%"
-            )
+
+            payload = {
+                "latexInput": filtered_content,
+                "outputFormat": "SVG",
+                "outputScale": "1000%",
+            }
             headers = {
-                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "User-Agent": "slithering-duck/1.0 (+http://rpi.chat)",
+                "Content-Type": "application/json; charset=UTF-8",
+                "User-Agent": "slithering-duck/1.0 (+https://discord.com/rpi)",
             }
             async with utils.get_aiohttp().post(
-                url, data=payload, headers=headers
+                url, data=json.dumps(payload), headers=headers
             ) as response:
                 response.raise_for_status()
                 dict = json.loads(await response.text())
-            url = f"https://latex2image.joeraut.com/{dict['imageURL']}"
+
+            url = dict["imageUrl"]
 
             async with utils.get_aiohttp().get(url, headers=headers) as response:
                 tmpLocationSVG = (await response.text()).replace(
