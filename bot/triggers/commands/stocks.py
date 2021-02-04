@@ -102,11 +102,18 @@ class Stocks(Command):
                     except:
                         pass
 
+                # Rounds the value to 2 decimal places if price >= $1 and 6 if < $1
+                # also has an option to show the sign (+/-) before the number
+                def round_price(value, price, show_sign=False):
+                    if show_sign:
+                        return f"{value:+.2f}" if abs(price) >= 1 else f"{value:+.6f}"
+                    return f"{value:.2f}" if abs(price) >= 1 else f"{value:.6f}"
+
                 try_state(MarketState.PRE, "pre")
                 try_state(MarketState.POST, "post")
                 color = 15158332 if percent_change < 0 else 3066993
 
-                regular_info = f"{curr_price:.2f} {currency} -> ({change:+,.2f} / {percent_change:+,.2f}%)"
+                regular_info = f"{round_price(curr_price, curr_price)} {currency} -> ({round_price(change, curr_price, True)} / {percent_change:+,.2f}%)"
                 embed = discord.Embed(
                     title=f"{name} - ${symbol}",
                     color=color,
@@ -119,7 +126,7 @@ class Stocks(Command):
                 if state != MarketState.REGULAR:
                     embed.add_field(
                         name=state.value[1],
-                        value=f"{after_hours_price:.2f} {currency} -> ({after_hours_change:+,.2f} / {after_hours_pc:+,.2f}%)",
+                        value=f"{round_price(after_hours_price, after_hours_price)} {currency} -> ({round_price(after_hours_change, after_hours_price, True)} / {after_hours_pc:+,.2f}%)",
                         inline=False,
                     )
                     embed.add_field(name="Regular: ", value=regular_info, inline=False)
