@@ -260,6 +260,19 @@ class AddClass(Command, ReactionTrigger):
                 client.messages["class_add_confirmation"].format(course_name),
             )
 
+            # If the user doesn't have All-Seer or Non All-Seer, give them Non All-Seer
+            server_member = client.SERVER.get_member(msg.author.id)
+            if all(
+                [
+                    role.id != client.config["all_seer_id"]
+                    and role.id != client.config["non_all_seer_id"]
+                    for role in server_member.roles
+                ]
+            ):
+                await add_role(
+                    client, msg, client.config["non_all_seer_id"], role["name"], None
+                )
+
             # check if this user and channel is in the cache
             for past_user, past_channel in self.recent_class_cache:
                 if past_user == user.id and past_channel == channel.id:
