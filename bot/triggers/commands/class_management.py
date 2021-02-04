@@ -269,9 +269,13 @@ class AddClass(Command, ReactionTrigger):
                     for role in server_member.roles
                 ]
             ):
-                await add_role(
-                    client, msg, client.config["non_all_seer_id"], role["name"], None
-                )
+                try:
+                    non_all_seer = client.SERVER.get_role(
+                        client.config["non_all_seer_id"]
+                    )
+                    await server_member.add_roles(non_all_seer)
+                except Exception as e:
+                    await utils.sendTraceback(client, msg.content)
 
             # check if this user and channel is in the cache
             for past_user, past_channel in self.recent_class_cache:
