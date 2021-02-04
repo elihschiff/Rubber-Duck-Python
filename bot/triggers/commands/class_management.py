@@ -261,7 +261,7 @@ class AddClass(Command, ReactionTrigger):
             )
 
             # If the user doesn't have All-Seer or Non All-Seer, give them Non All-Seer
-            server_member = client.SERVER.get_member(msg.author.id)
+            server_member = client.SERVER.get_member(user.id)
             if all(
                 [
                     role.id != client.config["all_seer_id"]
