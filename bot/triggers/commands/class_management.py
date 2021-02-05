@@ -202,7 +202,8 @@ class AddClass(Command, ReactionTrigger):
         channel = None
         if channel_id != 0:
             channel = client.get_channel(channel_id)
-        else:
+
+        if channel is None:
             new_channel_name = " ".join(course_name.replace("/", " ").split())
             new_channel_name = self.alphanum_re.sub(" ", new_channel_name.lower())
             new_channel_name = " ".join(new_channel_name.split()).replace(" ", "-")
