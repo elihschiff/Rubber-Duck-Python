@@ -123,6 +123,10 @@ class Stocks(Command):
                     name="Yahoo! Finance",
                     url=f"https://finance.yahoo.com/quote/{symbol}",
                 )
+
+                if "coinImageUrl" in data:
+                    embed.set_thumbnail(url=data["coinImageUrl"])
+
                 if state != MarketState.REGULAR:
                     embed.add_field(
                         name=state.value[1],
