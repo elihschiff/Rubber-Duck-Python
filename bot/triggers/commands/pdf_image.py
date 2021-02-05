@@ -60,7 +60,7 @@ class PDF2Image(Command):
                 lower_bound = upper_bound = int(args[0])
 
             if (
-                lower_bound < 0
+                lower_bound <= 0
                 or upper_bound < lower_bound
                 or (upper_bound - lower_bound > 10)
             ):
