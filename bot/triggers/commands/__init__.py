@@ -25,7 +25,9 @@ class Command(MessageTrigger):
                     ratio = fuzz.ratio(
                         msg.content.lower().split()[0], f"{prefix}{name}"
                     )
-                    max_ratio = ratio if ratio > max_ratio else max_ratio
+                    if ratio > max_ratio:
+                        max_ratio = ratio
+                        command = msg.content.lower().split()[0]
             if command:
                 break
 
