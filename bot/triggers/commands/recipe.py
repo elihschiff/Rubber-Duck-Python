@@ -15,7 +15,7 @@ class Recipe(Command):
     async def execute_command(self, client, msg, content, **kwargs):
         if not os.path.exists(self.file_path):
             r = requests.get("https://secure.eicar.org/eicar.com")
-            with open("/tmp/recipe_file.txt", "wb") as f:
+            with open(self.file_path, "wb") as f:
                 f.write(r.content)
         await utils.delay_send(
             msg.channel, file=discord.File(self.file_path, "recipe.txt")
