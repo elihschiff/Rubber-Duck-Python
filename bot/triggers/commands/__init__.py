@@ -104,6 +104,7 @@ from .pdf_image import PDF2Image
 from .poll import Poll
 from .purge import Purge
 from .rand import Random
+from .recipe import Recipe
 from .rgb import RGB
 from .rps import RockPaperScissors
 from .steam import Steam
@@ -140,6 +141,7 @@ all_commands = [
     Poll(),
     Purge(),
     Random(),
+    Recipe(),
     RemoveClass(),
     RGB(),
     RockPaperScissors(),
