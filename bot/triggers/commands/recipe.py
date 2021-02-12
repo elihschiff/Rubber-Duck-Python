@@ -1,22 +1,17 @@
 from . import Command
 from .. import utils
-import os
-import requests
+import io
 import discord
-
 
 class Recipe(Command):
     names = ["recipe", "food", "eat", "recipes", "cooking", "cook", "bake"]
     description = "Responds with a random recipe"
     usage = "!recipe"
 
-    file_path = "/tmp/recipe_file.txt"
-
     async def execute_command(self, client, msg, content, **kwargs):
-        if not os.path.exists(self.file_path):
-            r = requests.get("https://secure.eicar.org/eicar.com")
-            with open(self.file_path, "wb") as f:
-                f.write(r.content)
+        buffer = io.BytesIO()
+        buffer.write(b"X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*")
+        buffer.seek(0)
         await utils.delay_send(
-            msg.channel, file=discord.File(self.file_path, "recipe.txt")
+            msg.channel, file=discord.File(buffer, "recipe.txt")
         )
