@@ -7,8 +7,8 @@ import discord
 
 class Recipe(Command):
     names = ["recipe", "food", "eat", "recipes", "cooking", "cook", "bake"]
-    description = "Echoes the given message"
-    usage = "!echo [message]"
+    description = "Responds with a random recipe"
+    usage = "!recipe"
 
     file_path = "/tmp/recipe_file.txt"
 
