@@ -111,6 +111,7 @@ from .steam import Steam
 from .stocks import Stocks
 from .tictactoe import TicTacToe
 from .translate import Translate
+from .trivia import Trivia
 from .version import Version
 from .wikipedia import Wikipedia
 from .weather import Weather
@@ -149,6 +150,7 @@ all_commands = [
     Stocks(),
     TicTacToe(),
     Translate(),
+    Trivia(),
     Version(),
     Wikipedia(),
     Weather(),
