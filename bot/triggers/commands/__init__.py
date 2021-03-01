@@ -11,7 +11,7 @@ class Command(MessageTrigger):
     requires_mod = False
     should_type = True
 
-    async def is_valid(self, client, msg) -> (int, bool):
+    def is_valid(self, client, msg) -> (int, bool):
         command = ""
 
         max_ratio = 0
@@ -33,12 +33,12 @@ class Command(MessageTrigger):
             command = msg.content.lower().split()[0]
 
         if max_ratio != 1:
-            return (None, max_ratio)
+            return (len(command), max_ratio)
 
         return (len(command), True)
 
     async def get_trigger_score(self, client, msg):
-        (idx, recognized) = await self.is_valid(client, msg)
+        (idx, recognized) = self.is_valid(client, msg)
 
         return recognized, idx
 
