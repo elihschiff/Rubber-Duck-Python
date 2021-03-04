@@ -144,7 +144,7 @@ all_commands = [
     Poll(),
     Purge(),
     Random(),
-    Recipe(),
+    # Recipe(),
     RemoveClass(),
     RGB(),
     RockPaperScissors(),
