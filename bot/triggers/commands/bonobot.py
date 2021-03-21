@@ -7,6 +7,7 @@ class Bonobot(Command):
     description = "Sends a bonobo"
     usage = "!bonobot [ping users here]"
     example = "!bonobot @Phi11ipus @Eigenvector"
+    causes_spam = True
 
     async def execute_command(self, client, msg, content, **kwargs):
         return
