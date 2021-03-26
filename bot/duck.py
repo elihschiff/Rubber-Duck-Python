@@ -109,6 +109,17 @@ class DuckClient(discord.Client):
             )
             return
 
+        if (
+            ("bonobo" in msg.content or "bonobot" in msg.content)
+            and not utils.user_is_mod(self, msg.author)
+            and msg.channel.id not in self.config["spam_channel_ids"]
+        ):
+            await msg.delete()
+            await msg.author.send(
+                f"Your message (`{utils.sanitized(msg.content)}`) has been removed because it contained references to bonobot."
+            )
+            return
+
         replied = False
         best_trigger = None
         best_trigger_idx = 0
