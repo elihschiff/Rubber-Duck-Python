@@ -21,8 +21,8 @@ class Minesweeper(Command):
             width = int(args[0])
         if len(args) >= 2 and args[1].isdigit():
             height = int(args[1])
-        height = max(1, min(20, height))
-        width = max(1, min(20, width))
+        height = max(1, min(9, height))
+        width = max(1, min(9, width))
 
         mineCount = math.ceil((width * height / 64) * 10)
         if len(args) >= 3 and args[2].isdigit():
@@ -62,10 +62,8 @@ class Minesweeper(Command):
                 output += "||"
             output += "\n"
 
-        # 11 is the max number of chars per cell
-        # times every cell
-        # plus a \n for each line
-        if (11 * width * height) + (1 * height) + output_head_len >= 2000:
+
+        if len(output) >= 2000:
             await utils.delay_send(msg.channel, client.messages["ms_too_large"])
         else:
             await utils.delay_send(msg.channel, output)
