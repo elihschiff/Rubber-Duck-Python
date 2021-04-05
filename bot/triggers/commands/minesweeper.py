@@ -62,7 +62,6 @@ class Minesweeper(Command):
                 output += "||"
             output += "\n"
 
-
         if len(output) >= 2000:
             await utils.delay_send(msg.channel, client.messages["ms_too_large"])
         else:
