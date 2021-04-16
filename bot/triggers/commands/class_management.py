@@ -56,9 +56,10 @@ async def add_role(client, msg, role_id, role_name):
     server_member = client.SERVER.get_member(msg.author.id)
     await server_member.add_roles(role)
 
-    await utils.delay_send(
-        msg.channel, client.messages["add_role_confirmation"].format(role_name)
-    )
+    if role_name:
+        await utils.delay_send(
+            msg.channel, client.messages["add_role_confirmation"].format(role_name)
+        )
 
 
 async def add_smc(client, msg, content) -> bool:
@@ -97,9 +98,10 @@ async def remove_role(client, msg, role_id, role_name):
     server_member = client.SERVER.get_member(msg.author.id)
     await server_member.remove_roles(role)
 
-    await utils.delay_send(
-        msg.channel, client.messages["remove_role_confirmation"].format(role_name)
-    )
+    if role_name:
+        await utils.delay_send(
+            msg.channel, client.messages["remove_role_confirmation"].format(role_name)
+        )
 
 
 async def remove_smc(client, msg, content) -> bool:
