@@ -62,7 +62,7 @@ async def add_role(client, msg, role_id, role_name):
 
 
 async def add_smc(client, msg, content) -> bool:
-    user_divider = utils.get_user_divider(msg.author.id)
+    user_divider = utils.get_user_divider(client, msg.author.id)
 
     if content == user_divider:
         # Add SMC role
@@ -83,7 +83,7 @@ async def add_smc(client, msg, content) -> bool:
 
         return True
 
-    if utils.is_divider(content) and "failed_smc_id" in client.config:
+    if utils.is_divider(client, content) and "failed_smc_id" in client.config:
         # Brand failures
         role = client.SERVER.get_role(client.config["failed_smc_id"])
         server_member = client.SERVER.get_member(msg.author.id)
@@ -103,7 +103,7 @@ async def remove_role(client, msg, role_id, role_name):
 
 
 async def remove_smc(client, msg, content) -> bool:
-    user_divider = utils.get_user_divider(msg.author.id)
+    user_divider = utils.get_user_divider(client, msg.author.id)
 
     if content == user_divider:
         # Remove SMC role

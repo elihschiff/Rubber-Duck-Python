@@ -164,18 +164,18 @@ def get_aiohttp():
     return http_session
 
 
-# Dividers used for roles list
-DIVIDER_CHARACTERS = ["+", "=", "#", "."]
-DIVIDER_MIN_LEN = 4
-DIVIDER_MAX_LEN = 10
+def get_user_divider(client, user_id: int) -> str:
+    DIVIDER_CHARACTERS = client.config["smc_chars"]
+    DIVIDER_MIN_LEN = client.config["smc_div_min_len"]
+    DIVIDER_MAX_LEN = client.config["smc_div_max_len"]
 
-
-def get_user_divider(user_id: int) -> str:
     divider_char_idx = user_id % (len(DIVIDER_CHARACTERS) - 1)
     divider_len = user_id % (DIVIDER_MAX_LEN - DIVIDER_MIN_LEN)
     return DIVIDER_CHARACTERS[divider_char_idx] * (divider_len + DIVIDER_MIN_LEN)
 
 
-def is_divider(divider: str) -> bool:
+def is_divider(client, divider: str) -> bool:
+    DIVIDER_CHARACTERS = client.config["smc_chars"]
+
     c = divider[0]
     return c in DIVIDER_CHARACTERS and all([c == char for char in divider])

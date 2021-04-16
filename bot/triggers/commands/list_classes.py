@@ -107,7 +107,7 @@ class ListClasses(Command):
             roles_list = ""
             for idx, role_group in enumerate(role_category["roles"]):
                 if idx > 0:
-                    roles_list += utils.get_user_divider(msg.author.id) + "\n"
+                    roles_list += utils.get_user_divider(client, msg.author.id) + "\n"
                 for role in role_group:
                     roles_list += role["name"] + "\n"
             category_name = role_category["category_name"]
