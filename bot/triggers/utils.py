@@ -165,14 +165,14 @@ def get_aiohttp():
 
 
 def get_user_divider(client, user_id: int) -> str:
-    user_hash = user_id ^ client.config["SERVER_ID"]
+    user_hash = hash(f"{user_id} {client.config['SERVER_ID']}")
 
     DIVIDER_CHARACTERS = client.config["smc_chars"]
     DIVIDER_MIN_LEN = client.config["smc_div_min_len"]
     DIVIDER_MAX_LEN = client.config["smc_div_max_len"]
 
-    divider_char_idx = user_id % (len(DIVIDER_CHARACTERS) - 1)
-    divider_len = user_id % (DIVIDER_MAX_LEN - DIVIDER_MIN_LEN)
+    divider_char_idx = user_hash % (len(DIVIDER_CHARACTERS) - 1)
+    divider_len = user_hash % (DIVIDER_MAX_LEN - DIVIDER_MIN_LEN)
     return DIVIDER_CHARACTERS[divider_char_idx] * (divider_len + DIVIDER_MIN_LEN)
 
 
