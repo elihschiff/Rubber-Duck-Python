@@ -165,7 +165,7 @@ def get_aiohttp():
 
 
 # Dividers used for roles list
-DIVIDER_CHARACTERS = ["-", "+", "=", "#", "."]
+DIVIDER_CHARACTERS = ["+", "=", "#", "."]
 DIVIDER_MIN_LEN = 4
 DIVIDER_MAX_LEN = 10
 
