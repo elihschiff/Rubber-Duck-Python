@@ -4,7 +4,6 @@ from .. import utils
 import discord
 import string
 import json
-import ast
 
 
 class ListClasses(Command):
@@ -106,12 +105,15 @@ class ListClasses(Command):
         embed = discord.Embed(color=0xDCC308)
         for role_category in client.roles["role_categories"]:
             roles_list = ""
-            for role in role_category["roles"]:
-                roles_list += role["name"] + "\n"
+            for idx, role_group in enumerate(role_category["roles"]):
+                if idx > 0:
+                    roles_list += utils.get_user_divider(msg.author.id) + "\n"
+                for role in role_group:
+                    roles_list += role["name"] + "\n"
             category_name = role_category["category_name"]
             help_name = role_category["help_name"]
             embed.add_field(
-                name=f"{category_name}: `!add {help_name}", value=roles_list
+                name=f"{category_name}: `!add {help_name}`", value=roles_list
             )
 
         for school in client.roles["schools"]:
@@ -121,7 +123,7 @@ class ListClasses(Command):
             school_name = school["school_name"]
             help_name = school["help_name"]
             embed.add_field(
-                name=f"{category_name}: `!list {help_name}", value=dept_list
+                name=f"{category_name}: `!list {help_name}`", value=dept_list
             )
 
         if msg.channel.type is not discord.ChannelType.private:

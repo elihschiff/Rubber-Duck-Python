@@ -20,6 +20,10 @@
 	"non_all_seer_id": 0,
 	"time_out_id": 0,
 
+	"smc_chan_id": 0,
+	"smc_role_id": 0,
+	"failed_smc_id": 0,
+
 	"thumb_id": 0,
 
 	"recent_class_cache_size": 100,

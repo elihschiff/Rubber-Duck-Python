@@ -56,16 +56,40 @@ async def add_role(client, msg, role_id, role_name):
     server_member = client.SERVER.get_member(msg.author.id)
     await server_member.add_roles(role)
 
-    if role_name == "-------":
+    await utils.delay_send(
+        msg.channel, client.messages["add_role_confirmation"].format(role_name)
+    )
+
+
+async def add_smc(client, msg, content) -> bool:
+    user_divider = utils.get_user_divider(msg.author.id)
+
+    if content == user_divider:
+        # Add SMC role
+        role = client.SERVER.get_role(client.config["smc_role_id"])
+        server_member = client.SERVER.get_member(msg.author.id)
+        await server_member.add_roles(role)
+
+        # Handle public confirmations
         await msg.author.send(client.messages["add_hidden_role"])
         if msg.channel.type is not discord.ChannelType.private:
             await utils.delay_send(
                 msg.channel, client.messages["add_hidden_role_public"]
             )
-    elif role_name:
-        await utils.delay_send(
-            msg.channel, client.messages["add_role_confirmation"].format(role_name)
-        )
+
+        # Handle welcome
+        smc_channel = client.SERVER.get_channel(client.config["smc_chan_id"])
+        await smc_channel.send(f"Welcome <@{msg.author.id}>!")
+
+        return True
+
+    if utils.is_divider(content) and "failed_smc_id" in client.config:
+        # Brand failures
+        role = client.SERVER.get_role(client.config["failed_smc_id"])
+        server_member = client.SERVER.get_member(msg.author.id)
+        await server_member.add_roles(role)
+
+    return False
 
 
 async def remove_role(client, msg, role_id, role_name):
@@ -73,30 +97,43 @@ async def remove_role(client, msg, role_id, role_name):
     server_member = client.SERVER.get_member(msg.author.id)
     await server_member.remove_roles(role)
 
-    if role_name == "-------":
+    await utils.delay_send(
+        msg.channel, client.messages["remove_role_confirmation"].format(role_name)
+    )
+
+
+async def remove_smc(client, msg, content) -> bool:
+    user_divider = utils.get_user_divider(msg.author.id)
+
+    if content == user_divider:
+        # Remove SMC role
+        role = client.SERVER.get_role(client.config["smc_role_id"])
+        server_member = client.SERVER.get_member(msg.author.id)
+        await server_member.remove_roles(role)
+
+        # Handle public confirmations
         await msg.author.send(client.messages["remove_hidden_role"])
         if msg.channel.type is not discord.ChannelType.private:
             await utils.delay_send(
                 msg.channel, client.messages["remove_hidden_role_public"]
             )
-    elif role_name:
-        await utils.delay_send(
-            msg.channel, client.messages["remove_role_confirmation"].format(role_name)
-        )
+
+        return True
+    return False
 
 
 class AddClass(Command, ReactionTrigger):
     names = ["add", "join", "register"]
     description = "Adds you to roles and class specific channels"
     usage = "!add [class code]"
-    examples = f"!add cs1200, !add Computer Science"
-    notes = f"To see available roles, majors, and classes, use !list"
+    examples = "!add cs1200, !add Computer Science"
+    notes = "To see available roles, majors, and classes, use !list"
 
     names_no_courses = ["add", "join", "addrole", "joinrole"]
     description_no_courses = "Adds you to a role"
     usage_no_courses = "!add [role]"
-    examples = f"!add Computer Science"
-    notes_no_courses = f"To see available roles, use !list"
+    examples = "!add Computer Science"
+    notes_no_courses = "To see available roles, use !list"
 
     def __init__(self):
         self.alphanum_re = re.compile("[^\w ]+")
@@ -122,19 +159,23 @@ class AddClass(Command, ReactionTrigger):
             return
 
         for role_category in client.roles["role_categories"]:
-            for role in role_category["roles"]:
-                if content.lower() == role["name"].lower() or any(
-                    [
-                        content.lower() == alt_name.lower()
-                        for alt_name in role["alternate_names"]
-                    ]
-                ):
-                    await add_role(client, msg, role["id"], role["name"])
-                    if role["id"] == client.config["all_seer_id"]:
-                        await remove_role(
-                            client, msg, client.config["non_all_seer_id"], None
-                        )
-                    return
+            for role_group in role_category["roles"]:
+                for role in role_group:
+                    if content.lower() == role["name"].lower() or any(
+                        [
+                            content.lower() == alt_name.lower()
+                            for alt_name in role["alternate_names"]
+                        ]
+                    ):
+                        await add_role(client, msg, role["id"], role["name"])
+                        if role["id"] == client.config["all_seer_id"]:
+                            await remove_role(
+                                client, msg, client.config["non_all_seer_id"], None
+                            )
+                        return
+
+        if await add_smc(client, msg, content):
+            return
 
         if not client.config["ENABLE_COURSES"]:
             await utils.delay_send(msg.channel, client.messages["add_no_roles_match"])
@@ -303,12 +344,12 @@ class RemoveClass(Command, ReactionTrigger):
     names = ["remove", "leave", "sub", "unregister", "drop"]
     description = "Removes you from roles and class specific channels"
     usage = "!remove [class code]"
-    examples = f"!remove Bio 1010, !remove Chemistry"
+    examples = "!remove Bio 1010, !remove Chemistry"
 
     names_no_courses = ["remove", "leave", "leaverole", "drop", "droprole"]
     description_no_courses = "Removes you from a role"
     usage_no_courses = "!remove [role]"
-    examples = f"!remove Chemistry"
+    examples = "!remove Chemistry"
 
     async def execute_command(self, client, msg, content, **kwargs):
         if not content:
@@ -321,19 +362,23 @@ class RemoveClass(Command, ReactionTrigger):
                 break
 
         for role_category in client.roles["role_categories"]:
-            for role in role_category["roles"]:
-                if content.lower() == role["name"].lower() or any(
-                    [
-                        content.lower() == alt_name.lower()
-                        for alt_name in role["alternate_names"]
-                    ]
-                ):
-                    await remove_role(client, msg, role["id"], role["name"])
-                    if role["id"] == client.config["all_seer_id"]:
-                        await add_role(
-                            client, msg, client.config["non_all_seer_id"], None
-                        )
-                    return
+            for role_group in role_category["roles"]:
+                for role in role_group:
+                    if content.lower() == role["name"].lower() or any(
+                        [
+                            content.lower() == alt_name.lower()
+                            for alt_name in role["alternate_names"]
+                        ]
+                    ):
+                        await remove_role(client, msg, role["id"], role["name"])
+                        if role["id"] == client.config["all_seer_id"]:
+                            await add_role(
+                                client, msg, client.config["non_all_seer_id"], None
+                            )
+                        return
+
+        if await remove_smc(client, msg, content):
+            return
 
         if not client.config["ENABLE_COURSES"]:
             await utils.delay_send(
