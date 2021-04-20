@@ -120,7 +120,7 @@ class EmojiMode(Command):
             return
 
         content = msg.content.split(" ")
-        command = content[0]
+        command = content[0][1:]
         subcommand = content[1]
         users = [
             client.SERVER.get_member(user_id)
