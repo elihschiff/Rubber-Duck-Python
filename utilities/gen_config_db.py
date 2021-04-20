@@ -50,6 +50,22 @@ c.execute(
     """
 )
 
+c.execute(
+    """
+    CREATE TABLE unemoji_users (
+    user_id INTEGER DEFAULT 0
+    );
+    """
+)
+
+c.execute(
+    """
+    CREATE TABLE unemoji_channels (
+    channel_id INTEGER DEFAULT 0
+    );
+    """
+)
+
 if len(sys.argv) == 3:
     print("Updating courses in database")
     with open(sys.argv[2], "r") as courses_file:

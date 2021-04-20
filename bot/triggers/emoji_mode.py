@@ -21,9 +21,9 @@ invalid_emoji_re = re.compile(
 )
 
 # explains to the violator why their message was deleted
-async def send_message_to_violator(client, user):
+async def send_message_to_violator(client, user, message):
     try:
-        await user.send(client.messages["emoji_mode_dm"])
+        await user.send(message)
     except HTTPException:
         pass
 
@@ -61,6 +61,13 @@ def valid_emoji(content, msg) -> bool:
     return len(content.split()) == 0  # calling split() discounts whitepace
 
 
+# returns true if the message contains any emoji.
+def contains_emoji(content) -> bool:
+    return bool(
+        discord_emote_re.match(content) or emoji.get_emoji_regexp().match(content)
+    )
+
+
 # deletes message if the message is invalid
 # returns true if the message was deleted
 async def invalid_emoji_message(client, msg) -> bool:
@@ -69,6 +76,7 @@ async def invalid_emoji_message(client, msg) -> bool:
 
     hits = 0
 
+    # Check for emoji mode
     async with client.lock:
         client.c.execute(
             "SELECT count(*) FROM emoji_channels WHERE channel_id = :chann_id",
@@ -89,6 +97,34 @@ async def invalid_emoji_message(client, msg) -> bool:
 
         if not valid_emoji(msg.content, msg):
             await msg.delete()
-            await send_message_to_violator(client, msg.author)
+            await send_message_to_violator(
+                client, msg.author, client.messages["emoji_mode_dm"]
+            )
+            return True
+
+    # check for unemoji mode
+    async with client.lock:
+        client.c.execute(
+            "SELECT count(*) FROM unemoji_channels WHERE channel_id = :chann_id",
+            {"chann_id": msg.channel.id},
+        )
+        hits += client.c.fetchone()[0]
+
+    async with client.lock:
+        client.c.execute(
+            "SELECT count(*) FROM unemoji_users WHERE user_id = :author_id",
+            {"author_id": msg.author.id},
+        )
+        hits += client.c.fetchone()[0]
+
+    if hits > 0:
+        if utils.user_is_mod(client, msg.author):
+            return False
+
+        if contains_emoji(msg.content):
+            await msg.delete()
+            await send_message_to_violator(
+                client, msg.author, client.messages["unemoji_mode_dm"]
+            )
             return True
     return False

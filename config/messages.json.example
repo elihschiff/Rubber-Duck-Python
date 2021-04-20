@@ -13,6 +13,14 @@
 	"emoji_mode_user_deactivate_public": "{} has been removed from emoji mode.",
 	"emoji_mode_dm": "You sent a message that contained non emoji characters in an emoji only chat. Your message has been removed!",
 
+	"unemoji_mode_channel_activate": "This channel is now in unemoji only mode. Your messages cannot contain emoji.",
+	"unemoji_mode_channel_deactivate": "This channel is no longer in unemoji only mode. You are free to send emoji.",
+	"unemoji_mode_user_activate": "You are now in unemoji only mode. Your messages can no longer contain emoji.",
+	"unemoji_mode_user_activate_public": "{} has been placed into unemoji mode.",
+	"unemoji_mode_user_deactivate": "You are no longer in unemoji only mode. You are free to send normal emoji.",
+	"unemoji_mode_user_deactivate_public": "{} has been removed from unemoji mode.",
+	"unemoji_mode_dm": "You sent a message that contained emoji characters in an unemoji chat. Your message has been removed!",
+
 	"invalid_class_list_format": "This command must be of the form `!list XXXX`, where `XXXX` is the **4 letter department code** you're searching for. Type `!list` to view the list of valid codes. Please note that a major and a department code are different. If you are looking to add a major instead, please type `!add MAJOR`.",
 	"invalid_class_add_format": "This command must be of the form `!add` followed by the course or role you are trying to add.  To list the courses for a subject, use `!list XXXX`, where `XXXX` is the **4 letter department code** you're searching for. Type `!list` to view the list of valid codes. Please note that a major and a department code are different.",
 	"dept_not_found": "I am sorry I could not find a class from the department `{}`.  For a list of the 4 letter department codes, reuse the `!classes` command without arguments.",
