@@ -26,7 +26,7 @@ class Steam(Command):
             rows = page_content.find(id="search_resultsRows")
             if rows == None:
                 await msg.channel.send(
-                    f'Unable to find any games matching "' + content + '"'
+                    f"Unable to find any games matching `{utils.sanitized(content)}`"
                 )
                 return
             title = rows.find("span", {"class": "title"})
