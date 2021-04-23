@@ -7,7 +7,7 @@ class CppRef(Command):
     names = ["cpp"]
     description = "Sends a link to a cpp reference page, if it exists"
     usage = "!cpp [container/class/object] [(optional) member function]"
-    examples = f"!cpp vector push_back, !cpp sort"
+    examples = "!cpp vector push_back, !cpp sort"
 
     async def execute_command(self, client, msg, content, **kwargs):
         args = content.split(" ")

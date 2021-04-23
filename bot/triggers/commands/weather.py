@@ -9,7 +9,7 @@ class Weather(Command):
     names = ["weather"]
     description = "Gets the weather."
     usage = "!weather [(optional) location]"
-    examples = f"!weather 12180"
+    examples = "!weather 12180"
 
     async def execute_command(self, client, msg, content, **kwargs):
         # zipcode for Troy, NY is used if no arguments are passed

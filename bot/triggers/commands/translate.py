@@ -8,7 +8,7 @@ class Translate(Command):
     names = ["translate"]
     description = "Translates a given phrase, or the previous message, into English"
     usage = "!translate [message]"
-    examples = f"!translate いんちき"
+    examples = "!translate いんちき"
 
     def __init__(self):
         self.translator = google_translator()

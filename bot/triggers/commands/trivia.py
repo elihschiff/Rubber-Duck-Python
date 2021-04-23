@@ -9,7 +9,7 @@ class Trivia(Command):
     names = ["trivia"]
     description = "Loads a trivia question"
     usage = "!trivia"
-    examples = f"!trivia"
+    examples = "!trivia"
     causes_spam = True
 
     async def execute_command(self, client, msg, content, **kwargs):

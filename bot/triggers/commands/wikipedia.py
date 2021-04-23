@@ -9,7 +9,7 @@ class Wikipedia(Command):
     names = ["wiki", "wikipedia"]
     description = "Searches Wikipedia for a phrase"
     usage = "!wiki [phrase]"
-    examples = f"!wiki duck"
+    examples = "!wiki duck"
 
     def __init__(self):
         self.wiki = wikipediaapi.Wikipedia("en")

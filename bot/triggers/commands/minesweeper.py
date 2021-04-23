@@ -9,7 +9,7 @@ class Minesweeper(Command):
     names = ["ms", "mine", "minesweeper"]
     description = "Sends a minesweeper game"
     usage = "!ms [(optional) width] [(optional) height] [(optional) number of mines]"
-    examples = f"!ms, !ms 10 3, !ms 5 5 2"
+    examples = "!ms, !ms 10 3, !ms 5 5 2"
     causes_spam = True
 
     async def execute_command(self, client, msg, content, **kwargs):

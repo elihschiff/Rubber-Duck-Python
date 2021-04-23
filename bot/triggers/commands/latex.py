@@ -11,7 +11,7 @@ class Latex(Command):
     names = ["latex", "tex"]
     description = "Renders an image of a latex command"
     usage = "!latex [command]"
-    examples = f"!latex \\frac{1}{2}"
+    examples = "!latex \\frac{1}{2}"
 
     async def execute_command(self, client, msg, content, **kwargs):
         if not content:

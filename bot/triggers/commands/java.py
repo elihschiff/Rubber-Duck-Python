@@ -13,7 +13,7 @@ class Java(Command):
     names = ["java"]
     description = "Sends a link to a Java reference page if it exists (JavaSE 13)"
     usage = "!java [module/package/tag/type/member]"
-    examples = f"!java clear, !java java.base"
+    examples = "!java clear, !java java.base"
 
     def get_file_age(self, filepath):
         return time.time() - os.path.getmtime(filepath)

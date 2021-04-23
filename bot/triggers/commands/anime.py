@@ -8,7 +8,7 @@ class Anime(Command):
     names = ["anime"]
     description = "Sends a description of an anime using MAL."
     usage = "!anime [Name of anime]"
-    examples = f"!anime hunter x hunter"
+    examples = "!anime hunter x hunter"
 
     async def execute_command(self, client, msg, content, **kwargs):
         if not content:

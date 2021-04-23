@@ -11,7 +11,7 @@ class Xkcd(Command):
     names = ["xkcd"]
     description = "Finds a relevant xkcd using a keyword or comic number"
     usage = "!xkcd [(optional) search term]"
-    examples = f"!xkcd, !xkcd duck, !xkcd 537"
+    examples = "!xkcd, !xkcd duck, !xkcd 537"
 
     async def execute_command(self, client, msg, content, **kwargs):
         image_url = ""

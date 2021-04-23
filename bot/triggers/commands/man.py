@@ -6,7 +6,7 @@ class Man(Command):
     names = ["man"]
     description = "Sends a link to a man page, if it exists"
     usage = "!man [command]"
-    examples = f"!man grep"
+    examples = "!man grep"
 
     async def execute_command(self, client, msg, content, **kwargs):
         if not content:
