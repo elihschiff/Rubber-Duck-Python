@@ -25,7 +25,7 @@ class Math(Command):
                     or pod.title.startswith("Decimal approximation")
                 ):
                     await msg.channel.send(
-                        f"The answer for `{content}` is: `{pod.text}`"
+                        f"The answer for `{content}` is: `{utils.sanitized(pod.text)}`"
                     )
                     return
                 if pod.title.startswith("Plot"):
