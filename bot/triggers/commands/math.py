@@ -31,7 +31,7 @@ class Math(Command):
                 if pod.title.startswith("Plot"):
                     await msg.channel.send(
                         # TODO: this should be more robust
-                        f"The answer for `{content}` is: {list(list(pod.subpod)[0].img)[0]['@src']}"
+                        f"The answer for `{content}` is: `{utils.sanitized(str(list(list(pod.subpod)[0].img)[0]['@src']))}`"
                     )
                     return
         except (KeyError, AttributeError):

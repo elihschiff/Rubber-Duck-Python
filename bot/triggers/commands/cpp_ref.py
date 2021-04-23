@@ -79,8 +79,8 @@ class CppRef(Command):
                 # inform user in discord, send first link, and exit function
                 await utils.delay_send(
                     msg.channel,
-                    f"Could not find cpp page for {content} with {second}\
-, but found the general page with {first}.",
+                    f"Could not find cpp page for `{content}` with `{second}`\
+, but found the general page with `{first}`.",
                 )
                 await utils.delay_send(msg.channel, url)
                 return

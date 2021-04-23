@@ -42,7 +42,7 @@ class Help(Command):
                         await send_embed(msg, response, embed_title)
                         return
             await utils.delay_send(
-                msg.channel, f'Could not find command "{args[0]}".\n'
+                msg.channel, f"Could not find command `{args[0]}`.\n"
             )
             return
 
