@@ -34,26 +34,11 @@ class Xkcd(Command):
                 )
                 return
         else:
+            tmp_file = BytesIO()
             async with utils.get_aiohttp().post(
-                "https://relevant-xkcd-backend.herokuapp.com/search",
-                data={"search": content},
-            ) as request:
-                text = await request.text()
-            response = json.loads(text)
-
-            if not response["success"] or len(response["results"]) == 0:
-                await utils.delay_send(
-                    msg.channel, client.messages["no_xkcd_found"].format(content)
-                )
-                return
-
-            image_url = response["results"][0]["image"]
-            title = response["results"][0]["title"]
-            alt_text = response["results"][0]["titletext"]
-
-        msg_to_send = "**" + title + ":** " + alt_text
-        tmp_file = BytesIO()
-        async with utils.get_aiohttp().get(image_url) as r:
-            tmp_file.write(await r.read())
-        tmp_file.seek(0)
-        await msg.channel.send(msg_to_send, file=discord.File(tmp_file, "xkcd.png"))
+                f"https://relevant-xkcd.com/@{content}",
+            ) as req:
+                tmp_file.write(await req.read())
+        await msg.channel.send(
+            "", file=discord.File(tmp_file, "xkcd.png"), reply_to=msg
+        )
