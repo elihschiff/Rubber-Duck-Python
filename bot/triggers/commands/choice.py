@@ -12,9 +12,9 @@ class Choice(Command):
 
     async def execute_command(self, client, msg, content, **kwargs):
         if not content:
-            await utils.delay_send(msg.channel, f"Usage: {self.usage}")
+            await utils.delay_send(msg.channel, f"Usage: {self.usage}", reply_to=msg)
             return
 
         choices = content.split()
         choice = sanitized(random.choice(choices))
-        await utils.delay_send(msg.channel, f"`{choice}`")
+        await utils.delay_send(msg.channel, f"`{choice}`", reply_to=msg)

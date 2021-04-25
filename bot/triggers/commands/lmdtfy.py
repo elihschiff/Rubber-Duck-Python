@@ -14,7 +14,7 @@ class Lmdtfy(Command):
             content = "How do I think of what to search?"
 
         url = "https://lmgtfy.com/?s=d&" + urlencode({"q": content})
-        await utils.delay_send(msg.channel, url, 1)
+        await utils.delay_send(msg.channel, url, 1, reply_to=msg)
 
 
 class Lmgtfy(Command):
@@ -28,4 +28,4 @@ class Lmgtfy(Command):
             content = "How do I think of what to search?"
 
         url = "https://lmgtfy.com/?" + urlencode({"q": content})
-        await utils.delay_send(msg.channel, url, 1)
+        await utils.delay_send(msg.channel, url, 1, reply_to=msg)

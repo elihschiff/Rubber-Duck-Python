@@ -17,6 +17,7 @@ class RGB(Command):
             await utils.delay_send(
                 msg.channel,
                 msg="Usage: `!rgb [red] [green] [blue]` or `!rgb [hex color]`",
+                reply_to=msg,
             )
             return
         if len(args) == 0:
@@ -31,12 +32,16 @@ class RGB(Command):
                     c = int(args[0])
                     if c < 0 or c > 255:
                         await utils.delay_send(
-                            msg.channel, msg="Arguments must be in range [0,255]"
+                            msg.channel,
+                            msg="Arguments must be in range [0,255]",
+                            reply_to=msg,
                         )
                         return
                     r = g = b = c
                 except:
-                    await utils.delay_send(msg.channel, msg="Invalid hex or color")
+                    await utils.delay_send(
+                        msg.channel, msg="Invalid hex or color", reply_to=msg
+                    )
                     return
             else:
                 try:
@@ -44,7 +49,9 @@ class RGB(Command):
                     g = int(args[0][2:4], 16)
                     b = int(args[0][4:6], 16)
                 except:
-                    await utils.delay_send(msg.channel, msg="Invalid hex color")
+                    await utils.delay_send(
+                        msg.channel, msg="Invalid hex color", reply_to=msg
+                    )
                     return
         else:
             try:
@@ -52,11 +59,13 @@ class RGB(Command):
                 g = int(args[1])
                 b = int(args[2])
             except:
-                await utils.delay_send(msg.channel, msg="All arguments must be ints")
+                await utils.delay_send(
+                    msg.channel, msg="All arguments must be ints", reply_to=msg
+                )
                 return
         if r < 0 or r > 255 or g < 0 or g > 255 or b < 0 or b > 255:
             await utils.delay_send(
-                msg.channel, msg="Arguments must be in range [0,255]"
+                msg.channel, msg="Arguments must be in range [0,255]", reply_to=msg
             )
             return
         row = ()
@@ -69,4 +78,6 @@ class RGB(Command):
         png_data = BytesIO()
         w.write(png_data, p)
         png_data.seek(0)
-        await utils.delay_send(msg.channel, file=discord.File(png_data, "rgb.png"))
+        await utils.delay_send(
+            msg.channel, file=discord.File(png_data, "rgb.png"), reply_to=msg
+        )

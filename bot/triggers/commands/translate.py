@@ -15,10 +15,10 @@ class Translate(Command):
 
     async def execute_command(self, client, msg, content, **kwargs):
         if len(content) == 0:
-            await utils.delay_send(msg.channel, f"Usage: {self.usage}")
+            await utils.delay_send(msg.channel, f"Usage: {self.usage}", reply_to=msg)
             return
 
         translation = self.translator.translate(content, lang_tgt="en")
 
         response = f"`{sanitized(content)}` translates from {self.translator.detect(content)[0].upper()} to: `{sanitized(translation)}`"
-        await utils.delay_send(msg.channel, response, 1)
+        await utils.delay_send(msg.channel, response, 1, reply_to=msg)

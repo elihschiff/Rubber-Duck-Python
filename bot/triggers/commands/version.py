@@ -14,4 +14,6 @@ class Version(Command):
             .decode("utf-8")
             .strip(" \r\n")
         )
-        await utils.delay_send(msg.channel, f"Current commit:\n```{commit}```")
+        await utils.delay_send(
+            msg.channel, f"Current commit:\n```{commit}```", reply_to=msg
+        )

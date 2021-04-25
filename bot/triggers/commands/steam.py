@@ -13,7 +13,9 @@ class Steam(Command):
 
     async def execute_command(self, client, msg, content, **kwargs):
         if not content:
-            await utils.delay_send(msg.channel, "<https://store.steampowered.com>")
+            await utils.delay_send(
+                msg.channel, "<https://store.steampowered.com>", reply_to=msg
+            )
             return
 
         try:
@@ -68,7 +70,11 @@ class Steam(Command):
             )
             if img != None:
                 embed.set_thumbnail(url=img)
-            await utils.delay_send(msg.channel, "", 0, embed=embed)
+            await utils.delay_send(msg.channel, "", 0, embed=embed, reply_to=msg)
         except Exception as ex:
-            await msg.channel.send("An error occured when finding the game")
+            await msg.channel.send(
+                "An error occured when finding the game",
+                reference=msg,
+                mention_author=False,
+            )
             await utils.sendTraceback(client, msg.content)

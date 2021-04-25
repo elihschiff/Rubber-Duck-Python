@@ -133,7 +133,7 @@ class Java(Command):
 
     async def execute_command(self, client, msg, content, **kwargs):
         if not content:
-            await utils.delay_send(msg.channel, f"Usage: {self.usage}")
+            await utils.delay_send(msg.channel, f"Usage: {self.usage}", reply_to=msg)
             return
         search = self.search_index(content)
         async with utils.get_aiohttp().get(
@@ -164,7 +164,9 @@ class Java(Command):
                         result += text.contents[3].contents[0]["href"] + "\n"
         if result == f"Potential match(es) for `{content}`:\n":
             await utils.delay_send(
-                msg.channel, f"Could not find Javadoc page for `{content}`"
+                msg.channel,
+                f"Could not find Javadoc page for `{content}`",
+                reply_to=msg,
             )
             return
-        await utils.delay_send(msg.channel, result)
+        await utils.delay_send(msg.channel, result, reply_to=msg)

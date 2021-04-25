@@ -15,4 +15,6 @@ class Recipe(Command):
             b"X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*"
         )
         buffer.seek(0)
-        await utils.delay_send(msg.channel, file=discord.File(buffer, "recipe.txt"))
+        await utils.delay_send(
+            msg.channel, file=discord.File(buffer, "recipe.txt"), reply_to=msg
+        )

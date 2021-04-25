@@ -12,7 +12,7 @@ class Anime(Command):
 
     async def execute_command(self, client, msg, content, **kwargs):
         if not content:
-            await utils.delay_send(msg.channel, f"Usage: {self.usage}")
+            await utils.delay_send(msg.channel, f"Usage: {self.usage}", reply_to=msg)
             return
 
         jikan = Jikan()
@@ -20,7 +20,7 @@ class Anime(Command):
 
         if show["rated"] == "Rx" or show["rated"] == "R+":
             await utils.delay_send(
-                msg.channel, "Sorry, I can't give info on NSFW shows."
+                msg.channel, "Sorry, I can't give info on NSFW shows.", reply_to=msg
             )
             if msg.channel.type is not discord.ChannelType.private:
                 await msg.delete()
@@ -31,4 +31,4 @@ class Anime(Command):
         )
         embed.set_image(url=show["image_url"])
 
-        await utils.delay_send(msg.channel, "", embed=embed)
+        await utils.delay_send(msg.channel, "", embed=embed, reply_to=msg)

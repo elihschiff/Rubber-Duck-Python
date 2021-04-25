@@ -40,7 +40,7 @@ class PDF2Image(Command):
     async def execute_command(self, client, msg, content, **kwargs):
         if len(msg.attachments) == 0:
             return await utils.delay_send(
-                msg.channel, "Error: no PDFs attached to message!"
+                msg.channel, "Error: no PDFs attached to message!", reply_to=msg
             )
 
         # We enforce a range of 10 images max to prevent spam, limit server resource usage
@@ -66,12 +66,14 @@ class PDF2Image(Command):
             ):
                 raise ValueError()
         except:
-            return await utils.delay_send(msg.channel, "Error: Invalid range")
+            return await utils.delay_send(
+                msg.channel, "Error: Invalid range", reply_to=msg
+            )
 
         for attach in msg.attachments:
             if attach.size > 1e7:
                 await utils.delay_send(
-                    msg.channel, "Error: File too large (max size: 10MB)"
+                    msg.channel, "Error: File too large (max size: 10MB)", reply_to=msg
                 )
                 continue
             has_processed = False
@@ -90,6 +92,7 @@ class PDF2Image(Command):
                 await utils.delay_send(
                     msg.channel,
                     file=discord.File(data, filename=f"f{current_page}.jpeg"),
+                    reply_to=msg,
                 )
                 has_processed = True
                 current_page += 1
@@ -98,4 +101,5 @@ class PDF2Image(Command):
                 return await utils.delay_send(
                     msg.channel,
                     "Error: failed to process attachment. Please check that the file is a PDF!",
+                    reply_to=msg,
                 )

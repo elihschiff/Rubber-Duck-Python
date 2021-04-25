@@ -42,7 +42,7 @@ class Help(Command):
                         await send_embed(msg, response, embed_title)
                         return
             await utils.delay_send(
-                msg.channel, f"Could not find command `{args[0]}`.\n"
+                msg.channel, f"Could not find command `{args[0]}`.\n", reply_to=msg
             )
             return
 
@@ -78,7 +78,7 @@ class Help(Command):
         await send_embed(msg, response, title)
 
         if msg.channel.type is not discord.ChannelType.private:
-            await utils.delay_send(msg.channel, "DMed!")
+            await utils.delay_send(msg.channel, "DMed!", reply_to=msg)
 
 
 async def send_embed(msg, embed, title):

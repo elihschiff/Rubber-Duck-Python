@@ -10,7 +10,7 @@ class Man(Command):
 
     async def execute_command(self, client, msg, content, **kwargs):
         if not content:
-            await utils.delay_send(msg.channel, f"Usage: {self.usage}")
+            await utils.delay_send(msg.channel, f"Usage: {self.usage}", reply_to=msg)
             return
 
         args = content.split(" ")
@@ -21,7 +21,9 @@ class Man(Command):
 
             if len(args) < 2:
                 await utils.delay_send(
-                    msg.channel, f"Could not find man page for `{content}`"
+                    msg.channel,
+                    f"Could not find man page for `{content}`",
+                    reply_to=msg,
                 )
                 return
 
@@ -37,9 +39,10 @@ class Man(Command):
                 await utils.delay_send(
                     msg.channel,
                     f"Could not find man page for `{prgm}` in section `{args[0]}`",
+                    reply_to=msg,
                 )
             else:
-                await utils.delay_send(msg.channel, url)
+                await utils.delay_send(msg.channel, url, reply_to=msg)
             return
 
         for page in range(0, 9):
@@ -47,7 +50,9 @@ class Man(Command):
             async with utils.get_aiohttp().get(url) as r:
                 text = await r.text()
             if "<h1>Not Found</h1>" not in text and "<h1>Section " not in text:
-                await utils.delay_send(msg.channel, url)
+                await utils.delay_send(msg.channel, url, reply_to=msg)
                 return
 
-        await utils.delay_send(msg.channel, f"Could not find man page for `{content}`")
+        await utils.delay_send(
+            msg.channel, f"Could not find man page for `{content}`", reply_to=msg
+        )

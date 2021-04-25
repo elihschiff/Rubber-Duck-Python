@@ -23,11 +23,14 @@ class Weather(Command):
                 return await utils.delay_send(
                     msg.channel,
                     f"Failed to retrieve weather :-(. HTTP {weather_request.status}: ```{weather_request_text}```",
+                    reply_to=msg,
                 )
             forecast = await weather_request.read()
             buffer = io.BytesIO()
             buffer.write(forecast)
             buffer.seek(0)
             await utils.delay_send(
-                msg.channel, file=discord.File(buffer, filename="weather.png")
+                msg.channel,
+                file=discord.File(buffer, filename="weather.png"),
+                reply_to=msg,
             )

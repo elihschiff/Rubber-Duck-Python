@@ -11,7 +11,7 @@ class Math(Command):
 
     async def execute_command(self, client, msg, content, **kwargs):
         if not content:
-            await utils.delay_send(msg.channel, f"Usage: {self.usage}")
+            await utils.delay_send(msg.channel, f"Usage: {self.usage}", reply_to=msg)
             return
 
         wolfram = wolframalpha.Client(client.config["wolfram_id"])
@@ -25,17 +25,23 @@ class Math(Command):
                     or pod.title.startswith("Decimal approximation")
                 ):
                     await msg.channel.send(
-                        f"The answer for `{content}` is: `{utils.sanitized(pod.text)}`"
+                        f"The answer for `{content}` is: `{utils.sanitized(pod.text)}`",
+                        reference=msg,
+                        mention_author=False,
                     )
                     return
                 if pod.title.startswith("Plot"):
                     await msg.channel.send(
                         # TODO: this should be more robust
-                        f"The answer for `{content}` is: {list(list(pod.subpod)[0].img)[0]['@src']}"
+                        f"The answer for `{content}` is: {list(list(pod.subpod)[0].img)[0]['@src']}",
+                        reference=msg,
+                        mention_author=False,
                     )
                     return
         except (KeyError, AttributeError):
             pass
         await msg.channel.send(
-            f"I could not find an answer for `{utils.sanitized(content)}`"
+            f"I could not find an answer for `{utils.sanitized(content)}`",
+            reference=msg,
+            mention_author=False,
         )

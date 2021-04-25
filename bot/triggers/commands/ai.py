@@ -8,4 +8,6 @@ class AI(Command):
     usage = "!ai"
 
     async def execute_command(self, client, msg, content, **kwargs):
-        await utils.delay_send(msg.channel, client.messages["academic_integrity"], 0)
+        await utils.delay_send(
+            msg.channel, client.messages["academic_integrity"], 0, reply_to=msg
+        )

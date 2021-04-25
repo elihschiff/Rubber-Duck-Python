@@ -12,7 +12,7 @@ class Random(Command):
 
     async def execute_command(self, client, msg, content, **kwargs):
         if len(content) == 0:
-            await utils.delay_send(msg.channel, str(random.random()))
+            await utils.delay_send(msg.channel, str(random.random()), reply_to=msg)
             return
 
         args = content.split()
@@ -30,7 +30,7 @@ class Random(Command):
                 arg1 = float(args[arg1_idx])
                 arg2 = float(args[arg1_idx + 1])
         except (IndexError, ValueError) as e:
-            await utils.delay_send(msg.channel, f"Usage: {self.usage}")
+            await utils.delay_send(msg.channel, f"Usage: {self.usage}", reply_to=msg)
             return
 
         min_val = min(arg1, arg2)
@@ -42,4 +42,4 @@ class Random(Command):
         else:
             random_val = random.uniform(min_val, max_val)
 
-        await utils.delay_send(msg.channel, str(random_val))
+        await utils.delay_send(msg.channel, str(random_val), reply_to=msg)

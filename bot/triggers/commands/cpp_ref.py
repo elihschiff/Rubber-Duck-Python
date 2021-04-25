@@ -13,7 +13,7 @@ class CppRef(Command):
         args = content.split(" ")
 
         if not content:
-            await utils.delay_send(msg.channel, f"Usage: {self.usage}")
+            await utils.delay_send(msg.channel, f"Usage: {self.usage}", reply_to=msg)
             return
 
         # check if link using just the first arg works
@@ -50,6 +50,7 @@ class CppRef(Command):
                         msg.channel,
                         f"Could not find cpp page for `{content}`.\
 \nUse format: !cpp [container/class/object] [(optional) member function]",
+                        reply_to=msg,
                     )
                     return
 
@@ -58,7 +59,7 @@ class CppRef(Command):
         # argument works.
         if len(args) == 1:
             # only one argument, so return url found
-            await utils.delay_send(msg.channel, url)
+            await utils.delay_send(msg.channel, url, reply_to=msg)
         elif len(args) >= 3:
             # Too many arguments. Still checking for url from first two args but
             # notifying user their other arguments won't be used.
@@ -66,6 +67,7 @@ class CppRef(Command):
                 msg.channel,
                 f"Too many arguments. Use format: \
 !cpp [container/class/object] [(optional) member function]",
+                reply_to=msg,
             )
         elif len(args) >= 2:
             # get the second part of the url if the user entered an optional
@@ -81,11 +83,12 @@ class CppRef(Command):
                     msg.channel,
                     f"Could not find cpp page for `{content}` with `{second}`\
 , but found the general page with `{first}`.",
+                    reply_to=msg,
                 )
-                await utils.delay_send(msg.channel, url)
+                await utils.delay_send(msg.channel, url, reply_to=msg)
                 return
             else:
                 # only other condition: both second and first argument work
                 # send link to user and exit function
-                await utils.delay_send(msg.channel, url2)
+                await utils.delay_send(msg.channel, url2, reply_to=msg)
                 return

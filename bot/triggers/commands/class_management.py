@@ -75,7 +75,7 @@ async def add_smc(client, msg, content) -> bool:
         await msg.author.send(client.messages["add_hidden_role"])
         if msg.channel.type is not discord.ChannelType.private:
             await utils.delay_send(
-                msg.channel, client.messages["add_hidden_role_public"]
+                msg.channel, client.messages["add_hidden_role_public"], reply_to=msg
             )
 
         # Handle welcome
@@ -117,7 +117,7 @@ async def remove_smc(client, msg, content) -> bool:
         await msg.author.send(client.messages["remove_hidden_role"])
         if msg.channel.type is not discord.ChannelType.private:
             await utils.delay_send(
-                msg.channel, client.messages["remove_hidden_role_public"]
+                msg.channel, client.messages["remove_hidden_role_public"], reply_to=msg
             )
 
         return True
@@ -142,11 +142,15 @@ class AddClass(Command, ReactionTrigger):
 
     async def execute_command(self, client, msg, content, **kwargs):
         if not content:
-            await utils.delay_send(msg.channel, client.messages["add_no_content"])
+            await utils.delay_send(
+                msg.channel, client.messages["add_no_content"], reply_to=msg
+            )
             return
 
         if content == "%":
-            await utils.delay_send(msg.channel, client.messages["add_mod_message"])
+            await utils.delay_send(
+                msg.channel, client.messages["add_mod_message"], reply_to=msg
+            )
             return
 
         for word in client.config["add_skip_words"]:
@@ -156,7 +160,7 @@ class AddClass(Command, ReactionTrigger):
 
         if not content:
             await utils.delay_send(
-                msg.channel, client.messages["invalid_class_add_format"]
+                msg.channel, client.messages["invalid_class_add_format"], reply_to=msg
             )
             return
 
@@ -180,13 +184,15 @@ class AddClass(Command, ReactionTrigger):
             return
 
         if not client.config["ENABLE_COURSES"]:
-            await utils.delay_send(msg.channel, client.messages["add_no_roles_match"])
+            await utils.delay_send(
+                msg.channel, client.messages["add_no_roles_match"], reply_to=msg
+            )
             return
 
         options = await fuzzy_search(client, content, 5)
 
         if msg.channel.type is not discord.ChannelType.private:
-            await utils.delay_send(msg.channel, "DMed!")
+            await utils.delay_send(msg.channel, "DMed!", reply_to=msg)
 
         await utils.generate_react_menu(
             msg.author,
@@ -355,7 +361,9 @@ class RemoveClass(Command, ReactionTrigger):
 
     async def execute_command(self, client, msg, content, **kwargs):
         if not content:
-            await utils.delay_send(msg.channel, client.messages["remove_no_content"])
+            await utils.delay_send(
+                msg.channel, client.messages["remove_no_content"], reply_to=msg
+            )
             return
 
         for word in client.config["add_skip_words"]:
@@ -384,14 +392,14 @@ class RemoveClass(Command, ReactionTrigger):
 
         if not client.config["ENABLE_COURSES"]:
             await utils.delay_send(
-                msg.channel, client.messages["remove_no_roles_match"]
+                msg.channel, client.messages["remove_no_roles_match"], reply_to=msg
             )
             return
 
         options = await fuzzy_search(client, content, 5)
 
         if msg.channel.type is not discord.ChannelType.private:
-            await utils.delay_send(msg.channel, "DMed!")
+            await utils.delay_send(msg.channel, "DMed!", reply_to=msg)
 
         await utils.generate_react_menu(
             msg.author,

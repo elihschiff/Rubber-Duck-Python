@@ -15,7 +15,7 @@ class Latex(Command):
 
     async def execute_command(self, client, msg, content, **kwargs):
         if not content:
-            await utils.delay_send(msg.channel, f"Usage: {self.usage}")
+            await utils.delay_send(msg.channel, f"Usage: {self.usage}", reply_to=msg)
             return
 
         try:
@@ -49,6 +49,7 @@ class Latex(Command):
                     BytesIO(cairosvg.svg2png(file_obj=StringIO(tmpLocationSVG))),
                     f"{content}.png",
                 ),
+                reply_to=msg,
             )
         except:
-            await utils.delay_send(msg.channel, "Error rending LaTeX")
+            await utils.delay_send(msg.channel, "Error rending LaTeX", reply_to=msg)

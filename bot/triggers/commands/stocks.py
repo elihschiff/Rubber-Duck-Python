@@ -150,7 +150,9 @@ class Stocks(Command):
         # So not having a ticker passed in means we just fail out
         if len(content) == 0:
             return await utils.delay_send(
-                msg.channel, "Error: Must have at least one stock to query!"
+                msg.channel,
+                "Error: Must have at least one stock to query!",
+                reply_to=msg,
             )
 
         # Try to send content as a ticker (if we have an exact match, we don't need to search)
@@ -158,7 +160,7 @@ class Stocks(Command):
 
         # Propagate error messages
         if isinstance(data, str):
-            return await utils.delay_send(msg.channel, data)
+            return await utils.delay_send(msg.channel, data, reply_to=msg)
 
         # Fuzzy search fallback for search by related tickers / company names / security names
         if data == None:
@@ -167,7 +169,7 @@ class Stocks(Command):
             )
             # Propagate error messages
             if isinstance(search_json, str):
-                return await utils.delay_send(msg.channel, data)
+                return await utils.delay_send(msg.channel, data, reply_to=msg)
             quotes = search_json["quotes"]
 
             if len(quotes) > 0:
@@ -175,14 +177,15 @@ class Stocks(Command):
 
             # Propagate error messages
             if isinstance(data, str):
-                return await utils.delay_send(msg.channel, data)
+                return await utils.delay_send(msg.channel, data, reply_to=msg)
 
             # If we didn't find anything again, let the user know
             if data == None:
                 return await utils.delay_send(
                     msg.channel,
                     f"Error: Could not find stock data for query ```{content}``` :-(",
+                    reply_to=msg,
                 )
 
         # Send embed back if we managed to find a match
-        await utils.delay_send(msg.channel, embed=data)
+        await utils.delay_send(msg.channel, embed=data, reply_to=msg)

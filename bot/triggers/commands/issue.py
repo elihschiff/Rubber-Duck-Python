@@ -8,4 +8,4 @@ class Issue(Command):
     usage = "!issue"
 
     async def execute_command(self, client, msg, content, **kwargs):
-        await utils.delay_send(msg.channel, client.messages["issue"], 0)
+        await utils.delay_send(msg.channel, client.messages["issue"], 0, reply_to=msg)

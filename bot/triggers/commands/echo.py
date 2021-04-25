@@ -13,4 +13,4 @@ class Echo(Command):
             content.replace("@here", "@\u200bhere")
         else:
             content = "_ _"  # renders as invisible
-        await utils.delay_send(msg.channel, content)
+        await utils.delay_send(msg.channel, content, reply_to=msg)

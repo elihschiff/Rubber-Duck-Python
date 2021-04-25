@@ -56,6 +56,7 @@ class Command(MessageTrigger):
                     await utils.delay_send(
                         msg.channel,
                         client.messages["send_to_spam_channel"].format(channel_tags),
+                        reply_to=msg,
                     )
                     return
         except:

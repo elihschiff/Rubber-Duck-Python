@@ -8,4 +8,4 @@ class Code(Command):
     usage = "!code"
 
     async def execute_command(self, client, msg, content, **kwargs):
-        await utils.delay_send(msg.channel, client.messages["code"], 0.5)
+        await utils.delay_send(msg.channel, client.messages["code"], 0.5, reply_to=msg)

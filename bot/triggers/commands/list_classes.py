@@ -25,14 +25,16 @@ class ListClasses(Command):
 
         if len(content) != 4:
             await utils.delay_send(
-                msg.channel, client.messages["invalid_class_list_format"]
+                msg.channel, client.messages["invalid_class_list_format"], reply_to=msg
             )
             return
 
         for letter in content[:4]:
             if letter not in string.ascii_letters:
                 await utils.delay_send(
-                    msg.channel, client.messages["invalid_class_list_format"]
+                    msg.channel,
+                    client.messages["invalid_class_list_format"],
+                    reply_to=msg,
                 )
                 return
 
@@ -61,6 +63,7 @@ class ListClasses(Command):
             await utils.delay_send(
                 msg.channel,
                 client.messages["dept_not_found"].format(str(content[:4]).upper()),
+                reply_to=msg,
             )
         else:
             if msg.channel.type is not discord.ChannelType.private:
@@ -127,7 +130,7 @@ class ListClasses(Command):
             )
 
         if msg.channel.type is not discord.ChannelType.private:
-            await utils.delay_send(msg.channel, "DMed!")
+            await utils.delay_send(msg.channel, "DMed!", reply_to=msg)
 
         await utils.delay_send(
             msg.author, client.messages["general_class_list_prelude"], embed=embed

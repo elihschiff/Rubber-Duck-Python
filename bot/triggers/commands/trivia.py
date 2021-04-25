@@ -32,10 +32,7 @@ class Trivia(Command):
                 except IndexError:
                     message = "Error loading trivia question: Unknown Response Code"
 
-                await utils.delay_send(
-                    msg.channel,
-                    msg=message,
-                )
+                await utils.delay_send(msg.channel, msg=message, reply_to=msg)
                 return
 
             category = html.unescape(response["results"][0]["category"])
@@ -68,9 +65,9 @@ class Trivia(Command):
                         "hard": discord.Color.red(),
                     }[difficulty],
                 )
-                await utils.delay_send(msg.channel, embed=response)
+                await utils.delay_send(msg.channel, embed=response, reply_to=msg)
                 return
 
         await utils.delay_send(
-            msg.channel, "Error loading trivia question: Please Try Again"
+            msg.channel, "Error loading trivia question: Please Try Again", reply_to=msg
         )
