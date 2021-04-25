@@ -40,5 +40,8 @@ class Xkcd(Command):
             ) as req:
                 tmp_file.write(await req.read())
         await msg.channel.send(
-            "", file=discord.File(tmp_file, "xkcd.png"), reply_to=msg
+            "",
+            file=discord.File(tmp_file, "xkcd.png"),
+            reference=msg,
+            mention_author=True,
         )

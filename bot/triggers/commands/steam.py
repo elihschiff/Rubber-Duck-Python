@@ -75,6 +75,6 @@ class Steam(Command):
             await msg.channel.send(
                 "An error occured when finding the game",
                 reference=msg,
-                mention_author=False,
+                mention_author=True,
             )
             await utils.sendTraceback(client, msg.content)

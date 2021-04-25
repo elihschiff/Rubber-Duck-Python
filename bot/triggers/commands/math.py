@@ -27,7 +27,7 @@ class Math(Command):
                     await msg.channel.send(
                         f"The answer for `{content}` is: `{utils.sanitized(pod.text)}`",
                         reference=msg,
-                        mention_author=False,
+                        mention_author=True,
                     )
                     return
                 if pod.title.startswith("Plot"):
@@ -35,7 +35,7 @@ class Math(Command):
                         # TODO: this should be more robust
                         f"The answer for `{content}` is: {list(list(pod.subpod)[0].img)[0]['@src']}",
                         reference=msg,
-                        mention_author=False,
+                        mention_author=True,
                     )
                     return
         except (KeyError, AttributeError):
@@ -43,5 +43,5 @@ class Math(Command):
         await msg.channel.send(
             f"I could not find an answer for `{utils.sanitized(content)}`",
             reference=msg,
-            mention_author=False,
+            mention_author=True,
         )
