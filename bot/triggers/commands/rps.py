@@ -85,7 +85,7 @@ class RockPaperScissors(Game, ReactionTrigger):
     # this is called when a message starting with "!commandname" is run
     async def execute_command(self, client, msg, content, **kwargs):
         if not content:
-            await utils.delay_send(msg.channel, f"Usage: {self.usage}", reply_to=msg)
+            await utils.delay_send(msg.channel, f"Usage: {self.usage}")
             return
 
         pieces = [":new_moon:", ":newspaper:", ":scissors:"]
@@ -93,9 +93,7 @@ class RockPaperScissors(Game, ReactionTrigger):
         players = list(set([*msg.mentions, msg.author]))
         if len(players) != 2:
             await utils.delay_send(
-                msg.channel,
-                client.messages["rockpaperscissors_num_players"],
-                reply_to=msg,
+                msg.channel, client.messages["rockpaperscissors_num_players"]
             )
             return
 
@@ -103,9 +101,7 @@ class RockPaperScissors(Game, ReactionTrigger):
         for player in players:
             if player.bot:
                 await utils.delay_send(
-                    msg.channel,
-                    client.messages["rockpaperscissors_bot_player"],
-                    reply_to=msg,
+                    msg.channel, client.messages["rockpaperscissors_bot_player"]
                 )
                 return
 
@@ -126,7 +122,6 @@ class RockPaperScissors(Game, ReactionTrigger):
                     client.messages["rockpaperscissors_existing_game"].format(
                         players[0].mention, players[1].mention
                     ),
-                    reply_to=msg,
                 )
                 return
 
@@ -135,9 +130,7 @@ class RockPaperScissors(Game, ReactionTrigger):
         # send players RPS messages
         for player in players:
             tmp = await player.send(
-                content=self.get_content(),
-                embed=self.get_pm_embed(players, client),
-                reference=msg,
+                content=self.get_content(), embed=self.get_pm_embed(players, client)
             )
             for spot in reaccs:
                 await tmp.add_reaction(spot["emoji"])
@@ -146,9 +139,7 @@ class RockPaperScissors(Game, ReactionTrigger):
         # initialize the game in the game manager
         games.append(RPSGame(msg, [player.id for player in players], msg_ids))
 
-        utils.delay_send(
-            msg.channel, client.messages["rockpaperscissors_game_init"], reply_to=msg
-        )
+        utils.delay_send(msg.channel, client.messages["rockpaperscissors_game_init"])
 
     async def execute_reaction(self, client, reaction, channel, msg, user, **kwargs):
         if client.user.id == reaction.user_id:
