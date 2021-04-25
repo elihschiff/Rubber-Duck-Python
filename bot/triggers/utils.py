@@ -26,7 +26,7 @@ async def delay_send(
             file=file,
             files=files,
             reference=reply_to,
-            mention_author=False,
+            mention_author=True,
         )
 
 
