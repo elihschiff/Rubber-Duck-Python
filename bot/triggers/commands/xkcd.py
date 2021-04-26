@@ -1,10 +1,8 @@
 from . import Command
 from .. import utils
 import discord
-import os
-import json
 import xkcd
-from io import BytesIO
+from discord import Embed
 
 
 class Xkcd(Command):
@@ -13,33 +11,43 @@ class Xkcd(Command):
     usage = "!xkcd [(optional) search term]"
     examples = "!xkcd, !xkcd duck, !xkcd 537"
 
-    async def execute_command(self, client, msg, content, **kwargs):
-        image_url = ""
-        title = ""
-        alt_text = ""
-        if len(content) == 0:
+    def get_comic(self, number):
+        if number == None:
             comic = xkcd.getRandomComic()
-            content = comic.getTitle()
-        elif content.isnumeric():
+        else:
+            comic = xkcd.getComic(number)
+
+        embed = Embed(description=comic.getAltText())
+        embed.set_author(name=comic.getTitle())
+        embed.set_image(url=comic.getImageLink())
+        return embed
+
+    async def execute_command(self, client, msg, content, **kwargs):
+        if len(content) == 0:
+            embed = self.get_comic(None)
+        else:
+            if content.isnumeric():
+                num = int(content)
+            else:
+                async with utils.get_aiohttp().get(
+                    f"https://relevant-xkcd.com/={content}",
+                ) as req:
+                    data = (await req.read()).decode("utf-8")
+
+                xkcd_str = 'href="https://www.xkcd.com/'
+                data = data[data.find(xkcd_str) :]
+                num = int(data[len(xkcd_str) : data.find('">')])
+
             try:
-                comic = xkcd.getComic(int(content), silent=False)
-                content = comic.getTitle()
+                embed = self.get_comic(num)
             except:
-                await utils.delay_send(
-                    msg.channel, client.messages["no_xkcd_found"].format(content)
+                return await utils.delay_send(
+                    msg.channel,
+                    client.messages["no_xkcd_found"].format(content),
+                    reply_to=msg,
                 )
-                return
-
-        tmp_file = BytesIO()
-        async with utils.get_aiohttp().post(
-            f"https://relevant-xkcd.com/@{content}",
-        ) as req:
-            tmp_file.write(await req.read())
-        tmp_file.seek(0)
-
         await msg.channel.send(
-            "",
-            file=discord.File(tmp_file, "xkcd.png"),
+            embed=embed,
             reference=msg,
             mention_author=True,
         )
