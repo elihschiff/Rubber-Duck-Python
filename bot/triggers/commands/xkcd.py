@@ -39,6 +39,7 @@ class Xkcd(Command):
                 f"https://relevant-xkcd.com/@{content}",
             ) as req:
                 tmp_file.write(await req.read())
+            tmp_file.seek(0)
         await msg.channel.send(
             "",
             file=discord.File(tmp_file, "xkcd.png"),
