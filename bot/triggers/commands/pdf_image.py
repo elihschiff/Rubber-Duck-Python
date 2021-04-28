@@ -38,10 +38,29 @@ class PDF2Image(Command):
     causes_spam = True
 
     async def execute_command(self, client, msg, content, **kwargs):
-        if len(msg.attachments) == 0:
-            return await utils.delay_send(
-                msg.channel, "Error: no PDFs attached to message!", reply_to=msg
-            )
+        if len(msg.attachments) == 0 and msg.reference is not None:
+            # If no attachments here, this might be sent as a reply to another message with attachments
+            try:
+                replied_msg = await msg.channel.fetch_message(msg.reference.id)
+                attachments = replied_msg.attachments
+                if len(attachments) == 0:
+                    return await utils.delay_send(
+                        msg.channel,
+                        "Error: no PDFs attached to replied message!",
+                        reply_to=msg,
+                    )
+            except discord.NotFound:
+                return await utils.delay_send(
+                    msg.channel,
+                    "Error: replied to deleted message!",
+                    reply_to=msg,
+                )
+        else:
+            attachments = msg.attachments
+            if len(attachments) == 0:
+                return await utils.delay_send(
+                    msg.channel, "Error: no PDFs attached to message!", reply_to=msg
+                )
 
         # We enforce a range of 10 images max to prevent spam, limit server resource usage
         args = content.strip()
@@ -70,7 +89,7 @@ class PDF2Image(Command):
                 msg.channel, "Error: Invalid range", reply_to=msg
             )
 
-        for attach in msg.attachments:
+        for attach in attachments:
             if attach.size > 1e7:
                 await utils.delay_send(
                     msg.channel, "Error: File too large (max size: 10MB)", reply_to=msg
