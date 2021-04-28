@@ -65,7 +65,6 @@ async def get_stock_data(content):
     percent_change = get_info("regularMarketChangePercent")
     change = get_info("regularMarketChange")
     curr_price = get_info("regularMarketPrice")
-    dayRange = get_info("regularMarketDayRange")
     symbol = get_info("symbol")
     currency = get_info("currency")
     yearRange = get_info("fiftyTwoWeekRange")
@@ -132,7 +131,10 @@ async def get_stock_data(content):
         text=f"Data last updated on {datetime.datetime.fromtimestamp(market_time)} {datetime.datetime.now().astimezone().tzinfo.tzname(None)}"
     )
 
-    embed.add_field(name="Daily Range", value=dayRange, inline=False)
+    if "regularMarketDayRange" in data:
+        embed.add_field(
+            name="Daily Range", value=data["regularMarketDayRange"], inline=False
+        )
     embed.add_field(name="Fifty Two Week Range", value=yearRange, inline=False)
 
     return embed
