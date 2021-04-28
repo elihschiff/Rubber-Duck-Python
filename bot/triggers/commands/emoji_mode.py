@@ -115,12 +115,12 @@ class EmojiMode(Command):
         )
 
     async def execute_command(self, client, msg, content, **kwargs):
-        if content == "":
-            await self.channel_emoji_mode_toggle(client, msg.channel)
-            return
-
         content = msg.content.split(" ")
         command = content[0][1:]
+        if len(content) == 1:
+            await self.channel_emoji_mode_toggle(client, msg.channel, command)
+            return
+
         subcommand = content[1]
         users = [
             client.SERVER.get_member(user_id)
