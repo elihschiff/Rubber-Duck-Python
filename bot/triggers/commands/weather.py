@@ -3,6 +3,7 @@ from .. import utils
 
 import discord
 import io
+from urllib.parse import quote_plus
 
 
 class Weather(Command):
@@ -29,7 +30,7 @@ class Weather(Command):
         content = "12180" if len(content) == 0 else content
 
         async with utils.get_aiohttp().get(
-            f"http://wttr.in/{content}.png?0pq"
+            f"http://wttr.in/{quote_plus(content)}.png?0pq"
         ) as weather_request:
             if weather_request.status != 200:
                 try:
