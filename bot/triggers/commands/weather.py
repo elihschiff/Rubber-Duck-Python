@@ -30,7 +30,7 @@ class Weather(Command):
         content = "12180" if len(content) == 0 else content
 
         async with utils.get_aiohttp().get(
-            f"http://wttr.in/{quote_plus(content)}.png?0pq"
+            f"https://wttr.in/{quote_plus(content)}.png?0pq&background=36393e"
         ) as weather_request:
             if weather_request.status != 200:
                 try:
