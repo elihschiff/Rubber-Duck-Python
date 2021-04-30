@@ -127,6 +127,11 @@ class DuckClient(discord.Client):
                     replied = True
             except Exception as e:
                 await utils.sendTraceback(self, msg.content)
+                await utils.delay_send(
+                    msg.channel,
+                    msg=f"`{utils.sanitized(msg.content)}` was unable to be processed due to an internal error. The administrators have been notified.",
+                    reply_to=msg,
+                )
                 replied = True
 
         if best_trigger and replied == False:
