@@ -32,13 +32,17 @@ class Xkcd(Command):
                 async with utils.get_aiohttp().get(
                     f"https://relevant-xkcd.com/={content}",
                 ) as req:
-                    data = (await req.read()).decode("utf-8")
+                    data = await req.text()
 
-                xkcd_str = 'href="https://www.xkcd.com/'
-                data = data[data.find(xkcd_str) :]
-                num = int(data[len(xkcd_str) : data.find('">')])
+                if req.status == 200:
+                    xkcd_str = 'href="https://www.xkcd.com/'
+                    data = data[data.find(xkcd_str) :]
+                    num = int(data[len(xkcd_str) : data.find('">')])
 
             try:
+                # Don't make additional requests on 404 (or invalid)
+                if num == None or num == 404:
+                    raise ValueError()
                 embed = self.get_comic(num)
             except:
                 return await utils.delay_send(
