@@ -102,6 +102,8 @@ async def invalid_emoji_message(client, msg) -> bool:
             )
             return True
 
+    hits = 0
+
     # check for unemoji mode
     async with client.lock:
         client.c.execute(
