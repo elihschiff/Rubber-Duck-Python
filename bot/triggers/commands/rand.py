@@ -36,9 +36,21 @@ class Random(Command):
         min_val = min(arg1, arg2)
         max_val = max(arg1, arg2)
 
-        # Only generate an integer if we're given integers or the user wants it
-        if args[0] == "int" or type(arg1) is int:
-            random_val = random.randint(int(min_val), int(max_val))
+        if args[0] == "int":
+            try:
+                arg1 = int(arg1)
+                arg2 = int(arg2)
+            except ValueError:
+                await utils.delay_send(
+                    msg.channel,
+                    "Error: `int` specified but non-integer arguments given",
+                    reply_to=msg,
+                )
+                return
+
+        # Only generate an integer if we're given integers
+        if type(arg1) is int and args[0] != "float":
+            random_val = random.randint(min_val, max_val)
         else:
             random_val = random.uniform(min_val, max_val)
 
