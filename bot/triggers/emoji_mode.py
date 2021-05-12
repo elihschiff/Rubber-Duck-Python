@@ -46,10 +46,8 @@ def validate_discord_emote(emote) -> str:
 # returns true if the message only contains emoji and whitespace.  It will
 # validate discord emotes as well.
 def valid_emoji(content, msg) -> bool:
-    """
     if msg.embeds or msg.attachments:
         return False
-    """
 
     if nested_emote_re.match(content):
         return True
