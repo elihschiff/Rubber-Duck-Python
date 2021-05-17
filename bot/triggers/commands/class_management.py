@@ -12,16 +12,21 @@ import re
 from fuzzywuzzy import process
 
 
-async def fuzzy_search(client, query, max_results):
+async def fuzzy_search(client, query, max_results, only_show_active=True):
     # this matches the length of class_list but always has the name of a class corresponding
     # with the item in class_list. So if class_list has the item "DS" in slot 12 this will
     # have "Data Structures" in slot 12
     real_name_list = []
     class_list = []  # a list of ever class and every course_code etc
 
-    async with client.lock:
-        client.c.execute("SELECT * FROM classes WHERE active != 0")
-        records = client.c.fetchall()
+    if only_show_active:
+        async with client.lock:
+            client.c.execute("SELECT * FROM classes WHERE active != 0")
+            records = client.c.fetchall()
+    else:
+        async with client.lock:
+            client.c.execute("SELECT * FROM classes WHERE channel_id != 0")
+            records = client.c.fetchall()
 
     for i in records:
         real_name = "**" + ", ".join(json.loads(i[3].replace("'", '"'))) + "**: " + i[1]
@@ -189,7 +194,7 @@ class AddClass(Command, ReactionTrigger):
             )
             return
 
-        options = await fuzzy_search(client, content, 5)
+        options = await fuzzy_search(client, content, 5, only_show_active=True)
 
         if msg.channel.type is not discord.ChannelType.private:
             await utils.delay_send(msg.channel, "DMed!", reply_to=msg)
@@ -396,7 +401,7 @@ class RemoveClass(Command, ReactionTrigger):
             )
             return
 
-        options = await fuzzy_search(client, content, 5)
+        options = await fuzzy_search(client, content, 5, only_show_active=False)
 
         if msg.channel.type is not discord.ChannelType.private:
             await utils.delay_send(msg.channel, "DMed!", reply_to=msg)
