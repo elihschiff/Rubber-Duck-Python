@@ -14,6 +14,10 @@ class Translate(Command):
         self.translator = google_translator()
 
     async def execute_command(self, client, msg, content, **kwargs):
+        if len(content) == 0 and msg.reference is not None:
+            # If no content here, this might be sent as a reply to another message with a message to translate
+            content = " ".join(msg.reference.content.split()[1:])
+
         if len(content) == 0:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}", reply_to=msg)
             return
