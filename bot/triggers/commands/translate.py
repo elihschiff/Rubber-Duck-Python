@@ -16,7 +16,15 @@ class Translate(Command):
     async def execute_command(self, client, msg, content, **kwargs):
         if len(content) == 0 and msg.reference is not None:
             # If no content here, this might be sent as a reply to another message with a message to translate
-            content = " ".join(msg.reference.content.split()[1:])
+            try:
+                replied_msg = await msg.channel.fetch_message(msg.reference.id)
+                content = replied_msg.content
+            except discord.NotFound:
+                return await utils.delay_send(
+                    msg.channel,
+                    "Error: replied to deleted message!",
+                    reply_to=msg,
+                )
 
         if len(content) == 0:
             await utils.delay_send(msg.channel, f"Usage: {self.usage}", reply_to=msg)
