@@ -107,6 +107,9 @@ async def get_stock_data(content):
     embed = discord.Embed(
         title=f"{name} - ${symbol}",
         color=color,
+        timestamp=datetime.datetime.fromtimestamp(
+            market_time, tz=datetime.timezone.utc
+        ),
     )
 
     embed.set_author(
@@ -126,10 +129,6 @@ async def get_stock_data(content):
         embed.add_field(name="Regular: ", value=regular_info, inline=False)
     else:
         embed.description = regular_info
-
-    embed.set_footer(
-        text=f"Data last updated on {datetime.datetime.fromtimestamp(market_time)} {datetime.datetime.now().astimezone().tzinfo.tzname(None)}"
-    )
 
     if "regularMarketDayRange" in data:
         embed.add_field(
