@@ -9,6 +9,7 @@ class Translate(Command):
     description = "Translates a given phrase, or the previous message, into English"
     usage = "!translate [message]"
     examples = "!translate いんちき"
+    show_in_help = True
 
     def __init__(self):
         self.translator = google_translator()
@@ -32,5 +33,5 @@ class Translate(Command):
 
         translation = self.translator.translate(content, lang_tgt="en")
 
-        response = f"`{sanitized(content)}` translates from {self.translator.detect(content)[0].upper()} to: `{sanitized(translation)}`"
+        response = f"`{sanitized(content)}` translates from {self.translator.detect(content)[0].upper()} to: `{sanitized(translation).strip()}`"
         await utils.delay_send(msg.channel, response, 1, reply_to=msg)

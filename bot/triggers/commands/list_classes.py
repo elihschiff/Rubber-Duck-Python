@@ -17,6 +17,7 @@ class ListClasses(Command):
     description_no_courses = "Lists all the roles addable via the bot"
     usage = "!list"
     notes_no_courses = ""
+    show_in_help = True
 
     async def execute_command(self, client, msg, content, **kwargs):
         if not content or not client.config["ENABLE_COURSES"]:

@@ -8,6 +8,7 @@ class Math(Command):
     description = "Solves a math problem"
     usage = "!math [expression]"
     examples = "!math d/dx sin(x)^2"
+    show_in_help = True
 
     async def execute_command(self, client, msg, content, **kwargs):
         if not content:

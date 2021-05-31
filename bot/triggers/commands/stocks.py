@@ -145,6 +145,7 @@ class Stocks(Command):
     usage = "!stock <stock>"
     examples = "!stock GME"
     causes_spam = True
+    show_in_help = True
 
     async def execute_command(self, client, msg, content, **kwargs):
         # At the moment, Yahoo! Finance has no way to get a random stock easily.
