@@ -23,6 +23,7 @@ class TicTacToe(Game, ReactionTrigger):
     names = ["ttt", "tictactoe"]
     description = "Begins a game of Tic Tac Toe with a player."
     usage = "!ttt [@ another user]"
+    show_in_help = True
 
     class Game:
         def __init__(self, players=None, board=None):

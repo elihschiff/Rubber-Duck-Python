@@ -6,6 +6,7 @@ import discord
 class Help(Command):
     names = ["help"]
     description = "Lists commands and their description"
+    show_in_help = True
 
     async def execute_command(self, client, msg, content, **kwargs):
         args = content.split(" ")
@@ -57,10 +58,11 @@ class Help(Command):
         for command in all_commands:
             command_names = utils.get_correct_attr(command, "names", client)
             command_desc = utils.get_correct_attr(command, "description", client)
-            if command.description:
-                commands_arr.append(
-                    f"**{command.prefixes[0]}{command_names[0]}:** {command_desc}\n"
-                )
+            if utils.get_correct_attr(command, "show_in_help", client):
+                if command.description:
+                    commands_arr.append(
+                        f"**{command.prefixes[0]}{command_names[0]}:** {command_desc}\n"
+                    )
 
         max_char_count = 2000
         commands_str = ""

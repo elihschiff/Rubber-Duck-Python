@@ -98,7 +98,7 @@ from .java import Java
 from .issue import Issue
 from .latex import Latex  # latex machine broke
 from .list_classes import ListClasses
-from .lmdtfy import Lmdtfy, Lmgtfy
+from .lmgtfy import Lmgtfy
 from .man import Man
 from .math import Math
 from .minesweeper import Minesweeper
@@ -106,7 +106,6 @@ from .pdf_image import PDF2Image
 from .poll import Poll
 from .purge import Purge
 from .rand import Random
-from .recipe import Recipe
 from .rgb import RGB
 from .rps import RockPaperScissors
 from .steam import Steam
@@ -136,7 +135,6 @@ all_commands = [
     Issue(),
     Latex(),
     ListClasses(),
-    Lmdtfy(),
     Lmgtfy(),
     Man(),
     Math(),
@@ -145,7 +143,6 @@ all_commands = [
     Poll(),
     Purge(),
     Random(),
-    # Recipe(),
     RemoveClass(),
     RGB(),
     RockPaperScissors(),

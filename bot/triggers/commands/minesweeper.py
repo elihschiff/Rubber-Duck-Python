@@ -11,6 +11,7 @@ class Minesweeper(Command):
     usage = "!ms [(optional) width] [(optional) height] [(optional) number of mines]"
     examples = "!ms, !ms 10 3, !ms 5 5 2"
     causes_spam = True
+    show_in_help = True
 
     async def execute_command(self, client, msg, content, **kwargs):
         height = 8

@@ -11,6 +11,7 @@ class Weather(Command):
     description = "Gets the weather."
     usage = "!weather [(optional) location]"
     examples = "!weather 12180"
+    show_in_help = True
 
     async def send_image(self, msg, request, msg_text=""):
         forecast = await request.read()
