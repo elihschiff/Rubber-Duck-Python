@@ -6,6 +6,7 @@ class Poll(Command):
     description = "Reacts with a thumbs up and thumbs down for polling on this message"
     usage = "!poll [(optional) message]"
     examples = "!poll, !poll ELi is better than Ben"
+    show_in_help = True
 
     should_type = False
 

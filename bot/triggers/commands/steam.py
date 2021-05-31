@@ -10,6 +10,7 @@ class Steam(Command):
     description = "Looks up a game on the Steam store"
     usage = "!steam [game name]"
     examples = "!steam team fortress 2"
+    show_in_help = True
 
     async def execute_command(self, client, msg, content, **kwargs):
         if not content:

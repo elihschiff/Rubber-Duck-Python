@@ -36,6 +36,7 @@ class ConnectFour(Game, ReactionTrigger):
     notes = (
         "Maximum of eight players.  Default dimensions is 6x7, but can go up to 10x15."
     )
+    show_in_help = True
 
     class Game:
         def __init__(self, players=None, board=None):

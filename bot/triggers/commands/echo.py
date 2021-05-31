@@ -6,6 +6,7 @@ class Echo(Command):
     names = ["echo", "repeat"]
     description = "Echoes the given message"
     usage = "!echo [message]"
+    show_in_help = True
 
     async def execute_command(self, client, msg, content, **kwargs):
         if content:

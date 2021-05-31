@@ -10,6 +10,7 @@ class Wikipedia(Command):
     description = "Searches Wikipedia for a phrase"
     usage = "!wiki [phrase]"
     examples = "!wiki duck"
+    show_in_help = True
 
     def __init__(self):
         self.wiki = wikipediaapi.Wikipedia("en")

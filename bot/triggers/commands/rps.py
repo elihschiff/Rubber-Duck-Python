@@ -56,6 +56,7 @@ class RockPaperScissors(Game, ReactionTrigger):
     names = ["rps", "rockpaperscissors"]
     description = "Begins a game of Rock Paper Scissors with a player."
     usage = "!rps [@ another user]"
+    show_in_help = True
 
     def get_content(self):
         return "You have been challenged to RPS!"

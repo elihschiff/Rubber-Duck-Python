@@ -135,6 +135,7 @@ class AddClass(Command, ReactionTrigger):
     usage = "!add [class code]"
     examples = "!add cs1200, !add Computer Science"
     notes = "To see available roles, majors, and classes, use !list"
+    show_in_help = True
 
     names_no_courses = ["add", "join", "addrole", "joinrole"]
     description_no_courses = "Adds you to a role"
@@ -358,6 +359,7 @@ class RemoveClass(Command, ReactionTrigger):
     description = "Removes you from roles and class specific channels"
     usage = "!remove [class code]"
     examples = "!remove Bio 1010, !remove Chemistry"
+    show_in_help = True
 
     names_no_courses = ["remove", "leave", "leaverole", "drop", "droprole"]
     description_no_courses = "Removes you from a role"

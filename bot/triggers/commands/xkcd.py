@@ -10,6 +10,7 @@ class Xkcd(Command):
     description = "Finds a relevant xkcd using a keyword or comic number"
     usage = "!xkcd [(optional) search term]"
     examples = "!xkcd, !xkcd duck, !xkcd 537"
+    show_in_help = True
 
     def get_comic(self, number):
         if number == None:
