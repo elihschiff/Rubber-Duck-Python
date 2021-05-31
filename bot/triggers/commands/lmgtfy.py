@@ -2,6 +2,7 @@ from . import Command
 from .. import utils
 from urllib.parse import urlencode
 
+
 class Lmgtfy(Command):
     names = ["lmgtfy"]
     description = "Helps someone look something up on the inferior search engine"
