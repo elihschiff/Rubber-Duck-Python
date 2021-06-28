@@ -125,6 +125,13 @@ class DuckClient(discord.Client):
                 if trigger_score == 1:
                     await trigger.execute_message(self, msg, idx)
                     replied = True
+            except discord.errors.Forbidden:
+                await utils.delay_send(
+                    msg.channel,
+                    msg=f"`{utils.sanitized(msg.content)}` was unable to be processed because I do not have permissions to direct message you.",
+                    reply_to=msg,
+                )
+                replied = True
             except Exception as e:
                 await utils.sendTraceback(self, msg.content)
                 await utils.delay_send(
