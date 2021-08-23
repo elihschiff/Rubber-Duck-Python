@@ -73,9 +73,10 @@ class Merge(Command, ReactionTrigger):
         # Remove this channel from the database to prevent it from being re-added
         async with client.log_lock:
             client.c.execute(
-                "DELETE * FROM classes WHERE channel_id = :channel_id",
+                "DELETE FROM classes WHERE channel_id = :channel_id",
                 {"channel_id": from_channel.id},
             )
+            client.connection.commit()
 
         merge_msg = f"This channel has been merged with {from_channel.name}.  The following users were affected:"
 
@@ -87,16 +88,14 @@ class Merge(Command, ReactionTrigger):
                 reason=f"Merging {from_channel.name} with {to_channel.name}",
             )
 
-            if isinstance(member, discord.User):
+            if isinstance(member, discord.Member):
                 merge_msg += f" <@{member.id}>"
-                # TODO: once this has been tested, the below line can be replaced with the channel deletion
                 await from_channel.set_permissions(member, overwrite=None)
 
         merge_msg += "."
 
-        # TODO: Delete original channel
-        # await from_channel.delete(
-        #     reason=f"Merging {from_channel.name} with {to_channel.name}"
-        # )
+        await from_channel.delete(
+            reason=f"Merging {from_channel.name} with {to_channel.name}"
+        )
 
         await to_channel.send(merge_msg)
