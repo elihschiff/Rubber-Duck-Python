@@ -43,10 +43,11 @@ class Merge(Command, ReactionTrigger):
                 )
                 return
 
-        await utils.delay_send(
+        msg = await utils.delay_send(
             msg.channel,
             f"WARNING: You are about to merge this channel with <#{merge_channel.id}>.  All members of this channel will be added to <#{merge_channel.id}> and this channel will no longer be accessible. <@{msg.author.id}> can confirm this action by reacting :+1: to this message.",
         )
+        await msg.add_reaction(client.get_emoji(client.config["thumb_id"]))
 
     async def execute_reaction(self, client, reaction, channel, msg, user, **kwargs):
         if (
