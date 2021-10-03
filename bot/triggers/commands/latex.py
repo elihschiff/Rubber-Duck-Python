@@ -29,7 +29,7 @@ class Latex(Command):
             }
             headers = {
                 "Content-Type": "application/json; charset=UTF-8",
-                "User-Agent": "slithering-duck/1.0 (+https://nextcord.com/rpi)",
+                "User-Agent": "slithering-duck/1.0 (+https://discord.com/rpi)",
             }
             async with utils.get_aiohttp().post(
                 url, data=json.dumps(payload), headers=headers
