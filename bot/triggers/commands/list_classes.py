@@ -1,7 +1,7 @@
 from . import Command
 from .. import utils
 
-import discord
+import nextcord
 import string
 import json
 
@@ -67,7 +67,7 @@ class ListClasses(Command):
                 reply_to=msg,
             )
         else:
-            if msg.channel.type is not discord.ChannelType.private:
+            if msg.channel.type is not nextcord.ChannelType.private:
                 await utils.delay_send(msg.channel, "DMed!")
 
             class_str = ""
@@ -79,14 +79,14 @@ class ListClasses(Command):
             for class_name in sorted(class_list):
                 class_str += class_name + "\n"
                 if len(class_str) + len(prelude) >= 1900:
-                    embed = discord.Embed(description=class_str, color=0xDCC308)
+                    embed = nextcord.Embed(description=class_str, color=0xDCC308)
 
                     await utils.delay_send(msg.author, prelude, embed=embed)
                     class_str = ""
                     delay_msg_sent = True
 
             if len(class_str) != 0:
-                embed = discord.Embed(description=class_str, color=0xDCC308)
+                embed = nextcord.Embed(description=class_str, color=0xDCC308)
 
                 if delay_msg_sent:
                     await msg.author.send(
@@ -106,7 +106,7 @@ class ListClasses(Command):
                 class_str = ""
 
     async def general_listing(self, client, msg):
-        embed = discord.Embed(color=0xDCC308)
+        embed = nextcord.Embed(color=0xDCC308)
         for role_category in client.roles["role_categories"]:
             roles_list = ""
             for idx, role_group in enumerate(role_category["roles"]):
@@ -130,7 +130,7 @@ class ListClasses(Command):
                 name=f"{category_name}: `!list {help_name}`", value=dept_list
             )
 
-        if msg.channel.type is not discord.ChannelType.private:
+        if msg.channel.type is not nextcord.ChannelType.private:
             await utils.delay_send(msg.channel, "DMed!", reply_to=msg)
 
         await utils.delay_send(

@@ -2,7 +2,7 @@ from . import Command
 from .. import utils
 
 import datetime
-import discord
+import nextcord
 import io
 import json
 import random
@@ -104,7 +104,7 @@ async def get_stock_data(content):
     color = 15158332 if percent_change < 0 else 3066993
 
     regular_info = f"{round_price(curr_price, curr_price)} {currency} -> ({round_price(change, curr_price, True)} / {percent_change:+,.2f}%)"
-    embed = discord.Embed(
+    embed = nextcord.Embed(
         title=f"{name} - ${symbol}",
         color=color,
         timestamp=datetime.datetime.fromtimestamp(

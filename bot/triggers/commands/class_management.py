@@ -2,7 +2,7 @@ from . import Command
 from .. import utils
 from ..reaction_trigger import ReactionTrigger
 
-import discord
+import nextcord
 import string
 import json
 import ast
@@ -78,7 +78,7 @@ async def add_smc(client, msg, content) -> bool:
 
         # Handle public confirmations
         await msg.author.send(client.messages["add_hidden_role"])
-        if msg.channel.type is not discord.ChannelType.private:
+        if msg.channel.type is not nextcord.ChannelType.private:
             await utils.delay_send(
                 msg.channel, client.messages["add_hidden_role_public"], reply_to=msg
             )
@@ -120,7 +120,7 @@ async def remove_smc(client, msg, content) -> bool:
 
         # Handle public confirmations
         await msg.author.send(client.messages["remove_hidden_role"])
-        if msg.channel.type is not discord.ChannelType.private:
+        if msg.channel.type is not nextcord.ChannelType.private:
             await utils.delay_send(
                 msg.channel, client.messages["remove_hidden_role_public"], reply_to=msg
             )
@@ -197,7 +197,7 @@ class AddClass(Command, ReactionTrigger):
 
         options = await fuzzy_search(client, content, 5, only_show_active=True)
 
-        if msg.channel.type is not discord.ChannelType.private:
+        if msg.channel.type is not nextcord.ChannelType.private:
             await utils.delay_send(msg.channel, "DMed!", reply_to=msg)
 
         await utils.generate_react_menu(
@@ -222,7 +222,7 @@ class AddClass(Command, ReactionTrigger):
             return
 
         # channel = await client.fetch_channel(reaction.channel_id)
-        if channel.type is not discord.ChannelType.private:
+        if channel.type is not nextcord.ChannelType.private:
             return
 
         # msg = await channel.fetch_message(reaction.message_id)
@@ -277,17 +277,17 @@ class AddClass(Command, ReactionTrigger):
                         + ": "
                         + course[1],
                         overwrites={
-                            client.SERVER.default_role: discord.PermissionOverwrite(
+                            client.SERVER.default_role: nextcord.PermissionOverwrite(
                                 read_messages=False
                             ),
-                            all_seer: discord.PermissionOverwrite(read_messages=True),
-                            time_out: discord.PermissionOverwrite(
+                            all_seer: nextcord.PermissionOverwrite(read_messages=True),
+                            time_out: nextcord.PermissionOverwrite(
                                 send_messages=False, add_reactions=False
                             ),
                         },
                     )
                     added = True
-                except discord.HTTPException as e:
+                except nextcord.HTTPException as e:
                     continue
 
                 async with client.lock:
@@ -307,7 +307,7 @@ class AddClass(Command, ReactionTrigger):
                 return
 
         try:
-            overwrite = discord.PermissionOverwrite()
+            overwrite = nextcord.PermissionOverwrite()
             overwrite.read_messages = True
             await channel.set_permissions(user, overwrite=overwrite)
 
@@ -405,7 +405,7 @@ class RemoveClass(Command, ReactionTrigger):
 
         options = await fuzzy_search(client, content, 5, only_show_active=False)
 
-        if msg.channel.type is not discord.ChannelType.private:
+        if msg.channel.type is not nextcord.ChannelType.private:
             await utils.delay_send(msg.channel, "DMed!", reply_to=msg)
 
         await utils.generate_react_menu(
@@ -426,7 +426,7 @@ class RemoveClass(Command, ReactionTrigger):
             return
 
         # channel = await client.fetch_channel(reaction.channel_id)
-        if channel.type is not discord.ChannelType.private:
+        if channel.type is not nextcord.ChannelType.private:
             return
 
         # msg = await channel.fetch_message(reaction.message_id)

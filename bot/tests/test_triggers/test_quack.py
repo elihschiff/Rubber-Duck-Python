@@ -1,6 +1,6 @@
 import unittest
 import json
-import discord
+import nextcord
 from .. import test_utils
 from ...duck import DuckClient
 
@@ -19,7 +19,7 @@ class TestQuack(unittest.TestCase):
     @test_utils.async_test
     async def test_quack_dm(self):
         msg = test_utils.init_message("abc")
-        msg.channel.type = discord.ChannelType.private
+        msg.channel.type = nextcord.ChannelType.private
         self.client.user.was_mentioned = False
 
         await self.client.on_message(msg)

@@ -1,6 +1,6 @@
 from . import Command, all_commands
 from .. import utils
-import discord
+import nextcord
 
 
 class Help(Command):
@@ -37,7 +37,7 @@ class Help(Command):
                         if notes:
                             command_help += f"\n**Notes**: {notes}"
 
-                        response = discord.Embed(
+                        response = nextcord.Embed(
                             title=embed_title, description=command_help
                         )
                         await send_embed(msg, response, embed_title)
@@ -71,15 +71,15 @@ class Help(Command):
             if len(commands_str) + len(line) < max_char_count:
                 commands_str += line
             else:
-                response = discord.Embed(title=title, description=commands_str)
+                response = nextcord.Embed(title=title, description=commands_str)
                 await send_embed(msg, response, title)
                 commands_str = line
                 title = ""
 
-        response = discord.Embed(title=title, description=commands_str)
+        response = nextcord.Embed(title=title, description=commands_str)
         await send_embed(msg, response, title)
 
-        if msg.channel.type is not discord.ChannelType.private:
+        if msg.channel.type is not nextcord.ChannelType.private:
             await utils.delay_send(msg.channel, "DMed!", reply_to=msg)
 
 

@@ -1,7 +1,7 @@
 from . import Command
 from .. import utils
 from json import dumps
-import discord
+import nextcord
 import html
 
 
@@ -56,13 +56,13 @@ class Trivia(Command):
             )
             trivia = f"{question}\n\n {formated_answers}"
             if len(trivia) <= 2000:
-                response = discord.Embed(
+                response = nextcord.Embed(
                     title=category,
                     description=trivia,
                     colour={
-                        "easy": discord.Color.dark_blue(),
-                        "medium": discord.Color.orange(),
-                        "hard": discord.Color.red(),
+                        "easy": nextcord.Color.dark_blue(),
+                        "medium": nextcord.Color.orange(),
+                        "hard": nextcord.Color.red(),
                     }[difficulty],
                 )
                 await utils.delay_send(msg.channel, embed=response, reply_to=msg)

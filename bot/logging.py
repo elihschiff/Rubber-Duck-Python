@@ -1,5 +1,5 @@
-import discord
-from discord import ChannelType
+import nextcord
+from nextcord import ChannelType
 import os
 from .triggers.utils import get_aiohttp
 from io import BytesIO
@@ -91,7 +91,7 @@ async def get_log_channel(channel, client):
                 destination_channel = await client.LOG_SERVER.create_text_channel(
                     channel.name
                 )
-            except discord.HTTPException:
+            except nextcord.HTTPException:
                 client.log_lock.acquire()
                 client.log_c.execute("SELECT * FROM unused_logging")
                 dest_channel_id = client.log_c.fetchone()[0]
