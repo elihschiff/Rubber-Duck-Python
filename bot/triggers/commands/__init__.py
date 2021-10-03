@@ -83,6 +83,7 @@ class Command(MessageTrigger):
         return self.names[0] < other.names[0]
 
 
+# Please keep the below list alphabetized
 from .ai import AI
 from .anime import Anime
 from .bonobot import Bonobot
@@ -101,6 +102,7 @@ from .list_classes import ListClasses
 from .lmgtfy import Lmgtfy
 from .man import Man
 from .math import Math
+from .merge import Merge
 from .minesweeper import Minesweeper
 from .pdf_image import PDF2Image
 from .poll import Poll
@@ -118,7 +120,6 @@ from .wikipedia import Wikipedia
 from .weather import Weather
 from .xkcd import Xkcd
 
-# Commands will auto alphabetize
 all_commands = [
     AddClass(),
     AI(),
@@ -138,6 +139,7 @@ all_commands = [
     Lmgtfy(),
     Man(),
     Math(),
+    Merge(),
     Minesweeper(),
     PDF2Image(),
     Poll(),

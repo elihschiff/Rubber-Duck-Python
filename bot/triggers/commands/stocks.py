@@ -8,6 +8,7 @@ import json
 import random
 
 from enum import Enum
+from urllib.parse import quote_plus, unquote_plus
 
 
 class MarketState(Enum):
@@ -107,9 +108,6 @@ async def get_stock_data(content):
     embed = nextcord.Embed(
         title=f"{name} - ${symbol}",
         color=color,
-        timestamp=datetime.datetime.fromtimestamp(
-            market_time, tz=datetime.timezone.utc
-        ),
     )
 
     embed.set_author(
@@ -134,7 +132,12 @@ async def get_stock_data(content):
         embed.add_field(
             name="Daily Range", value=data["regularMarketDayRange"], inline=False
         )
-    embed.add_field(name="Fifty Two Week Range", value=yearRange, inline=False)
+    # Hack in last updated to look like a footer as they don't support fancy markdown :-(
+    embed.add_field(
+        name="Fifty Two Week Range",
+        value=f"{yearRange}\nLast updated <t:{market_time}:R>",
+        inline=False,
+    )
 
     return embed
 
@@ -156,7 +159,7 @@ class Stocks(Command):
                 "Error: Must have at least one stock to query!",
                 reply_to=msg,
             )
-
+        content = quote_plus(content.replace("'", ""))
         # Try to send content as a ticker (if we have an exact match, we don't need to search)
         data = await get_stock_data(content)
 
@@ -185,7 +188,7 @@ class Stocks(Command):
             if data == None:
                 return await utils.delay_send(
                     msg.channel,
-                    f"Error: Could not find stock data for query ```{content}``` :-(",
+                    f"Error: Could not find stock data for query ```{unquote_plus(content)}``` :-(",
                     reply_to=msg,
                 )
 

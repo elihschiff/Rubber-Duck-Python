@@ -63,11 +63,19 @@ for course in courses:
 # Add new courses
 for course in new_courses:
     c.execute(
-        "INSERT INTO classes (name, course_codes, departments, active) VALUES (:name, :course_codes, :departments, 1);",
+        "INSERT OR IGNORE INTO classes (name, course_codes, departments, active) VALUES (:name, :course_codes, :departments, 1);",
         {
             "name": course["name"],
             "course_codes": json.dumps([course["code"]]),
             "departments": json.dumps([course["dept"]]),
+        },
+    )
+
+    c.execute(
+        "UPDATE classes SET name=:name, active=1 WHERE course_codes=:course_codes;",
+        {
+            "name": course["name"],
+            "course_codes": json.dumps([course["code"]]),
         },
     )
 
