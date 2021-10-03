@@ -1,7 +1,7 @@
 from . import Command
 from .. import utils
 
-import discord
+import nextcord
 import io
 from urllib.parse import quote_plus
 
@@ -22,7 +22,7 @@ class Weather(Command):
         return await utils.delay_send(
             msg.channel,
             msg=msg_text,
-            file=discord.File(buffer, filename="weather.png"),
+            file=nextcord.File(buffer, filename="weather.png"),
             reply_to=msg,
         )
 

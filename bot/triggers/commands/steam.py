@@ -2,7 +2,7 @@ from . import Command
 from .. import utils
 import urllib
 from bs4 import BeautifulSoup
-import discord
+import nextcord
 
 
 class Steam(Command):
@@ -66,7 +66,7 @@ class Steam(Command):
             img = game_page_content.find("img", {"class": "game_header_image_full"})
             if img != None:
                 img = img["src"]
-            embed = discord.Embed(
+            embed = nextcord.Embed(
                 title=title.text, description=desc, color=0x00FF00, url=link
             )
             if img != None:

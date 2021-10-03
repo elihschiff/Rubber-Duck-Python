@@ -1,6 +1,6 @@
 import sys
-import discord
-from discord import ChannelType
+import nextcord
+from nextcord import ChannelType
 import json
 import subprocess
 import asyncio
@@ -18,7 +18,7 @@ from . import logging
 from .triggers import utils
 
 
-class DuckClient(discord.Client):
+class DuckClient(nextcord.Client):
     def __init__(
         self,
         intents,
@@ -125,7 +125,7 @@ class DuckClient(discord.Client):
                 if trigger_score == 1:
                     await trigger.execute_message(self, msg, idx)
                     replied = True
-            except discord.errors.Forbidden:
+            except nextcord.errors.Forbidden:
                 await utils.delay_send(
                     msg.channel,
                     msg=f"`{utils.sanitized(msg.content)}` was unable to be processed because I do not have permissions to direct message you.",
@@ -159,9 +159,9 @@ class DuckClient(discord.Client):
 
         try:
             if (
-                "discord.gg/" in msg_full.content
+                "nextcord.gg/" in msg_full.content
                 or "discordapp.com/invite/" in msg_full.content
-                or "discord.com/invite/" in msg_full.content
+                or "nextcord.com/invite/" in msg_full.content
             ) and not utils.user_is_mod(self, msg.author):
                 await msg.delete()
                 await msg.author.send(

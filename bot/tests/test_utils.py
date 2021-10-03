@@ -11,7 +11,7 @@ def async_test(coro):
     return wrapper
 
 
-import discord
+import nextcord
 
 
 class MockTyping:

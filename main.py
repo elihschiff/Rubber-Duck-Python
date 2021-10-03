@@ -4,10 +4,10 @@ import os
 import sqlite3
 import sys
 
-import discord
+import nextcord
 
 # set up discord intents
-intents = discord.Intents.default()
+intents = nextcord.Intents.default()
 intents.members = True
 
 # loads variables from local .env file as environment variables (use os.getenv)

@@ -1,8 +1,8 @@
 from . import Command
 from .. import utils
-import discord
+import nextcord
 import xkcd
-from discord import Embed
+from nextcord import Embed
 
 
 class Xkcd(Command):

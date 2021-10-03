@@ -1,5 +1,5 @@
 import unittest
-import discord
+import nextcord
 from ... import test_utils
 from ....triggers.commands import all_commands
 from ....duck import DuckClient
@@ -18,7 +18,7 @@ class TestHelp(unittest.TestCase):
         for command in all_commands:
             if command.description:
                 commands_str += f"**{command.prefixes[0]}{command.names[0]}:** {command.description}\n"
-        expected_help = discord.Embed(
+        expected_help = nextcord.Embed(
             title="General Commands", description=commands_str
         )
         self.assertEqual(msg.channel.embed_dict, expected_help.to_dict())

@@ -1,6 +1,6 @@
 from . import Command
 from .. import utils
-import discord
+import nextcord
 import json
 import cairosvg
 from io import StringIO, BytesIO
@@ -29,7 +29,7 @@ class Latex(Command):
             }
             headers = {
                 "Content-Type": "application/json; charset=UTF-8",
-                "User-Agent": "slithering-duck/1.0 (+https://discord.com/rpi)",
+                "User-Agent": "slithering-duck/1.0 (+https://nextcord.com/rpi)",
             }
             async with utils.get_aiohttp().post(
                 url, data=json.dumps(payload), headers=headers
@@ -46,7 +46,7 @@ class Latex(Command):
                 )
             await utils.delay_send(
                 msg.channel,
-                file=discord.File(
+                file=nextcord.File(
                     BytesIO(cairosvg.svg2png(file_obj=StringIO(tmpLocationSVG))),
                     f"{content}.png",
                 ),

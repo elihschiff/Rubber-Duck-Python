@@ -1,7 +1,7 @@
 from . import utils
 import random
 
-from discord import ChannelType
+from nextcord import ChannelType
 
 
 def should_quack(client, msg) -> bool:

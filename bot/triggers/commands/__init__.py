@@ -3,7 +3,7 @@ from .. import utils
 import re
 from fuzzywuzzy import fuzz
 
-from discord import ChannelType
+from nextcord import ChannelType
 
 
 class Command(MessageTrigger):

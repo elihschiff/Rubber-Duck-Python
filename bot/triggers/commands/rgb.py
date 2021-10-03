@@ -1,7 +1,7 @@
 from . import Command
 from .. import utils
 import os
-import discord
+import nextcord
 import png
 import random
 from io import BytesIO
@@ -79,5 +79,5 @@ class RGB(Command):
         w.write(png_data, p)
         png_data.seek(0)
         await utils.delay_send(
-            msg.channel, file=discord.File(png_data, "rgb.png"), reply_to=msg
+            msg.channel, file=nextcord.File(png_data, "rgb.png"), reply_to=msg
         )
