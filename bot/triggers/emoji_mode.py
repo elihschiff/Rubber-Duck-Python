@@ -9,7 +9,7 @@ import random
 import re
 import requests
 
-from discord import ChannelType
+from nextcord import ChannelType
 
 # emotes are of the form <:emote_name:1234> where `1234` is the emote's id
 discord_emote_re = re.compile("<a?:[\w]+?:(\d+?)>")

@@ -1,7 +1,7 @@
 from . import Command
 
 import random
-import discord
+import nextcord
 
 # Global game dictionary used amongst all games to keep track of memory usage
 GLOBAL_GAMES = dict()

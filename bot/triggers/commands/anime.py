@@ -1,7 +1,7 @@
 from . import Command
 from .. import utils
 from jikanpy import Jikan
-import discord
+import nextcord
 
 
 class Anime(Command):
@@ -22,11 +22,11 @@ class Anime(Command):
             await utils.delay_send(
                 msg.channel, "Sorry, I can't give info on NSFW shows.", reply_to=msg
             )
-            if msg.channel.type is not discord.ChannelType.private:
+            if msg.channel.type is not nextcord.ChannelType.private:
                 await msg.delete()
             return
 
-        embed = discord.Embed(
+        embed = nextcord.Embed(
             title=show["title"], url=show["url"], description=show["synopsis"]
         )
         embed.set_image(url=show["image_url"])

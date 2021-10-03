@@ -20,7 +20,7 @@ class Translate(Command):
             try:
                 replied_msg = await msg.channel.fetch_message(msg.reference.id)
                 content = replied_msg.content
-            except discord.NotFound:
+            except nextcord.NotFound:
                 return await utils.delay_send(
                     msg.channel,
                     "Error: replied to deleted message!",

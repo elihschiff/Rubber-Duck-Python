@@ -2,7 +2,7 @@ from .games import Game, GLOBAL_GAMES
 from ..reaction_trigger import ReactionTrigger
 from .. import utils
 
-import discord
+import nextcord
 import re
 
 reaccs = [
@@ -62,7 +62,7 @@ class RockPaperScissors(Game, ReactionTrigger):
         return "You have been challenged to RPS!"
 
     def get_pm_embed(self, players, client):
-        embed = discord.Embed(
+        embed = nextcord.Embed(
             title="Rock Paper Scissors", description="Please react your move!"
         )
 
@@ -75,7 +75,7 @@ class RockPaperScissors(Game, ReactionTrigger):
 
     def get_wait_embed(self, waiting_for, players, client):
 
-        embed = discord.Embed(
+        embed = nextcord.Embed(
             title="Rock Paper Scissors",
             description=f"Nice pick!\nWaiting for {waiting_for}",
         )
@@ -192,7 +192,7 @@ class RockPaperScissors(Game, ReactionTrigger):
 
             content = f"{player1} and {player2}:\nThe results are in!\n"
 
-            embed = discord.Embed(
+            embed = nextcord.Embed(
                 title="Rock Paper Scissors",
                 description=f"{player1}: {answer1}\n{player2}: {answer2}\n\n",
             )

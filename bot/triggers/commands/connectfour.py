@@ -2,7 +2,7 @@ from .games import Game
 from .. import utils
 from ..reaction_trigger import ReactionTrigger
 
-import discord
+import nextcord
 import random
 import re
 
@@ -115,7 +115,7 @@ class ConnectFour(Game, ReactionTrigger):
                 for c in range(len(board[r])):
                     board[r][c] = self.get_piece(board[r][c])
 
-            embed = discord.Embed(
+            embed = nextcord.Embed(
                 title="Connect Four",
                 description="\n".join(
                     [

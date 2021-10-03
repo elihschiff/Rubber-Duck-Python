@@ -2,7 +2,7 @@ from .games import Game
 from .. import utils
 from ..reaction_trigger import ReactionTrigger
 
-import discord
+import nextcord
 import re
 import random
 
@@ -132,7 +132,7 @@ class TicTacToe(Game, ReactionTrigger):
                 for c in range(3):
                     board[r][c] = self.get_piece(board[r][c])
 
-            embed = discord.Embed(
+            embed = nextcord.Embed(
                 title="Tic Tac Toe",
                 description="\n".join(["\n".join(["".join(row) for row in board])]),
             )

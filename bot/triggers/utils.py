@@ -1,6 +1,6 @@
 import time
 import asyncio
-import discord
+import nextcord
 import re
 import traceback
 import aiohttp

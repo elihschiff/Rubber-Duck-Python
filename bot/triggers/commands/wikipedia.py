@@ -1,7 +1,7 @@
 from . import Command
 from .. import utils
 from bs4 import BeautifulSoup
-import discord
+import nextcord
 import wikipediaapi
 
 
@@ -35,7 +35,7 @@ class Wikipedia(Command):
         if len(page.text) > 200:
             description += "..."
 
-        response = discord.Embed(
+        response = nextcord.Embed(
             title=content, url=page.fullurl, description=description
         )
         await utils.delay_send(msg.channel, "", embed=response, reply_to=msg)

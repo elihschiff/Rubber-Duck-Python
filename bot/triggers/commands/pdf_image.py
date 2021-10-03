@@ -5,7 +5,7 @@ from pdf2image import convert_from_bytes
 from io import BytesIO
 
 import asyncio
-import discord
+import nextcord
 
 pool = ThreadPoolExecutor(max_workers=1)
 loop = asyncio.get_event_loop()
@@ -49,7 +49,7 @@ class PDF2Image(Command):
                         "Error: no PDFs attached to replied message!",
                         reply_to=msg,
                     )
-            except discord.NotFound:
+            except nextcord.NotFound:
                 return await utils.delay_send(
                     msg.channel,
                     "Error: replied to deleted message!",
@@ -110,7 +110,7 @@ class PDF2Image(Command):
                 data.seek(0)
                 await utils.delay_send(
                     msg.channel,
-                    file=discord.File(data, filename=f"f{current_page}.jpeg"),
+                    file=nextcord.File(data, filename=f"f{current_page}.jpeg"),
                     reply_to=msg,
                 )
                 has_processed = True
