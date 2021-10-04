@@ -65,6 +65,17 @@ class DuckClient(nextcord.Client):
         self.log_connection = sqlite3.connect(path + "logging.db")
         self.log_c = self.log_connection.cursor()
 
+        original_send = self.http.send_typing
+
+        async def safer_send_typing(*args, **kwargs):
+            nonlocal original_send
+            try:
+                await original_send(*args, *kwargs)
+            except nextcord.errors.Forbidden:
+                pass
+
+        self.http.send_typing = safer_send_typing
+
     async def on_ready(self):
         if len(sys.argv) > 1:
             args = ["kill", "-9"]
