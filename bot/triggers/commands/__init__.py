@@ -48,7 +48,11 @@ class Command(MessageTrigger):
             return
         # checks if a trigger causes spam and then if that trigger should run given the channel it was sent in
         try:  # any command without self.causes_spam will cause an exception and skip this to run like normal
-            if self.causes_spam and msg.channel.type is not ChannelType.private:
+            if self.causes_spam and msg.channel.type not in (
+                ChannelType.private,
+                ChannelType.private_thread,
+                ChannelType.public_thread,
+            ):
                 if msg.channel.id not in client.config["spam_channel_ids"]:
                     channel_tags = ""
                     for id in client.config["spam_channel_ids"]:
