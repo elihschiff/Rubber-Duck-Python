@@ -53,4 +53,4 @@ class Latex(Command):
                 reply_to=msg,
             )
         except:
-            await utils.delay_send(msg.channel, "Error rending LaTeX", reply_to=msg)
+            await utils.delay_send(msg.channel, "Error rendering LaTeX", reply_to=msg)
